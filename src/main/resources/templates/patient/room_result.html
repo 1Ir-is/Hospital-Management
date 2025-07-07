@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Kết quả tìm phòng</title>
+</head>
+<body>
+<h2>Kết quả tìm phòng cho mã: <span th:text="${code}"></span></h2>
+
+<div th:if="${room != null}">
+    <p><strong>Tên phòng:</strong> <span th:text="${room.name}"></span></p>
+    <p><strong>Loại phòng:</strong> <span th:text="${room.roomType.getName()}"></span></p>
+    <p><strong>Mô tả:</strong> <span th:text="${room.description}"></span></p>
+</div>
+
+<div th:if="${room == null}">
+    <p style="color:red;">Không tìm thấy phòng tương ứng với mã hồ sơ này.</p>
+</div>
+
+<a th:href="@{/patient/room-search}">Quay lại</a>
+</body>
+</html>
