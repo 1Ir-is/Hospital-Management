@@ -12,7 +12,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity
 @Table(name = "employee_assignments")
-public class EmployeeAssigment {
+public class EmployeeAssigment { // phan cong nhan vien
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

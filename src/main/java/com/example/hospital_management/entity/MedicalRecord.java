@@ -14,7 +14,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Entity
 @Table(name = "medical_records")
-public class MedicalRecord {
+public class MedicalRecord { // ho so kham
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
