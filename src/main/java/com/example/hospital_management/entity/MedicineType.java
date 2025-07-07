@@ -11,7 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "medicine-types")
+@Table(name = "medicine_types")
 public class MedicineType { // Loại thuốc
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

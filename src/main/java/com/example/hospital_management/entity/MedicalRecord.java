@@ -14,7 +14,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Entity
 @Table(name = "medical_records")
-public class MedicalRecord {
+public class MedicalRecord { // Hồ sơ khám
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -41,4 +41,8 @@ public class MedicalRecord {
     @ManyToOne
     @JoinColumn(name = "examtination_shift_id")
     private ExaminationShift examinationShift;
+
+    @ManyToOne
+    @JoinColumn(name = "vital_sign_id")
+    private VitalSign vitalSign;
 }
