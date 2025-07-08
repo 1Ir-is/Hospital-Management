@@ -54,6 +54,7 @@ public class DepartmentController {
         if (department == null) {
             return "redirect:/admin/departments";
         }
+        model.addAttribute("activeMenu", "departments");
         model.addAttribute("department", department);
         return "admin/department/edit-form";
     }
@@ -68,6 +69,6 @@ public class DepartmentController {
     @GetMapping("/delete/{id}")
     public String deleteDepartment(@PathVariable Long id) {
         departmentService.deleteDepartmentById(id);
-        return "redirect:/admin/departments";
+        return "redirect:/admin/departments#deleted";
     }
 }
