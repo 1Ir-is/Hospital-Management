@@ -38,6 +38,7 @@ public class DepartmentController {
     public String showCreateForm(Model model) {
         Department department = new Department();
         model.addAttribute("department", department);
+        model.addAttribute("activeMenu", "departments");
         return "admin/department/create-form";
     }
 

@@ -1,19 +1,209 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="vi"
+      layout:decorate="~{admin/layout/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Thêm mới khoa</title>
+    <meta charset="UTF-8"/>
+    <title>Thêm mới khoa - Quản lý Bệnh viện Codegym</title>
+    <link href="/css/admin.css" rel="stylesheet"/>
+    <script src="https://kit.fontawesome.com/c1df782baf.js"></script>
 </head>
 <body>
-<h2>Thêm mới khoa</h2>
-<form method="post" th:action="@{/admin/departments/create}" th:object="${department}">
-    <label>Tên khoa:</label>
-    <input required th:field="*{name}" type="text"/>
-    <br/>
-    <label>Mô tả:</label>
-    <input th:field="*{description}" type="text"/>
-    <br/>
-    <button type="submit">Lưu</button>
-    <a th:href="@{/admin/departments}">Quay lại</a>
-</form>
+<div layout:fragment="main-content">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb-nav">
+        <div class="breadcrumb">
+            <a th:href="@{/admin}">Dashboard</a>
+            <i class="fas fa-chevron-right"></i>
+            <a th:href="@{/admin/departments}">Khoa bệnh viện</a>
+            <i class="fas fa-chevron-right"></i>
+            <span>Thêm khoa mới</span>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="page-header-content">
+            <div class="page-title-section">
+                <h1 class="page-title">
+                    <i class="fas fa-plus-circle"></i>
+                    Thêm khoa bệnh viện mới
+                </h1>
+                <p class="page-subtitle">
+                    Điền thông tin để tạo khoa bệnh viện mới trong hệ thống
+                </p>
+            </div>
+            <div class="page-actions">
+                <a class="btn-secondary" th:href="@{/admin/departments}">
+                    <i class="fas fa-arrow-left"></i>
+                    Quay lại danh sách
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Form Card -->
+    <div class="form-card">
+        <div class="form-header">
+            <h2>Thông tin khoa bệnh viện</h2>
+            <p>Vui lòng điền đầy đủ thông tin bên dưới</p>
+        </div>
+
+        <form
+                class="department-form"
+                id="departmentForm"
+                method="post"
+                th:action="@{/admin/departments/create}"
+                th:object="${department}"
+        >
+            <div class="form-row">
+                <!-- Tên khoa -->
+                <div class="form-group" style="flex:1;">
+                    <label class="form-label required" for="departmentName">
+                        <i class="fas fa-building"></i>
+                        Tên khoa bệnh viện
+                    </label>
+                    <input
+                            class="form-input"
+                            id="departmentName"
+                            maxlength="100"
+                            placeholder="Nhập tên khoa (VD: Khoa Nội tổng hợp)"
+                            required
+                            th:field="*{name}"
+                            type="text"
+                    />
+                    <div class="form-error" id="nameError"></div>
+                    <div class="form-help">Tên khoa phải từ 3-100 ký tự</div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <!-- Mô tả -->
+                <div class="form-group" style="flex:1;">
+                    <label class="form-label required" for="departmentDescription">
+                        <i class="fas fa-align-left"></i>
+                        Mô tả khoa
+                    </label>
+                    <textarea
+                            class="form-textarea"
+                            id="departmentDescription"
+                            maxlength="1000"
+                            placeholder="Nhập mô tả chi tiết về khoa bệnh viện..."
+                            required
+                            rows="5"
+                            th:field="*{description}"
+                    ></textarea>
+                    <div class="form-error" id="descriptionError"></div>
+                    <div class="character-count">
+                        <span id="charCount">0</span>/1000 ký tự
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="form-actions">
+                <button
+                        class="btn-secondary"
+                        onclick="history.back()"
+                        type="button"
+                >
+                    <i class="fas fa-times"></i>
+                    Hủy bỏ
+                </button>
+                <button class="btn-outline" type="reset">
+                    <i class="fas fa-redo"></i>
+                    Đặt lại
+                </button>
+                <button class="btn-primary" id="submitBtn" type="submit">
+                    <i class="fas fa-save"></i>
+                    <span>Lưu khoa mới</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+<div layout:fragment="page-scripts">
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Character count for description
+            const descTextarea = document.getElementById("departmentDescription");
+            const charCount = document.getElementById("charCount");
+
+            descTextarea.addEventListener("input", function () {
+                const count = this.value.length;
+                charCount.textContent = count;
+
+                if (count > 900) {
+                    charCount.style.color = "#dc3545";
+                } else if (count > 750) {
+                    charCount.style.color = "#ffc107";
+                } else {
+                    charCount.style.color = "#28a745";
+                }
+            });
+
+            // Form validation
+            const form = document.getElementById("departmentForm");
+            const submitBtn = document.getElementById("submitBtn");
+            const nameInput = document.getElementById("departmentName");
+
+            function showError(elementId, message) {
+                document.getElementById(elementId).textContent = message;
+            }
+
+            function validateForm() {
+                let isValid = true;
+                document.querySelectorAll(".form-error").forEach((error) => {
+                    error.textContent = "";
+                });
+
+                // Validate name
+                const name = nameInput.value.trim();
+                if (!name) {
+                    showError("nameError", "Tên khoa không được để trống");
+                    isValid = false;
+                } else if (name.length < 3) {
+                    showError("nameError", "Tên khoa phải có ít nhất 3 ký tự");
+                    isValid = false;
+                }
+
+                // Validate description
+                const description = descTextarea.value.trim();
+                if (!description) {
+                    showError("descriptionError", "Mô tả khoa không được để trống");
+                    isValid = false;
+                } else if (description.length < 10) {
+                    showError("descriptionError", "Mô tả phải có ít nhất 10 ký tự");
+                    isValid = false;
+                }
+
+                return isValid;
+            }
+
+            form.addEventListener("submit", function (e) {
+                if (!validateForm()) {
+                    e.preventDefault();
+                    // Scroll to first error
+                    const firstError = document.querySelector(
+                        ".form-error:not(:empty)"
+                    );
+                    if (firstError) {
+                        firstError.scrollIntoView({
+                            behavior: "smooth",
+                            block: "center",
+                        });
+                    }
+                }
+            });
+
+            // Real-time validation
+            const inputs = form.querySelectorAll("input, textarea");
+            inputs.forEach((input) => {
+                input.addEventListener("blur", validateForm);
+            });
+        });
+    </script>
+</div>
 </body>
 </html>
