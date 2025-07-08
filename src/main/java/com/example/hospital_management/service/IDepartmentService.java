@@ -1,11 +1,11 @@
 package com.example.hospital_management.service;
 
 import com.example.hospital_management.entity.Department;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface IDepartmentService {
-    List<Department> findAllDepartment();
+    Page<Department> findAllDepartment(Pageable pageable);
 
     Department saveDepartment(Department department);
 

@@ -3,11 +3,12 @@ package com.example.hospital_management.controller.admin;
 import com.example.hospital_management.entity.Department;
 import com.example.hospital_management.service.IDepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Controller
 @RequestMapping("/admin/departments")
@@ -16,17 +17,28 @@ public class DepartmentController {
     private IDepartmentService departmentService;
 
     @GetMapping()
-    public String showListDepartments(Model model) {
-        List<Department> departments = departmentService.findAllDepartment();
-        model.addAttribute("departments", departments);
-        return "department/list";
+    public String showListDepartments(
+            Model model,
+            @RequestParam(defaultValue = "0") int page
+    ) {
+        int pageSize = 5;
+        Pageable pageable = PageRequest.of(page, pageSize);
+        Page<Department> departmentPage = departmentService.findAllDepartment(pageable);
+
+        model.addAttribute("departmentPage", departmentPage);
+        model.addAttribute("departments", departmentPage.getContent());
+        model.addAttribute("activeMenu", "departments");
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", departmentPage.getTotalPages());
+
+        return "admin/department/list";
     }
 
     @GetMapping("/create")
     public String showCreateForm(Model model) {
         Department department = new Department();
         model.addAttribute("department", department);
-        return "department/create-form";
+        return "admin/department/create-form";
     }
 
     @PostMapping("/create")
@@ -42,7 +54,7 @@ public class DepartmentController {
             return "redirect:/admin/departments";
         }
         model.addAttribute("department", department);
-        return "department/edit-form";
+        return "admin/department/edit-form";
     }
 
     @PostMapping("/edit/{id}")

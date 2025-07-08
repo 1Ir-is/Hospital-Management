@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="vi"
+      layout:decorate="~{admin/layout/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+>
+<head>
+    <meta charset="UTF-8"/>
+    <title>Dashboard - Quản lý Bệnh viện Codegym</title>
+    <link href="/css/admin.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://kit.fontawesome.com/c1df782baf.js"></script>
+</head>
+<body>
+<div layout:fragment="main-content">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1 class="page-title">Dashboard</h1>
+        <p class="page-subtitle">
+            Tổng quan hệ thống quản lý bệnh viện Codegym
+        </p>
+        <div class="breadcrumb">
+            <span>Dashboard</span>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+        <h2 class="section-title">Thao tác nhanh</h2>
+        <div class="quick-actions-grid">
+            <a class="quick-action-card" href="#">
+                <i class="fas fa-user-plus"></i>
+                <span>Thêm bệnh nhân</span>
+            </a>
+            <a class="quick-action-card" href="#">
+                <i class="fas fa-calendar-plus"></i>
+                <span>Đặt lịch hẹn</span>
+            </a>
+            <a class="quick-action-card" href="admin.html">
+                <i class="fas fa-building"></i>
+                <span>Quản lý khoa</span>
+            </a>
+            <a class="quick-action-card" href="#">
+                <i class="fas fa-file-medical"></i>
+                <span>Báo cáo y tế</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Statistics Overview -->
+    <div class="dashboard-section">
+        <h2 class="section-title">Thống kê tổng quan</h2>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon departments">
+                    <i class="fas fa-building"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>6</h3>
+                    <p>Tổng số khoa</p>
+                    <div class="stat-trend positive">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>+2 so với tháng trước</span>
+                    </div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon doctors">
+                    <i class="fas fa-user-md"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>24</h3>
+                    <p>Bác sĩ</p>
+                    <div class="stat-trend positive">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>+3 so với tháng trước</span>
+                    </div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon patients">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>1,234</h3>
+                    <p>Bệnh nhân</p>
+                    <div class="stat-trend positive">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>+156 so với tháng trước</span>
+                    </div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon appointments">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>89</h3>
+                    <p>Lịch hẹn hôm nay</p>
+                    <div class="stat-trend neutral">
+                        <i class="fas fa-minus"></i>
+                        <span>Không đổi</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="dashboard-row">
+        <!-- Appointments Chart -->
+        <div class="dashboard-card chart-card">
+            <div class="card-header">
+                <h3>Lịch hẹn theo tháng</h3>
+                <div class="card-actions">
+                    <select class="chart-filter">
+                        <option value="6">6 tháng qua</option>
+                        <option value="12">12 tháng qua</option>
+                    </select>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="appointmentsChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Department Distribution -->
+        <div class="dashboard-card chart-card">
+            <div class="card-header">
+                <h3>Phân bố bệnh nhân theo khoa</h3>
+            </div>
+            <div class="chart-container">
+                <canvas id="departmentChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activities & Upcoming Appointments -->
+    <div class="dashboard-row">
+        <!-- Recent Activities -->
+        <div class="dashboard-card activity-card">
+            <div class="card-header">
+                <h3>Hoạt động gần đây</h3>
+                <a class="view-all-link" href="#">Xem tất cả</a>
+            </div>
+            <div class="activity-list">
+                <div class="activity-item">
+                    <div class="activity-icon patient-added">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <div class="activity-content">
+                        <p><strong>Nguyễn Văn A</strong> đã được thêm vào hệ thống</p>
+                        <span class="activity-time">5 phút trước</span>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon appointment-created">
+                        <i class="fas fa-calendar-plus"></i>
+                    </div>
+                    <div class="activity-content">
+                        <p>Lịch hẹn mới với <strong>BS. Trần Thị B</strong></p>
+                        <span class="activity-time">15 phút trước</span>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon doctor-added">
+                        <i class="fas fa-user-md"></i>
+                    </div>
+                    <div class="activity-content">
+                        <p><strong>BS. Lê Văn C</strong> đã gia nhập khoa Tim Mạch</p>
+                        <span class="activity-time">2 giờ trước</span>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon department-updated">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <div class="activity-content">
+                        <p><strong>Khoa Nhi</strong> đã cập nhật thông tin</p>
+                        <span class="activity-time">3 giờ trước</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upcoming Appointments -->
+        <div class="dashboard-card appointments-card">
+            <div class="card-header">
+                <h3>Lịch hẹn sắp tới</h3>
+                <a class="view-all-link" href="#">Xem tất cả</a>
+            </div>
+            <div class="appointments-list">
+                <div class="appointment-item">
+                    <div class="appointment-time">
+                        <span class="time">09:00</span>
+                        <span class="date">Hôm nay</span>
+                    </div>
+                    <div class="appointment-info">
+                        <p class="patient-name">Nguyễn Thị D</p>
+                        <p class="doctor-name">BS. Phạm Văn E - Khoa Tim Mạch</p>
+                    </div>
+                    <div class="appointment-status pending">Chờ khám</div>
+                </div>
+                <div class="appointment-item">
+                    <div class="appointment-time">
+                        <span class="time">10:30</span>
+                        <span class="date">Hôm nay</span>
+                    </div>
+                    <div class="appointment-info">
+                        <p class="patient-name">Hoàng Văn F</p>
+                        <p class="doctor-name">BS. Võ Thị G - Khoa Nhi</p>
+                    </div>
+                    <div class="appointment-status confirmed">Đã xác nhận</div>
+                </div>
+                <div class="appointment-item">
+                    <div class="appointment-time">
+                        <span class="time">14:00</span>
+                        <span class="date">Hôm nay</span>
+                    </div>
+                    <div class="appointment-info">
+                        <p class="patient-name">Trần Văn H</p>
+                        <p class="doctor-name">BS. Đỗ Thị I - Khoa Mắt</p>
+                    </div>
+                    <div class="appointment-status pending">Chờ khám</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Status -->
+    <div class="dashboard-card system-status-card">
+        <div class="card-header">
+            <h3>Trạng thái hệ thống</h3>
+            <div class="system-status-indicator online">
+                <span class="status-dot"></span>
+                Hoạt động bình thường
+            </div>
+        </div>
+        <div class="system-metrics">
+            <div class="metric">
+                <div class="metric-label">CPU Usage</div>
+                <div class="metric-value">45%</div>
+                <div class="metric-bar">
+                    <div class="metric-fill" style="width: 45%"></div>
+                </div>
+            </div>
+            <div class="metric">
+                <div class="metric-label">Memory Usage</div>
+                <div class="metric-value">62%</div>
+                <div class="metric-bar">
+                    <div class="metric-fill" style="width: 62%"></div>
+                </div>
+            </div>
+            <div class="metric">
+                <div class="metric-label">Database</div>
+                <div class="metric-value">28%</div>
+                <div class="metric-bar">
+                    <div class="metric-fill" style="width: 28%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div layout:fragment="page-scripts">
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Sidebar menu interactions
+            const menuItems = document.querySelectorAll(".menu-item");
+            menuItems.forEach((item) => {
+                item.addEventListener("click", function (e) {
+                    menuItems.forEach((mi) => mi.classList.remove("active"));
+                    this.classList.add("active");
+                });
+            });
+
+            // Initialize Charts
+            initializeCharts();
+
+            // Update real-time data every 30 seconds
+            setInterval(updateDashboardData, 30000);
+        });
+
+        function initializeCharts() {
+            // Appointments Chart
+            const appointmentsCtx = document
+                .getElementById("appointmentsChart")
+                .getContext("2d");
+            new Chart(appointmentsCtx, {
+                type: "line",
+                data: {
+                    labels: [
+                        "Tháng 1",
+                        "Tháng 2",
+                        "Tháng 3",
+                        "Tháng 4",
+                        "Tháng 5",
+                        "Tháng 6",
+                    ],
+                    datasets: [
+                        {
+                            label: "Lịch hẹn",
+                            data: [120, 150, 180, 200, 190, 220],
+                            borderColor: "#667eea",
+                            backgroundColor: "rgba(102, 126, 234, 0.1)",
+                            tension: 0.4,
+                            fill: true,
+                        },
+                    ],
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false,
+                        },
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: "rgba(0,0,0,0.1)",
+                            },
+                        },
+                        x: {
+                            grid: {
+                                color: "rgba(0,0,0,0.1)",
+                            },
+                        },
+                    },
+                },
+            });
+
+            // Department Distribution Chart
+            const departmentCtx = document
+                .getElementById("departmentChart")
+                .getContext("2d");
+            new Chart(departmentCtx, {
+                type: "doughnut",
+                data: {
+                    labels: [
+                        "Khoa Nội",
+                        "Khoa Ngoại",
+                        "Khoa Nhi",
+                        "Khoa Sản",
+                        "Khoa Mắt",
+                        "Răng Hàm Mặt",
+                    ],
+                    datasets: [
+                        {
+                            data: [25, 20, 15, 18, 12, 10],
+                            backgroundColor: [
+                                "#667eea",
+                                "#f093fb",
+                                "#4facfe",
+                                "#43e97b",
+                                "#f093fb",
+                                "#764ba2",
+                            ],
+                            borderWidth: 0,
+                        },
+                    ],
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: "bottom",
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true,
+                            },
+                        },
+                    },
+                },
+            });
+        }
+
+        function updateDashboardData() {
+            // Simulate real-time data updates
+            console.log("Updating dashboard data...");
+
+            // Update appointment count
+            const appointmentCount = document.querySelector(
+                ".stat-card:last-child .stat-info h3"
+            );
+            const currentCount = parseInt(appointmentCount.textContent);
+            appointmentCount.textContent =
+                currentCount + Math.floor(Math.random() * 3);
+
+            // Update system metrics
+            updateSystemMetrics();
+        }
+
+        function updateSystemMetrics() {
+            const metrics = document.querySelectorAll(".metric");
+            metrics.forEach((metric) => {
+                const fill = metric.querySelector(".metric-fill");
+                const value = metric.querySelector(".metric-value");
+                const currentValue = parseInt(value.textContent);
+                const newValue = Math.max(
+                    10,
+                    Math.min(90, currentValue + (Math.random() - 0.5) * 10)
+                );
+
+                fill.style.width = newValue + "%";
+                value.textContent = Math.round(newValue) + "%";
+            });
+        }
+
+        // Auto-refresh activities
+        function addNewActivity() {
+            const activities = [
+                {
+                    icon: "fas fa-user-plus",
+                    class: "patient-added",
+                    text: "<strong>Nguyễn Văn X</strong> đã được thêm vào hệ thống",
+                    time: "Vừa xong",
+                },
+                {
+                    icon: "fas fa-calendar-check",
+                    class: "appointment-completed",
+                    text: "Lịch hẹn với <strong>BS. Trần Thị Y</strong> đã hoàn thành",
+                    time: "Vừa xong",
+                },
+            ];
+
+            const randomActivity =
+                activities[Math.floor(Math.random() * activities.length)];
+            const activityList = document.querySelector(".activity-list");
+
+            const newActivity = document.createElement("div");
+            newActivity.className = "activity-item";
+            newActivity.innerHTML = `
+          <div class="activity-icon ${randomActivity.class}">
+            <i class="${randomActivity.icon}"></i>
+          </div>
+          <div class="activity-content">
+            <p>${randomActivity.text}</p>
+            <span class="activity-time">${randomActivity.time}</span>
+          </div>
+        `;
+
+            activityList.insertBefore(newActivity, activityList.firstChild);
+
+            // Remove last activity if more than 4
+            if (activityList.children.length > 4) {
+                activityList.removeChild(activityList.lastChild);
+            }
+        }
+
+        // Add new activity every 2 minutes
+        setInterval(addNewActivity, 120000);
+    </script>
+</div>
+</body>
+</html>

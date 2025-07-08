@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Chỉnh sửa khoa</title>
+</head>
+<body>
+<h2>Chỉnh sửa khoa</h2>
+<form method="post" th:action="@{'/admin/departments/edit/' + ${department.id}}" th:object="${department}">
+    <label>Tên khoa:</label>
+    <input required th:field="*{name}" type="text"/>
+    <br/>
+    <label>Mô tả:</label>
+    <input th:field="*{description}" type="text"/>
+    <br/>
+    <button type="submit">Cập nhật</button>
+    <a th:href="@{/admin/departments}">Quay lại</a>
+</form>
+</body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="vi"
+      layout:decorate="~{admin/layout/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Danh sách khoa</title>
+</head>
+<body>
+<div layout:fragment="main-content">
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1 class="page-title">Quản lý khoa bệnh viện</h1>
+        <p class="page-subtitle">
+            Quản lý danh sách các khoa trong bệnh viện
+        </p>
+        <div class="breadcrumb">
+            <a href="#">Dashboard</a>
+            <i class="fas fa-chevron-right"></i>
+            <span>Khoa bệnh viện</span>
+        </div>
+    </div>
+
+
+    <!-- Statistics -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon departments">
+                <i class="fas fa-building"></i>
+            </div>
+            <div class="stat-info">
+                <h3>6</h3>
+                <p>Tổng số khoa</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon doctors">
+                <i class="fas fa-user-md"></i>
+            </div>
+            <div class="stat-info">
+                <h3>24</h3>
+                <p>Bác sĩ</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon patients">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-info">
+                <h3>1,234</h3>
+                <p>Bệnh nhân</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon appointments">
+                <i class="fas fa-calendar-check"></i>
+            </div>
+            <div class="stat-info">
+                <h3>89</h3>
+                <p>Lịch hẹn hôm nay</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content Card -->
+    <div class="content-card">
+        <div class="card-header">
+            <h2 class="card-title">Danh sách các khoa</h2>
+            <a class="btn-add" th:href="@{/admin/departments/create}">
+                <i class="fas fa-plus"></i>
+                Thêm khoa mới
+            </a>
+        </div>
+
+        <div class="table-container">
+            <table class="admin-table">
+                <thead>
+                <tr>
+                    <th>Tên khoa</th>
+                    <th>Mô tả</th>
+                    <!--                    <th>Trạng thái</th>-->
+                    <!--                    <th>Số bác sĩ</th>-->
+                    <th>Thao tác</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="department : ${departments}">
+                    <td th:text="${department.name}"></td>
+                    <td th:text="${department.description}"></td>
+                    <!--                    <td>-->
+                    <!--                        <span class="status-badge status-active">Hoạt động</span>-->
+                    <!--                    </td>-->
+                    <!--                    <td>4</td>-->
+                    <td>
+                        <div class="action-buttons">
+                            <a
+                                    class="btn-edit"
+                                    th:href="@{'/admin/departments/edit/' + ${department.id}}"
+                            >
+                                <i class="fas fa-edit"></i> Sửa
+                            </a>
+                            <a
+                                    class="btn-delete"
+                                    onclick="return confirm('Bạn có chắc muốn xóa khoa này?')"
+                                    th:href="@{'/admin/departments/delete/' + ${department.id}}"
+                            >
+                                <i class="fas fa-trash"></i> Xóa
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="pagination">
+        <ul>
+            <li th:if="${currentPage > 0}">
+                <a th:href="@{|/admin/departments?page=${currentPage - 1}|}">&laquo;</a>
+            </li>
+            <li th:classappend="${i == currentPage} ? 'active' : ''"
+                th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+                <a th:href="@{|/admin/departments?page=${i}|}" th:text="${i + 1}"></a>
+            </li>
+            <li th:if="${currentPage < totalPages - 1}">
+                <a th:href="@{|/admin/departments?page=${currentPage + 1}|}">&raquo;</a>
+            </li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>
