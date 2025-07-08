@@ -471,6 +471,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Console log for debugging
     console.log("Mobile JavaScript initialized successfully!");
+
 });
 
 // Additional utility functions
