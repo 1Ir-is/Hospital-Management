@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="vi"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta
+            content="Hệ thống quản lý bệnh viện Codegym - Dịch vụ y tế chất lượng cao tại Việt Nam"
+            name="description"
+    />
+    <meta
+            content="bệnh viện, y tế, khám bệnh, bác sĩ, chăm sóc sức khỏe"
+            name="keywords"
+    />
+    <title>Hệ Thống Quản Lý Bệnh Viện</title>
+
+    <script src="https://kit.fontawesome.com/c1df782baf.js"></script>
+    <link
+            href="https://cdn-uicons.flaticon.com/2.1.0/uicons-thin-rounded/css/uicons-thin-rounded.css"
+            rel="stylesheet"
+    />
+    <link
+            href="https://cdn-uicons.flaticon.com/2.1.0/uicons-regular-rounded/css/uicons-regular-rounded.css"
+            rel="stylesheet"
+    />
+    <!-- Flatpickr CSS & JS -->
+    <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet"/>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/vn.js"></script>
+
+    <link href="/css/style.css" rel="stylesheet">
+    <th:block layout:fragment="head"></th:block>
+</head>
+<body>
+<!-- Header -->
+<header class="header">
+    <div class="container">
+        <div class="logo">
+            <img alt="Hospital Logo" src="/assets/images/logo.png"/>
+            <span>Codegym</span>
+        </div>
+
+        <nav class="navbar">
+            <a href="#home">Trang Chủ</a>
+            <a href="#about">Về Chúng Tôi</a>
+            <a href="#services">Dịch Vụ</a>
+            <a href="#departments">Chuyên Khoa</a>
+            <a href="#doctors">Bác Sĩ</a>
+            <a href="#contact">Liên Hệ</a>
+        </nav>
+
+        <div class="header-actions">
+            <button class="btn-appointment">Đặt Lịch Khám</button>
+            <button class="btn-login">Đăng Nhập</button>
+            <div class="menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Main content -->
+<main th:fragment="content">
+    <th:block th:insert="~{::content}"/>
+</main>
+
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-section">
+                <div class="footer-logo">
+                    <img alt="Hospital Logo" src="/assets/images/logo.png"/>
+                    <span>Hệ Thống Y Tế</span>
+                </div>
+                <p>
+                    Cung cấp dịch vụ y tế chất lượng cao với đội ngũ chuyên gia hàng
+                    đầu và công nghệ tiên tiến.
+                </p>
+            </div>
+
+            <div class="footer-section">
+                <h3>Liên Kết Nhanh</h3>
+                <ul>
+                    <li><a href="#home">Trang Chủ</a></li>
+                    <li><a href="#about">Về Chúng Tôi</a></li>
+                    <li><a href="#services">Dịch Vụ</a></li>
+                    <li><a href="#departments">Chuyên Khoa</a></li>
+                    <li><a href="#contact">Liên Hệ</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Dịch Vụ</h3>
+                <ul>
+                    <li><a href="#">Khám Tổng Quát</a></li>
+                    <li><a href="#">Cấp Cứu 24/7</a></li>
+                    <li><a href="#">Xét Nghiệm</a></li>
+                    <li><a href="#">Chẩn Đoán Hình Ảnh</a></li>
+                    <li><a href="#">Phẫu Thuật</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Liên Hệ</h3>
+                <ul>
+                    <li>
+                        <i class="fas fa-map-marker-alt"></i> 295 Đường Nguyễn Tất
+                        Thành, Quận Hải Châu, Thành Phố Đà Nẵng
+                    </li>
+                    <li><i class="fas fa-phone"></i> (028) 1234 5678</li>
+                    <li><i class="fas fa-envelope"></i> info@hospital.com</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>Copyright 2025 © Codegym Corporation</p>
+        </div>
+    </div>
+</footer>
+<script src="/js/script.js"></script>
+</body>
+</html>

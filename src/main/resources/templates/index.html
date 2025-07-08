@@ -1,10 +1,686 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="UTF-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta
+            content="Hệ thống quản lý bệnh viện Codegym - Dịch vụ y tế chất lượng cao tại Việt Nam"
+            name="description"
+    />
+    <meta
+            content="bệnh viện, y tế, khám bệnh, bác sĩ, chăm sóc sức khỏe"
+            name="keywords"
+    />
+    <title>Hệ Thống Quản Lý Bệnh Viện</title>
+
+    <script src="https://kit.fontawesome.com/c1df782baf.js"></script>
+    <link
+            href="https://cdn-uicons.flaticon.com/2.1.0/uicons-thin-rounded/css/uicons-thin-rounded.css"
+            rel="stylesheet"
+    />
+    <link
+            href="https://cdn-uicons.flaticon.com/2.1.0/uicons-regular-rounded/css/uicons-regular-rounded.css"
+            rel="stylesheet"
+    />
+    <!-- Flatpickr CSS & JS -->
+    <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet"/>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/vn.js"></script>
+
+
+    <link href="/css/style.css" rel="stylesheet">
 </head>
 <body>
-tét
+<!-- Header -->
+<header class="header">
+    <div class="container">
+        <div class="logo">
+            <img alt="Hospital Logo" src="/assets/images/logo.png"/>
+            <span>Codegym</span>
+        </div>
+
+        <nav class="navbar">
+            <a href="#home">Trang Chủ</a>
+            <a href="#about">Về Chúng Tôi</a>
+            <a href="#services">Dịch Vụ</a>
+            <a href="#departments">Chuyên Khoa</a>
+            <a href="#doctors">Bác Sĩ</a>
+            <a href="#contact">Liên Hệ</a>
+        </nav>
+
+        <div class="header-actions">
+            <button class="btn-appointment">Đặt Lịch Khám</button>
+            <button class="btn-login">Đăng Nhập</button>
+            <div class="menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Hero Section -->
+<section class="hero" id="home">
+    <div class="hero-overlay"></div>
+    <div class="container">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1>
+                    Hệ Thống <br/>Dịch Vụ Y Tế <br/>Đáng Tin Cậy <br/>Tại Việt Nam
+                </h1>
+
+                <div class="hero-actions">
+                    <a class="btn-hero-call" href="tel:+842812345678">
+                        <i class="fas fa-phone-alt"></i>
+                        <span>Gọi Tư Vấn</span>
+                        <small>(028) 1234 5678</small>
+                    </a>
+                </div>
+
+                <div class="awards">
+                    <div class="award-item-full">
+                        <img alt="Hospital Awards 2023-2024" src="/assets/images/award.png"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="search-section">
+    <div class="search-box">
+        <div class="search-input-wrapper">
+            <i class="fas fa-search"></i>
+            <input
+                    placeholder="Tìm bệnh viện, phòng khám hoặc bác sĩ"
+                    type="text"
+            />
+            <button class="search-btn">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+
+        <div class="quick-links">
+            <span>Tìm nhanh</span>
+            <button class="quick-btn">Tìm Bác Sĩ</button>
+            <button class="quick-btn">Bệnh viện hoặc phòng khám</button>
+            <button class="quick-btn active">Đặt Lịch Hẹn</button>
+        </div>
+    </div>
+</div>
+
+<section class="intro-section">
+    <div class="container">
+        <div class="intro-content">
+            <h2 class="intro-title">
+                Điểm đến của dịch vụ chăm sóc chất lượng cao
+            </h2>
+            <p class="intro-description">
+                Với mạng lưới 14 bệnh viện và 5 phòng khám trên toàn quốc, Codegym
+                là đơn vị y tế tư nhân hàng đầu,
+                <br/>
+                định hình văn hóa chăm sóc sức khỏe tại Việt Nam.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features">
+    <div class="container">
+        <div class="features-grid">
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <i class="fi fi-tr-hands-heart"></i>
+                </div>
+                <h3>Chất Lượng & An Toàn</h3>
+                <p>
+                    Bệnh viện sử dụng công nghệ hiện đại và đội ngũ chuyên gia hàng
+                    đầu
+                </p>
+            </div>
+
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <i class="fi fi-rr-doctor"></i>
+                </div>
+                <h3>Đội Ngũ Chuyên Nghiệp</h3>
+                <p>Các bác sĩ giàu kinh nghiệm và tận tâm với bệnh nhân</p>
+            </div>
+
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <i class="fi fi-tr-user-md"></i>
+                </div>
+                <h3>Dịch Vụ Toàn Diện</h3>
+                <p>Cung cấp đầy đủ các dịch vụ y tế từ cơ bản đến chuyên sâu</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- About Section -->
+<section class="about" id="about">
+    <div class="container">
+        <div class="about-content">
+            <div class="about-image">
+                <img alt="About Hospital" src="/assets/images/bg blur2.jpg"/>
+            </div>
+            <div class="about-text">
+                <h2>
+                    Chúng Tôi Đặt Tiêu Chuẩn Trong Nghiên Cứu Và Chăm Sóc Lâm Sàng
+                </h2>
+                <p>
+                    Chúng tôi cung cấp các dịch vụ y tế toàn diện nhất, để mọi người
+                    đều có cơ hội tiếp cận dịch vụ chăm sóc sức khỏe chất lượng cao.
+                </p>
+                <p>
+                    Bệnh viện của chúng tôi đã phát triển thành một cơ sở đẳng cấp thế
+                    giới trong điều trị, thẩm mỹ nha khoa và nha khoa phục hồi tiên
+                    tiến. Chúng tôi là một trong những nhà cung cấp dịch vụ y tế có
+                    trình độ nhất với hơn 30 năm đào tạo chất lượng và kinh nghiệm.
+                </p>
+                <button class="btn-read-more">Tìm Hiểu Thêm</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Services Section -->
+<section class="services" id="services">
+    <div class="container">
+        <div class="section-header">
+            <h2>Dịch Vụ Của Chúng Tôi</h2>
+        </div>
+
+        <div class="services-grid">
+            <div class="service-item">
+                <div class="service-icon">
+                    <i class="fa-solid fa-truck-medical"></i>
+                </div>
+                <h3>Khám Sức Khỏe</h3>
+                <p>
+                    Chúng tôi cung cấp các quy trình y tế toàn diện cho bệnh nhân nội
+                    trú và ngoại trú
+                </p>
+            </div>
+
+            <div class="service-item">
+                <div class="service-icon">
+                    <i class="fa-regular fa-hospital"></i>
+                </div>
+                <h3>Cấp Cứu 24/7</h3>
+                <p>
+                    Dịch vụ cấp cứu hoạt động 24/7 với đội ngũ y bác sĩ chuyên nghiệp
+                </p>
+            </div>
+
+            <div class="service-item">
+                <div class="service-icon">
+                    <i class="fa-regular fa-heart"></i>
+                </div>
+                <h3>Tim Mạch</h3>
+                <p>Chuyên khoa tim mạch với trang thiết bị hiện đại nhất</p>
+            </div>
+
+            <div class="service-item">
+                <div class="service-icon">
+                    <i class="fa-solid fa-notes-medical"></i>
+                </div>
+                <h3>Xét Nghiệm</h3>
+                <p>Phòng xét nghiệm với công nghệ tiên tiến, kết quả nhanh chóng</p>
+            </div>
+
+            <div class="service-item">
+                <div class="service-icon">
+                    <i class="fa-solid fa-list-check"></i>
+                </div>
+                <h3>Chẩn Đoán Hình Ảnh</h3>
+                <p>Các thiết bị chẩn đoán hình ảnh hiện đại như MRI, CT Scanner</p>
+            </div>
+
+            <div class="service-item">
+                <div class="service-icon">
+                    <i class="fa-solid fa-user-doctor"></i>
+                </div>
+                <h3>Phẫu Thuật</h3>
+                <p>Phòng phẫu thuật hiện đại với các ca phẫu thuật phức tạp</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Departments Section -->
+<section class="departments" id="departments">
+    <div class="container">
+        <div class="section-header">
+            <h2>Chuyên Khoa</h2>
+        </div>
+
+        <div class="departments-grid">
+            <div class="department-item">
+                <i class="fas fa-heartbeat"></i>
+                <h3>Khoa Tim Mạch</h3>
+            </div>
+            <div class="department-item">
+                <i class="fas fa-brain"></i>
+                <h3>Khoa Thần Kinh</h3>
+            </div>
+            <div class="department-item">
+                <i class="fas fa-baby"></i>
+                <h3>Khoa Nhi</h3>
+            </div>
+            <div class="department-item">
+                <i class="fas fa-female"></i>
+                <h3>Khoa Sản</h3>
+            </div>
+            <div class="department-item">
+                <i class="fas fa-eye"></i>
+                <h3>Khoa Mắt</h3>
+            </div>
+            <div class="department-item">
+                <i class="fas fa-tooth"></i>
+                <h3>Khoa Răng Hàm Mặt</h3>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Doctors Section -->
+<section class="doctors" id="doctors">
+    <div class="container">
+        <div class="section-header">
+            <h2>Đội Ngũ Bác Sĩ</h2>
+        </div>
+
+        <div class="doctors-grid">
+            <div class="doctor-card">
+                <div class="doctor-image">
+                    <img alt="Bác sĩ" src="/assets/images/team1.jpg"/>
+                    <div class="doctor-overlay">
+                        <div class="social-links">
+                            <a href="#"><i class="fab fa-facebook"></i></a>
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="doctor-info">
+                    <h3>BS. Nguyễn Văn A</h3>
+                    <p>Chuyên khoa Tim Mạch</p>
+                </div>
+            </div>
+
+            <div class="doctor-card">
+                <div class="doctor-image">
+                    <img alt="Bác sĩ" src="/assets/images/team2.jpg"/>
+                    <div class="doctor-overlay">
+                        <div class="social-links">
+                            <a href="#"><i class="fab fa-facebook"></i></a>
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="doctor-info">
+                    <h3>BS. Trần Thị B</h3>
+                    <p>Chuyên khoa Nhi</p>
+                </div>
+            </div>
+
+            <div class="doctor-card">
+                <div class="doctor-image">
+                    <img alt="Bác sĩ" src="/assets/images/team3.jpg"/>
+                    <div class="doctor-overlay">
+                        <div class="social-links">
+                            <a href="#"><i class="fab fa-facebook"></i></a>
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="doctor-info">
+                    <h3>BS. Lê Văn C</h3>
+                    <p>Chuyên khoa Thần Kinh</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-section">
+                <div class="footer-logo">
+                    <img alt="Hospital Logo" src="/assets/images/logo.png"/>
+                    <span>Hệ Thống Y Tế</span>
+                </div>
+                <p>
+                    Cung cấp dịch vụ y tế chất lượng cao với đội ngũ chuyên gia hàng
+                    đầu và công nghệ tiên tiến.
+                </p>
+            </div>
+
+            <div class="footer-section">
+                <h3>Liên Kết Nhanh</h3>
+                <ul>
+                    <li><a href="#home">Trang Chủ</a></li>
+                    <li><a href="#about">Về Chúng Tôi</a></li>
+                    <li><a href="#services">Dịch Vụ</a></li>
+                    <li><a href="#departments">Chuyên Khoa</a></li>
+                    <li><a href="#contact">Liên Hệ</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Dịch Vụ</h3>
+                <ul>
+                    <li><a href="#">Khám Tổng Quát</a></li>
+                    <li><a href="#">Cấp Cứu 24/7</a></li>
+                    <li><a href="#">Xét Nghiệm</a></li>
+                    <li><a href="#">Chẩn Đoán Hình Ảnh</a></li>
+                    <li><a href="#">Phẫu Thuật</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Liên Hệ</h3>
+                <ul>
+                    <li>
+                        <i class="fas fa-map-marker-alt"></i> 295 Đường Nguyễn Tất
+                        Thành, Quận Hải Châu, Thành Phố Đà Nẵng
+                    </li>
+                    <li><i class="fas fa-phone"></i> (028) 1234 5678</li>
+                    <li><i class="fas fa-envelope"></i> info@hospital.com</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>Copyright 2025 © Codegym Corporation</p>
+        </div>
+    </div>
+</footer>
+
+<!-- Login Modal -->
+<div class="modal" id="loginModal">
+    <div class="modal-content login-modal">
+        <div class="login-container">
+            <div class="modal-header">
+                <h2>Đăng Nhập</h2>
+                <button class="modal-close" id="closeLoginModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <form class="login-form" id="loginForm">
+                    <div class="form-group">
+                        <label for="loginEmail">Email</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-envelope"></i>
+                            <input
+                                    id="loginEmail"
+                                    name="email"
+                                    placeholder="Nhập email của bạn"
+                                    required
+                                    type="email"
+                            />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="loginPassword">Mật khẩu</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-lock"></i>
+                            <input
+                                    id="loginPassword"
+                                    name="password"
+                                    placeholder="Nhập mật khẩu"
+                                    required
+                                    type="password"
+                            />
+                        </div>
+                    </div>
+
+                    <div class="form-options">
+                        <label class="remember-me">
+                            <input id="rememberMe" name="remember" type="checkbox"/>
+                            <span class="checkmark"></span>
+                            Ghi nhớ đăng nhập
+                        </label>
+                        <a class="forgot-password" href="#">Quên mật khẩu?</a>
+                    </div>
+
+                    <button class="btn-login-submit" type="submit">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Đăng Nhập
+                    </button>
+
+                    <div class="divider">
+                        <span>Hoặc đăng nhập bằng</span>
+                    </div>
+
+                    <div class="social-login">
+                        <button class="btn-social btn-google" type="button">
+                            <i class="fab fa-google"></i>
+                            Google
+                        </button>
+                        <button class="btn-social btn-facebook" type="button">
+                            <i class="fab fa-facebook-f"></i>
+                            Facebook
+                        </button>
+                    </div>
+
+                    <div class="signup-link">
+                        <p>
+                            Chưa có tài khoản?
+                            <a href="#" id="showSignup">Đăng ký ngay</a>
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Đặt lịch khám -->
+<div class="modal" id="appointmentModal">
+    <div class="modal-content">
+        <div class="form-container">
+            <div class="modal-header">
+                <h2>Đặt Lịch Hẹn</h2>
+                <button class="modal-close" id="closeModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="form-section">
+                    <h3>Thông tin bệnh nhân</h3>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="patientName">Họ và tên</label>
+                            <input
+                                    id="patientName"
+                                    name="patientName"
+                                    required
+                                    type="text"
+                            />
+                        </div>
+                        <div class="form-group">
+                            <label for="patientPhone">Số điện thoại</label>
+                            <input
+                                    id="patientPhone"
+                                    name="patientPhone"
+                                    required
+                                    type="tel"
+                            />
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="patientEmail">Email</label>
+                            <input id="patientEmail" name="patientEmail" type="email"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="patientAddress">Địa chỉ</label>
+                            <input
+                                    id="patientAddress"
+                                    name="patientAddress"
+                                    type="text"
+                            />
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="patientBirthdate">Ngày sinh</label>
+                            <input
+                                    class="datepicker"
+                                    id="patientBirthdate"
+                                    name="patientBirthdate"
+                                    placeholder="dd/mm/yyyy"
+                                    type="text"
+                            />
+                        </div>
+                        <div class="form-group">
+                            <label>Giới tính</label>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input checked name="gender" type="radio" value="male"/>
+                                    <span class="radio-custom"></span>
+                                    Nam
+                                </label>
+                                <label class="radio-label">
+                                    <input name="gender" type="radio" value="female"/>
+                                    <span class="radio-custom"></span>
+                                    Nữ
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Chọn chuyên khoa</h3>
+
+                    <div class="form-group">
+                        <label for="hospital">Bệnh viện hoặc Phòng khám</label>
+                        <select id="hospital" name="hospital">
+                            <option value="">Chọn bệnh viện</option>
+                            <option value="hanoi">Bệnh viện Codegym Hà Nội</option>
+                            <option value="hcm">Bệnh viện Codegym TP.HCM</option>
+                            <option value="danang">Bệnh viện Codegym Đà Nẵng</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="department">Chuyên khoa</label>
+                        <select id="department" name="department">
+                            <option value="">Chọn chuyên khoa</option>
+                            <option value="cardiology">Khoa Tim Mạch</option>
+                            <option value="neurology">Khoa Thần Kinh</option>
+                            <option value="pediatrics">Khoa Nhi</option>
+                            <option value="obstetrics">Khoa Sản</option>
+                            <option value="ophthalmology">Khoa Mắt</option>
+                            <option value="dentistry">Khoa Răng Hàm Mặt</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="additionalInfo">Thêm thông tin khác</label>
+                        <textarea
+                                id="additionalInfo"
+                                name="additionalInfo"
+                                placeholder="Mô tả triệu chứng hoặc yêu cầu đặc biệt..."
+                                rows="3"
+                        ></textarea>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Ngày và Giờ thích hợp</h3>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="preferredDate">Ngày khám mong muốn</label>
+                            <input
+                                    class="datepicker"
+                                    id="preferredDate"
+                                    name="preferredDate"
+                                    placeholder="dd/mm/yyyy"
+                                    type="text"
+                            />
+                        </div>
+                        <div class="form-group">
+                            <label for="preferredTime">Giờ khám mong muốn</label>
+                            <select id="preferredTime" name="preferredTime">
+                                <option value="">Chọn giờ</option>
+                                <option value="08:00">08:00</option>
+                                <option value="09:00">09:00</option>
+                                <option value="10:00">10:00</option>
+                                <option value="11:00">11:00</option>
+                                <option value="14:00">14:00</option>
+                                <option value="15:00">15:00</option>
+                                <option value="16:00">16:00</option>
+                                <option value="17:00">17:00</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn-cancel" id="cancelAppointment" type="button">
+                    Hủy
+                </button>
+                <button class="btn-submit" id="submitAppointment" type="submit">
+                    Đồng ý
+                </button>
+            </div>
+        </div>
+
+        <div class="modal-image">
+            <img alt="Bác sĩ"
+                 src="/assets/images/pleased-young-female-doctor-wearing-medical-robe-stethoscope-around-neck-standing-with-closed-posture.jpg"/>
+        </div>
+    </div>
+</div>
+
+<!-- Scroll to Top Button -->
+<button
+        aria-label="Cuộn về đầu trang"
+        class="scroll-to-top"
+        id="scrollToTop"
+>
+    <i class="fas fa-chevron-up"></i>
+</button>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Cài đặt ngôn ngữ tiếng Việt
+        flatpickr.localize(flatpickr.l10ns.vn);
+
+        // Ngày sinh: không set default là hôm nay
+        flatpickr("#patientBirthdate", {
+            dateFormat: "d/m/Y",
+            maxDate: "today"
+        });
+
+        // Ngày khám mong muốn
+        flatpickr("#preferredDate", {
+            dateFormat: "d/m/Y",
+            minDate: "today"
+        });
+    });
+</script>
+
+<script src="/js/script.js"></script>
 </body>
 </html>
