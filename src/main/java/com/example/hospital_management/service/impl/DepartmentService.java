@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -19,6 +20,11 @@ public class DepartmentService implements IDepartmentService {
     @Override
     public Page<Department> findAllDepartment(Pageable pageable) {
         return departmentRepository.findAll(pageable);
+    }
+
+    @Override
+    public List<Department> findAllDepartmentsForDropdown() {
+        return departmentRepository.findAll();
     }
 
     @Override

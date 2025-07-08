@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý Chức vụ</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+
+        .btn-warning {
+            background-color: #ffc107;
+            color: #212529;
+        }
+
+        .btn-warning:hover {
+            background-color: #e0a800;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <h2>Quản lý Chức vụ</h2>
+    <a class="btn" th:href="@{/admin/positions/create}">Thêm chức vụ mới</a>
+</div>
+
+<div class="alert alert-info" th:if="${#lists.isEmpty(positions)}">
+    <p>Chưa có chức vụ nào được tạo.</p>
+</div>
+
+<table th:if="${not #lists.isEmpty(positions)}">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Tên chức vụ</th>
+        <th>Mô tả</th>
+        <th>Thao tác</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="position : ${positions}">
+        <td th:text="${position.id}"></td>
+        <td th:text="${position.name}"></td>
+        <td th:text="${position.description ?: 'Không có mô tả'}"></td>
+        <td>
+            <div class="actions">
+                <a class="btn btn-warning" th:href="@{'/admin/positions/edit/' + ${position.id}}">Sửa</a>
+                <a class="btn btn-danger"
+                   onclick="return confirm('Bạn có chắc chắn muốn xóa chức vụ này không?')"
+                   th:href="@{'/admin/positions/delete/' + ${position.id}}">Xóa</a>
+            </div>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<div style="margin-top: 20px;">
+    <a class="btn" href="/admin">Quay lại trang quản trị</a>
+</div>
+</body>
+</html>

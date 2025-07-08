@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Chỉnh sửa Vai trò</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            max-width: 600px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            margin-right: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #545b62;
+        }
+
+        .form-actions {
+            margin-top: 30px;
+        }
+
+        .required {
+            color: red;
+        }
+
+        .help-text {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+
+        .role-info {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            border-left: 4px solid #007bff;
+        }
+
+        .warning-box {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+<h2>Chỉnh sửa Vai trò</h2>
+
+<div class="role-info">
+    <strong>ID:</strong> <span th:text="${role.id}"></span>
+</div>
+
+<div class="warning-box">
+    <strong>⚠️ Lưu ý:</strong> Việc thay đổi mã vai trò có thể ảnh hưởng đến hệ thống phân quyền.
+    Hãy cân nhắc kỹ trước khi thực hiện thay đổi.
+</div>
+
+<form method="post" th:action="@{'/admin/roles/edit/' + ${role.id}}" th:object="${role}">
+    <div class="form-group">
+        <label for="code">Mã vai trò <span class="required">*</span>:</label>
+        <input id="code" placeholder="VD: DOCTOR, NURSE, ADMIN..." required style="text-transform: uppercase;"
+               th:field="*{code}"
+               type="text"/>
+        <div class="help-text">
+            Mã vai trò nên sử dụng chữ hoa, không dấu, phân cách bằng dấu gạch dưới (_).
+            Ví dụ: DOCTOR, LAB_TECHNICIAN
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="name">Tên vai trò <span class="required">*</span>:</label>
+        <input id="name" placeholder="VD: Bác sĩ, Điều dưỡng, Quản trị viên..." required th:field="*{name}"
+               type="text"/>
+        <div class="help-text">
+            Tên vai trò hiển thị cho người dùng, có thể sử dụng tiếng Việt có dấu.
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <button class="btn btn-primary" type="submit">Cập nhật</button>
+        <a class="btn btn-secondary" th:href="@{/admin/roles}">Hủy</a>
+    </div>
+</form>
+
+<script>
+    // Tự động chuyển mã vai trò thành chữ hoa
+    document.getElementById('code').addEventListener('input', function () {
+        this.value = this.value.toUpperCase();
+    });
+</script>
+</body>
+</html>

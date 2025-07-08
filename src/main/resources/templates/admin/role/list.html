@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý Vai trò</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+
+        .btn-warning {
+            background-color: #ffc107;
+            color: #212529;
+        }
+
+        .btn-warning:hover {
+            background-color: #e0a800;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .role-code {
+            background-color: #e9ecef;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-weight: bold;
+        }
+
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+
+        .alert-info {
+            color: #0c5460;
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <h2>Quản lý Vai trò Hệ thống</h2>
+    <a class="btn" th:href="@{/admin/roles/create}">Thêm vai trò mới</a>
+</div>
+
+<div class="alert alert-info" th:if="${#lists.isEmpty(roles)}">
+    <p>Chưa có vai trò nào được tạo.</p>
+</div>
+
+<table th:if="${not #lists.isEmpty(roles)}">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Mã vai trò</th>
+        <th>Tên vai trò</th>
+        <th>Thao tác</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="role : ${roles}">
+        <td th:text="${role.id}"></td>
+        <td>
+            <span class="role-code" th:text="${role.code}"></span>
+        </td>
+        <td th:text="${role.name}"></td>
+        <td>
+            <div class="actions">
+                <a class="btn btn-warning" th:href="@{'/admin/roles/edit/' + ${role.id}}">Sửa</a>
+                <a class="btn btn-danger"
+                   onclick="return confirm('Bạn có chắc chắn muốn xóa vai trò này không?\nLưu ý: Việc xóa vai trò có thể ảnh hưởng đến phân quyền của nhân viên!')"
+                   th:href="@{'/admin/roles/delete/' + ${role.id}}">Xóa</a>
+            </div>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<div style="margin-top: 20px;">
+    <a class="btn" href="/admin">Quay lại trang quản trị</a>
+</div>
+</body>
+</html>
