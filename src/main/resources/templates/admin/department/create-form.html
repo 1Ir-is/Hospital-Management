@@ -159,7 +159,12 @@
 
             // Auto-generate department code from name
             const nameInput = document.getElementById("departmentName");
+            const codeInput = document.getElementById("departmentCode");
 
+            nameInput.addEventListener("input", function () {
+                const sanitizedCode = this.value.trim().toUpperCase().replace(/[^A-Z0-9]/g, "");
+                codeInput.value = sanitizedCode;
+            });
             // Form validation
             function validateForm() {
                 let isValid = true;
