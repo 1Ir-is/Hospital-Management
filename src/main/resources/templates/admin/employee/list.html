@@ -830,14 +830,8 @@
                 <i class="fas fa-user-tie"></i>
             </div>
             <div class="stat-info">
-                <!-- ✅ Hiển thị tổng số nhân viên, không phụ thuộc phân trang -->
                 <h3 th:text="${totalEmployeesCount != null ? totalEmployeesCount : 0}">0</h3>
                 <p>Tổng số nhân viên</p>
-                <div class="stat-trend positive">
-                    <i class="fas fa-arrow-up"></i>
-                    <span>+5 so với tháng trước</span>
-                </div>
-                <!-- ✅ Hiển thị thông tin filter nếu có -->
                 <div class="stat-filter-info" th:if="${isFiltered}">
                     <small th:text="'Kết quả lọc: ' + ${filteredCount} + ' nhân viên'"></small>
                     <br/>
@@ -853,10 +847,6 @@
             <div class="stat-info">
                 <h3 th:text="${activeEmployeesCount != null ? activeEmployeesCount : 0}">0</h3>
                 <p>Nhân viên hoạt động</p>
-                <div class="stat-trend positive">
-                    <i class="fas fa-arrow-up"></i>
-                    <span>+3 so với tháng trước</span>
-                </div>
             </div>
         </div>
 
@@ -867,10 +857,6 @@
             <div class="stat-info">
                 <h3 th:text="${inactiveEmployeesCount != null ? inactiveEmployeesCount : 0}">0</h3>
                 <p>Nhân viên ngừng hoạt động</p>
-                <div class="stat-trend negative">
-                    <i class="fas fa-arrow-down"></i>
-                    <span>-2 so với tháng trước</span>
-                </div>
             </div>
         </div>
 
@@ -881,10 +867,6 @@
             <div class="stat-info">
                 <h3 th:text="${newEmployeesCount != null ? newEmployeesCount : 0}">0</h3>
                 <p>Nhân viên mới tháng này</p>
-                <div class="stat-trend positive">
-                    <i class="fas fa-arrow-up"></i>
-                    <span>+8 so với tháng trước</span>
-                </div>
             </div>
         </div>
     </div>

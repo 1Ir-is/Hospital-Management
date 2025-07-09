@@ -50,16 +50,6 @@
                     <i class="fas fa-building"></i>
                     <span>Khoa bệnh viện</span>
                 </a>
-                <a class="menu-item" href="/admin/doctors"
-                   th:classappend="${activeMenu} == 'doctors' ? 'active' : ''">
-                    <i class="fas fa-user-md"></i>
-                    <span>Bác sĩ</span>
-                </a>
-                <a class="menu-item" href="/admin/patients"
-                   th:classappend="${activeMenu} == 'patients' ? 'active' : ''">
-                    <i class="fas fa-users"></i>
-                    <span>Bệnh nhân</span>
-                </a>
                 <a class="menu-item" href="/admin/appointments"
                    th:classappend="${activeMenu} == 'appointments' ? 'active' : ''">
                     <i class="fas fa-calendar-check"></i>
@@ -130,15 +120,8 @@
         const menuItems = document.querySelectorAll(".menu-item");
         const currentPath = window.location.pathname;
 
-        // ✅ KHÔNG XỬ LÝ ACTIVE NỮA VÌ THYMELEAF ĐÃ XỬ LÝ
-        // Chỉ xử lý click interactions
         menuItems.forEach((item) => {
             item.addEventListener("click", function (e) {
-                // Không remove active nữa - để Thymeleaf xử lý
-                // menuItems.forEach((mi) => mi.classList.remove("active"));
-                // this.classList.add("active");
-
-                // Chỉ add loading effect nếu cần
                 this.style.opacity = "0.7";
             });
         });

@@ -1,140 +1,930 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="vi"
+      layout:decorate="~{admin/layout/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
     <title>Quản lý Vai trò</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-
-        .header {
+        /* ======================
+           ACTION BUTTONS STYLES
+        ====================== */
+        .action-buttons {
             display: flex;
-            justify-content: space-between;
+            gap: 0.5rem;
             align-items: center;
-            margin-bottom: 20px;
+            justify-content: flex-start;
+            flex-wrap: nowrap;
         }
 
-        .btn {
-            padding: 8px 16px;
-            background-color: #007bff;
-            color: white;
+        .btn-view,
+        .btn-edit,
+        .btn-delete {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.25rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 500;
             text-decoration: none;
-            border-radius: 4px;
             border: none;
             cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
         }
 
-        .btn:hover {
-            background-color: #0056b3;
+        /* Edit Button */
+        .btn-edit {
+            background: #f59e0b;
+            color: white;
         }
 
-        .btn-danger {
-            background-color: #dc3545;
+        .btn-edit:hover {
+            background: #d97706;
+            transform: translateY(-1px);
         }
 
-        .btn-danger:hover {
-            background-color: #c82333;
+        .btn-edit i {
+            font-size: 0.875rem;
         }
 
-        .btn-warning {
-            background-color: #ffc107;
-            color: #212529;
+        /* Delete Button */
+        .btn-delete {
+            background: #ef4444;
+            color: white;
         }
 
-        .btn-warning:hover {
-            background-color: #e0a800;
+        .btn-delete:hover {
+            background: #dc2626;
+            transform: translateY(-1px);
         }
 
-        table {
+        .btn-delete i {
+            font-size: 0.875rem;
+        }
+
+        /* ======================
+           ROLE SPECIFIC STYLES
+        ====================== */
+        .role-icon-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+        }
+
+        .role-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.2s ease;
+        }
+
+        .role-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .role-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            min-width: 0;
+        }
+
+        .role-name {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .role-description {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin: 0;
+        }
+
+        .role-code-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            white-space: nowrap;
+            background: #e0e7ff;
+            color: #3730a3;
+            border: 1px solid #c7d2fe;
+        }
+
+        .role-code-badge i {
+            font-size: 0.75rem;
+        }
+
+        .role-permissions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .permission-item {
+            display: inline-block;
+            padding: 0.125rem 0.5rem;
+            background: #f3f4f6;
+            color: #374151;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            margin-right: 0.25rem;
+            margin-bottom: 0.25rem;
+        }
+
+        /* ======================
+           HOVER EFFECTS
+        ====================== */
+        .admin-table tbody tr:hover {
+            background-color: #f8fafc;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .admin-table tbody tr {
+            transition: all 0.2s ease;
+        }
+
+        /* ======================
+           RESPONSIVE DESIGN
+        ====================== */
+        @media (max-width: 768px) {
+            .action-buttons {
+                flex-wrap: wrap;
+                gap: 0.25rem;
+            }
+
+            .btn-edit,
+            .btn-delete {
+                font-size: 0.75rem;
+                padding: 0.4rem 0.6rem;
+            }
+
+            .role-icon {
+                width: 32px;
+                height: 32px;
+                font-size: 14px;
+            }
+
+            .role-icon-container {
+                width: 40px;
+                height: 40px;
+            }
+
+            .admin-table {
+                font-size: 0.8rem;
+            }
+
+            .admin-table td {
+                padding: 0.5rem 0.25rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .action-buttons {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.25rem;
+            }
+
+            .btn-edit,
+            .btn-delete {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* ======================
+           NOTIFICATION STYLES
+        ====================== */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 300px;
+            max-width: 500px;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            font-weight: 500;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .success-notification {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border-left: 4px solid #047857;
+        }
+
+        .error-notification {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            border-left: 4px solid #b91c1c;
+        }
+
+        .notification-close {
+            background: none;
+            border: none;
+            color: inherit;
+            cursor: pointer;
+            padding: 0;
+            margin-left: auto;
+            font-size: 16px;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+
+        .notification-close:hover {
+            opacity: 1;
+        }
+
+        .notification i:first-child {
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        /* Animation for notification */
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
+        .notification.slide-in {
+            animation: slideInRight 0.3s ease;
+        }
+
+        .notification.slide-out {
+            animation: slideOutRight 0.3s ease;
+        }
+
+        /* ======================
+           STATS GRID FOR ROLES
+        ====================== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e5e7eb;
+            transition: all 0.2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-card .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .stat-icon.roles {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .stat-icon.admin-roles {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+        }
+
+        .stat-icon.system-roles {
+            background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+        }
+
+        .stat-info h3 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin: 0 0 0.5rem 0;
+        }
+
+        .stat-info p {
+            color: #6b7280;
+            margin: 0;
+            font-size: 0.875rem;
+        }
+
+        /* ======================
+          MODAL STYLES
+       ====================== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
 
-        th, td {
-            border: 1px solid #ddd;
-            padding: 12px;
+        .modal-overlay.show {
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.show .modal-content {
+            transform: scale(1);
+        }
+
+        .delete-modal {
+            text-align: center;
+        }
+
+        .modal-header {
+            padding: 2rem 2rem 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .delete-header {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .warning-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+        }
+
+        .warning-icon i {
+            font-size: 1.5rem;
+            color: #dc2626;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .modal-body {
+            padding: 1rem 2rem;
+        }
+
+        .warning-message {
             text-align: left;
         }
 
-        th {
-            background-color: #f8f9fa;
-            font-weight: bold;
+        .main-message {
+            font-size: 1rem;
+            color: #374151;
+            margin: 0 0 1rem 0;
+            text-align: center;
         }
 
-        tr:nth-child(even) {
-            background-color: #f2f2f2;
+        .warning-details {
+            background: #fef3f2;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
         }
 
-        .actions {
+        .warning-item {
             display: flex;
-            gap: 10px;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            color: #7f1d1d;
         }
 
-        .role-code {
-            background-color: #e9ecef;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-family: monospace;
-            font-weight: bold;
+        .warning-item:last-child {
+            margin-bottom: 0;
         }
 
-        .alert {
-            padding: 15px;
-            margin-bottom: 20px;
-            border: 1px solid transparent;
-            border-radius: 4px;
+        .warning-item i {
+            color: #dc2626;
+            flex-shrink: 0;
         }
 
-        .alert-info {
-            color: #0c5460;
-            background-color: #d1ecf1;
-            border-color: #bee5eb;
+        .modal-footer {
+            padding: 1rem 2rem 2rem;
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .btn-cancel {
+            background: #f3f4f6;
+            color: #374151;
+            border: 1px solid #d1d5db;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-cancel:hover {
+            background: #e5e7eb;
+            border-color: #9ca3af;
+        }
+
+        .btn-delete-confirm {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-delete-confirm:hover {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+        }
+
+        .btn-delete-confirm:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        /* Responsive modal */
+        @media (max-width: 640px) {
+            .modal-content {
+                width: 95%;
+                margin: 1rem;
+            }
+
+            .modal-header,
+            .modal-body,
+            .modal-footer {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+
+            .modal-footer {
+                flex-direction: column;
+            }
+
+            .btn-cancel,
+            .btn-delete-confirm {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* Animation keyframes */
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes modalFadeOut {
+            from {
+                opacity: 1;
+                transform: scale(1);
+            }
+            to {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+        }
+
+        .modal-content.animate-in {
+            animation: modalFadeIn 0.3s ease-out;
+        }
+
+        .modal-content.animate-out {
+            animation: modalFadeOut 0.3s ease-out;
         }
     </style>
 </head>
 <body>
-<div class="header">
-    <h2>Quản lý Vai trò Hệ thống</h2>
-    <a class="btn" th:href="@{/admin/roles/create}">Thêm vai trò mới</a>
-</div>
+<div layout:fragment="main-content">
+    <!-- Success/Error Messages -->
+    <div class="notification success-notification show" id="successNotification" th:if="${successMessage}">
+        <i class="fas fa-check-circle"></i>
+        <span th:text="${successMessage}"></span>
+        <button class="notification-close" onclick="closeNotification('successNotification')" type="button">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
 
-<div class="alert alert-info" th:if="${#lists.isEmpty(roles)}">
-    <p>Chưa có vai trò nào được tạo.</p>
-</div>
+    <div class="notification error-notification show" id="errorNotification" th:if="${errorMessage}">
+        <i class="fas fa-exclamation-circle"></i>
+        <span th:text="${errorMessage}"></span>
+        <button class="notification-close" onclick="closeNotification('errorNotification')" type="button">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
 
-<table th:if="${not #lists.isEmpty(roles)}">
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Mã vai trò</th>
-        <th>Tên vai trò</th>
-        <th>Thao tác</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="role : ${roles}">
-        <td th:text="${role.id}"></td>
-        <td>
-            <span class="role-code" th:text="${role.code}"></span>
-        </td>
-        <td th:text="${role.name}"></td>
-        <td>
-            <div class="actions">
-                <a class="btn btn-warning" th:href="@{'/admin/roles/edit/' + ${role.id}}">Sửa</a>
-                <a class="btn btn-danger"
-                   onclick="return confirm('Bạn có chắc chắn muốn xóa vai trò này không?\nLưu ý: Việc xóa vai trò có thể ảnh hưởng đến phân quyền của nhân viên!')"
-                   th:href="@{'/admin/roles/delete/' + ${role.id}}">Xóa</a>
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1 class="page-title">Quản lý Vai trò</h1>
+        <p class="page-subtitle">
+            Quản lý vai trò và phân quyền trong hệ thống bệnh viện
+        </p>
+        <div class="breadcrumb">
+            <a href="/admin">Dashboard</a>
+            <i class="fas fa-chevron-right"></i>
+            <span>Vai trò</span>
+        </div>
+    </div>
+
+    <!-- Statistics -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon roles">
+                <i class="fas fa-user-shield"></i>
             </div>
-        </td>
-    </tr>
-    </tbody>
-</table>
+            <div class="stat-info">
+                <h3 th:text="${roles != null ? #lists.size(roles) : 0}">0</h3>
+                <p>Tổng số vai trò</p>
+            </div>
+        </div>
 
-<div style="margin-top: 20px;">
-    <a class="btn" href="/admin">Quay lại trang quản trị</a>
+        <div class="stat-card">
+            <div class="stat-icon admin-roles">
+                <i class="fas fa-crown"></i>
+            </div>
+            <div class="stat-info">
+                <h3 th:text="${adminRolesCount != null ? adminRolesCount : 0}">0</h3>
+                <p>Vai trò quản trị</p>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon system-roles">
+                <i class="fas fa-cogs"></i>
+            </div>
+            <div class="stat-info">
+                <h3 th:text="${systemRolesCount != null ? systemRolesCount : 0}">0</h3>
+                <p>Vai trò hệ thống</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content Card -->
+    <div class="content-card">
+        <div class="card-header">
+            <h2 class="card-title">Danh sách vai trò</h2>
+            <div class="card-actions">
+                <a class="btn-add" th:href="@{/admin/roles/create}">
+                    <i class="fas fa-plus"></i>
+                    Thêm vai trò mới
+                </a>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state" th:if="${roles == null or #lists.isEmpty(roles)}">
+            <div class="empty-icon">
+                <i class="fas fa-user-shield"></i>
+            </div>
+            <h3>Chưa có vai trò nào</h3>
+            <p>Hãy thêm vai trò đầu tiên cho hệ thống</p>
+            <a class="btn-add" th:href="@{/admin/roles/create}">
+                <i class="fas fa-plus"></i>
+                Thêm vai trò mới
+            </a>
+        </div>
+
+        <!-- Table -->
+        <div class="table-container" th:if="${roles != null and not #lists.isEmpty(roles)}">
+            <table class="admin-table">
+                <thead>
+                <tr>
+                    <th>Icon</th>
+                    <th>Tên vai trò</th>
+                    <th>Mã vai trò</th>
+                    <th>Thao tác</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="role : ${roles}">
+                    <td>
+                        <div class="role-icon-container">
+                            <div class="role-icon">
+                                <i class="fas fa-user-shield"></i>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="role-info">
+                            <strong class="role-name"
+                                    th:text="${role.name != null ? role.name : 'Chưa có tên'}"></strong>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="role-code-badge">
+                            <i class="fas fa-code"></i>
+                            <span th:text="${role.code != null ? role.code : 'N/A'}"></span>
+                        </span>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <a class="btn-edit" th:href="@{'/admin/roles/edit/' + ${role.id}}">
+                                <i class="fas fa-edit"></i> Sửa
+                            </a>
+                            <button
+                                    class="btn-delete"
+                                    th:attr="data-role-id=${role.id}, data-role-name=${role.name}"
+                                    type="button"
+                            >
+                                <i class="fas fa-trash"></i> Xóa
+                            </button>
+
+
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal-content delete-modal">
+            <div class="modal-header delete-header">
+                <div class="warning-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <h3>Xác nhận xóa vai trò</h3>
+            </div>
+
+            <div class="modal-body">
+                <div class="warning-message">
+                    <p class="main-message">
+                        Bạn có chắc chắn muốn xóa vai trò
+                        <strong class="role-name" id="deleteRoleName">test</strong>?
+                    </p>
+                    <div class="warning-details">
+                        <div class="warning-item">
+                            <i class="fas fa-info-circle"></i>
+                            <span>Hành động này không thể hoàn tác</span>
+                        </div>
+                        <div class="warning-item">
+                            <i class="fas fa-users"></i>
+                            <span>Các nhân viên có vai trò này sẽ bị ảnh hưởng</span>
+                        </div>
+                        <div class="warning-item">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>Phân quyền liên quan sẽ bị xóa</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeDeleteModal()" type="button">
+                    <i class="fas fa-times"></i>
+                    Hủy bỏ
+                </button>
+                <button class="btn-delete-confirm" id="confirmDeleteBtn" type="button">
+                    <i class="fas fa-trash"></i>
+                    Xóa vai trò
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div layout:fragment="page-scripts">
+    <script>
+        console.log('Script loaded!');
+
+        // Simple global functions
+        var currentRoleId = null;
+        var currentRoleName = null;
+
+        function showDeleteModal(button) {
+            console.log('showDeleteModal called', button);
+
+            currentRoleId = button.getAttribute('data-role-id');
+            currentRoleName = button.getAttribute('data-role-name');
+
+            console.log('Role ID:', currentRoleId, 'Name:', currentRoleName);
+
+            // Update modal
+            var nameElement = document.getElementById('deleteRoleName');
+            if (nameElement) {
+                nameElement.textContent = currentRoleName || 'Unknown';
+            }
+
+            // Show modal
+            var modal = document.getElementById('deleteModal');
+            if (modal) {
+                modal.style.display = 'flex';
+                modal.style.opacity = '1';
+                modal.classList.add('show');
+                console.log('Modal shown');
+            }
+        }
+
+        function closeDeleteModal() {
+            console.log('closeDeleteModal called');
+            var modal = document.getElementById('deleteModal');
+            if (modal) {
+                modal.style.display = 'none';
+                modal.classList.remove('show');
+                currentRoleId = null;
+                currentRoleName = null;
+            }
+        }
+
+        function closeNotification(notificationId) {
+            var notification = document.getElementById(notificationId);
+            if (notification) {
+                notification.style.display = 'none';
+            }
+        }
+
+        // Wait for DOM
+        document.addEventListener('DOMContentLoaded', function () {
+            console.log('DOM ready');
+
+            // ✅ EVENT DELEGATION - QUAN TRỌNG NHẤT
+            document.addEventListener('click', function (e) {
+                // Check if clicked element is delete button or child of delete button
+                var deleteBtn = e.target.closest('.btn-delete');
+                if (deleteBtn) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('Delete button clicked via delegation');
+                    showDeleteModal(deleteBtn);
+                    return;
+                }
+
+                // Check for cancel button
+                if (e.target.closest('.btn-cancel')) {
+                    closeDeleteModal();
+                    return;
+                }
+
+                // Check for notification close
+                if (e.target.closest('.notification-close')) {
+                    var notification = e.target.closest('.notification');
+                    if (notification) {
+                        notification.style.display = 'none';
+                    }
+                    return;
+                }
+
+                // Check for modal overlay click
+                if (e.target.classList.contains('modal-overlay')) {
+                    closeDeleteModal();
+                    return;
+                }
+            });
+
+            // Confirm delete button
+            var confirmBtn = document.getElementById('confirmDeleteBtn');
+            if (confirmBtn) {
+                confirmBtn.addEventListener('click', function () {
+                    if (currentRoleId) {
+                        console.log('Confirming delete for role:', currentRoleId);
+                        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xóa...';
+                        this.disabled = true;
+
+                        // Redirect
+                        setTimeout(function () {
+                            window.location.href = '/admin/roles/delete/' + currentRoleId;
+                        }, 1000);
+                    }
+                });
+            }
+
+            // ESC key
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') {
+                    closeDeleteModal();
+                }
+            });
+
+            // Auto-hide notifications
+            var notifications = document.querySelectorAll('.notification.show');
+            notifications.forEach(function (notification) {
+                setTimeout(function () {
+                    if (notification.parentNode) {
+                        notification.style.display = 'none';
+                    }
+                }, 5000);
+            });
+
+            // Debug
+            console.log('Delete buttons found:', document.querySelectorAll('.btn-delete').length);
+            console.log('Modal found:', document.getElementById('deleteModal') ? 'YES' : 'NO');
+        });
+
+        // Test function
+        function testModal() {
+            console.log('Testing modal...');
+            var modal = document.getElementById('deleteModal');
+            if (modal) {
+                modal.style.display = 'flex';
+                modal.style.opacity = '1';
+                modal.classList.add('show');
+                console.log('Test modal shown');
+            } else {
+                console.error('Modal not found');
+            }
+        }
+
+        // Make functions global for console testing
+        window.testModal = testModal;
+        window.showDeleteModal = showDeleteModal;
+        window.closeDeleteModal = closeDeleteModal;
+
+        console.log('All functions defined');
+    </script>
 </div>
 </body>
 </html>
