@@ -8,6 +8,8 @@ import com.example.hospital_management.repository.IEmployeeRoleRepository;
 import com.example.hospital_management.repository.IRoleRepository;
 import com.example.hospital_management.service.IEmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +32,11 @@ public class EmployeeService implements IEmployeeService {
     @Override
     public List<Employee> findAllEmployees() {
         return employeeRepository.findAll();
+    }
+
+    @Override
+    public Page<Employee> findEmployeesWithFilters(String search, String status, Pageable pageable) {
+        return employeeRepository.findEmployeesWithFilters(search, status, pageable);
     }
 
     @Override
@@ -93,5 +100,27 @@ public class EmployeeService implements IEmployeeService {
                 }
             }
         }
+    }
+
+    // EmployeeService.java implementation
+    @Override
+    public long countTotalEmployees() {
+        return employeeRepository.count();
+    }
+
+    @Override
+    public long countActiveEmployees() {
+        return employeeRepository.countByStatus(true);
+    }
+
+    @Override
+    public long countInactiveEmployees() {
+        return employeeRepository.countByStatusOrStatusIsNull(false);
+    }
+
+    @Override
+    public long countNewEmployeesThisMonth() {
+        LocalDate startOfMonth = LocalDate.now().withDayOfMonth(1);
+        return employeeRepository.countByStartingDateGreaterThanEqual(startOfMonth);
     }
 }

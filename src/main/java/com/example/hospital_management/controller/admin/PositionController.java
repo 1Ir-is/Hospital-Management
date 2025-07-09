@@ -18,13 +18,16 @@ public class PositionController {
 
     @GetMapping()
     public String showListPositions(Model model) {
+        model.addAttribute("activeMenu", "positions");
         List<Position> positions = positionService.findAllPositions();
         model.addAttribute("positions", positions);
+        model.addAttribute("activeMenu", "departments");
         return "admin/position/list";
     }
 
     @GetMapping("/create")
     public String showCreateForm(Model model) {
+        model.addAttribute("activeMenu", "positions");
         Position position = new Position();
         model.addAttribute("position", position);
         return "admin/position/create-form";
@@ -38,6 +41,7 @@ public class PositionController {
 
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model) {
+        model.addAttribute("activeMenu", "positions");
         Position position = positionService.findPositionById(id);
         if (position == null) {
             return "redirect:/admin/positions";

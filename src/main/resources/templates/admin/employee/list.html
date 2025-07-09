@@ -1,90 +1,190 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="vi"
+      layout:decorate="~{admin/layout/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
     <title>Quản lý Nhân viên</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
+        /* ======================
+           SEARCH BOX FIXES
+        ====================== */
+        .search-box {
+            position: relative;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            max-width: 300px;
         }
 
-        .header {
+        .search-box input {
+            padding: 0.75rem 2.5rem 0.75rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            width: 100%;
+            box-sizing: border-box;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .search-box input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .search-box i {
+            position: absolute;
+            right: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6b7280;
+            font-size: 1rem;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* ======================
+           DROPDOWN FIXES
+        ====================== */
+        .filter-select {
+            padding: 0.75rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            background: white;
+            color: #374151;
+            min-width: 180px;
+            max-width: 100%;
+            outline: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            padding-right: 2.5rem;
+        }
+
+        .filter-select:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .filter-select:hover {
+            border-color: #9ca3af;
+        }
+
+        /* ======================
+           CARD ACTIONS LAYOUT
+        ====================== */
+        .card-actions {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            gap: 1rem;
+            flex-wrap: wrap;
+            width: 100%;
         }
 
-        .btn {
-            padding: 8px 16px;
-            background-color: #007bff;
-            color: white;
+        .left-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .card-actions .btn-add {
+            white-space: nowrap;
+            flex-shrink: 0;
+            min-width: auto;
+        }
+
+        /* ======================
+           ACTION BUTTONS FIXES
+        ====================== */
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            justify-content: flex-start;
+            flex-wrap: nowrap;
+        }
+
+        .btn-view,
+        .btn-edit,
+        .btn-delete {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.25rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 500;
             text-decoration: none;
-            border-radius: 4px;
             border: none;
             cursor: pointer;
-            font-size: 14px;
+            transition: all 0.2s ease;
+            white-space: nowrap;
         }
 
-        .btn:hover {
-            background-color: #0056b3;
+        /* View Button - Eye Icon */
+        .btn-view {
+            background: #3b82f6;
+            color: white;
         }
 
-        .btn-danger {
-            background-color: #dc3545;
+        .btn-view:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
         }
 
-        .btn-danger:hover {
-            background-color: #c82333;
+        .btn-view i {
+            font-size: 0.875rem;
         }
 
-        .btn-warning {
-            background-color: #ffc107;
-            color: #212529;
+        /* Edit Button */
+        .btn-edit {
+            background: #f59e0b;
+            color: white;
         }
 
-        .btn-warning:hover {
-            background-color: #e0a800;
+        .btn-edit:hover {
+            background: #d97706;
+            transform: translateY(-1px);
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            font-size: 14px;
+        .btn-edit i {
+            font-size: 0.875rem;
         }
 
-        th, td {
-            border: 1px solid #ddd;
-            padding: 12px;
-            text-align: left;
+        /* Delete Button */
+        .btn-delete {
+            background: #ef4444;
+            color: white;
         }
 
-        th {
-            background-color: #f8f9fa;
-            font-weight: bold;
-            position: sticky;
-            top: 0;
+        .btn-delete:hover {
+            background: #dc2626;
+            transform: translateY(-1px);
         }
 
-        tr:nth-child(even) {
-            background-color: #f2f2f2;
+        .btn-delete i {
+            font-size: 0.875rem;
         }
 
-        .actions {
+        /* ======================
+           EMPLOYEE AVATAR FIXES
+        ====================== */
+        .employee-avatar-container {
             display: flex;
-            gap: 5px;
-        }
-
-        .status-active {
-            color: #28a745;
-            font-weight: bold;
-        }
-
-        .status-inactive {
-            color: #dc3545;
-            font-weight: bold;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
         }
 
         .employee-avatar {
@@ -92,112 +192,1163 @@
             height: 40px;
             border-radius: 50%;
             object-fit: cover;
+            border: 2px solid #e5e7eb;
+            transition: all 0.2s ease;
         }
 
-        .no-avatar {
+        .employee-avatar:hover {
+            border-color: #3b82f6;
+            transform: scale(1.1);
+        }
+
+        .avatar-placeholder {
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background-color: #6c757d;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-weight: bold;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.2s ease;
         }
 
-        .alert {
-            padding: 15px;
-            margin-bottom: 20px;
-            border: 1px solid transparent;
-            border-radius: 4px;
+        .avatar-placeholder:hover {
+            transform: scale(1.1);
         }
 
-        .alert-info {
-            color: #0c5460;
-            background-color: #d1ecf1;
-            border-color: #bee5eb;
+        /* ======================
+           EMPLOYEE INFO STYLES
+        ====================== */
+        .employee-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            min-width: 0;
         }
 
-        .employee-roles {
-            font-size: 12px;
+        .employee-name {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin: 0;
+            line-height: 1.4;
         }
 
-        .role-badge {
-            background-color: #007bff;
+        .employee-gender {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin: 0;
+        }
+
+        /* ======================
+           CONTACT INFO STYLES
+        ====================== */
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            min-width: 0;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: #374151;
+            min-width: 0;
+        }
+
+        .contact-item i {
+            color: #6b7280;
+            width: 16px;
+            flex-shrink: 0;
+        }
+
+        .contact-item span {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* ======================
+           JOB INFO STYLES
+        ====================== */
+        .job-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            min-width: 0;
+        }
+
+        .department-info,
+        .position-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: #374151;
+            min-width: 0;
+        }
+
+        .department-info i,
+        .position-info i {
+            color: #6b7280;
+            width: 16px;
+            flex-shrink: 0;
+        }
+
+        .department-info span,
+        .position-info span {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* ======================
+           DATE INFO STYLES
+        ====================== */
+        .date-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: #374151;
+            white-space: nowrap;
+        }
+
+        .date-info i {
+            color: #6b7280;
+            flex-shrink: 0;
+        }
+
+        /* ======================
+           STATUS BADGE STYLES
+        ====================== */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .status-badge.status-active {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-badge.status-inactive {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-badge i {
+            font-size: 0.75rem;
+        }
+
+        /* ======================
+           RESPONSIVE DESIGN
+        ====================== */
+        @media (max-width: 768px) {
+            .card-actions {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.75rem;
+            }
+
+            .left-actions {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.75rem;
+                width: 100%;
+            }
+
+            .search-box,
+            .filter-select {
+                width: 100%;
+                max-width: none;
+            }
+
+            .card-actions .btn-add {
+                width: 100%;
+                text-align: center;
+            }
+
+            .action-buttons {
+                flex-wrap: wrap;
+                gap: 0.25rem;
+            }
+
+            .btn-view,
+            .btn-edit,
+            .btn-delete {
+                font-size: 0.75rem;
+                padding: 0.4rem 0.6rem;
+            }
+
+            .employee-avatar,
+            .avatar-placeholder {
+                width: 32px;
+                height: 32px;
+                font-size: 14px;
+            }
+
+            .employee-avatar-container {
+                width: 40px;
+                height: 40px;
+            }
+
+            .contact-item,
+            .department-info,
+            .position-info {
+                font-size: 0.8rem;
+            }
+
+            /* Stack table content on mobile */
+            .admin-table {
+                font-size: 0.8rem;
+            }
+
+            .admin-table td {
+                padding: 0.5rem 0.25rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .action-buttons {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.25rem;
+            }
+
+            .btn-view,
+            .btn-edit,
+            .btn-delete {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* ======================
+           HOVER EFFECTS
+        ====================== */
+        .admin-table tbody tr:hover {
+            background-color: #f8fafc;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .admin-table tbody tr {
+            transition: all 0.2s ease;
+        }
+
+        /* ======================
+           FOCUS STYLES
+        ====================== */
+        .btn-view:focus,
+        .btn-edit:focus,
+        .btn-delete:focus {
+            outline: 2px solid #3b82f6;
+            outline-offset: 2px;
+        }
+
+        /* ======================
+           LOADING STATES
+        ====================== */
+        .btn-view:disabled,
+        .btn-edit:disabled,
+        .btn-delete:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* ======================
+           ICON CONSISTENCY
+        ====================== */
+        .fas, .far, .fab {
+            font-family: "Font Awesome 5 Free", "Font Awesome 5 Brands";
+        }
+
+        .fas {
+            font-weight: 900;
+        }
+
+        .far {
+            font-weight: 400;
+        }
+
+        /* Notification Styles */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 300px;
+            max-width: 500px;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            font-weight: 500;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .success-notification {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             color: white;
-            padding: 2px 6px;
-            border-radius: 12px;
+            border-left: 4px solid #047857;
+        }
+
+        .error-notification {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            border-left: 4px solid #b91c1c;
+        }
+
+        .notification-close {
+            background: none;
+            border: none;
+            color: inherit;
+            cursor: pointer;
+            padding: 0;
+            margin-left: auto;
+            font-size: 16px;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+
+        .notification-close:hover {
+            opacity: 1;
+        }
+
+        .notification i:first-child {
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        /* Animation for notification */
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
+        .notification.slide-in {
+            animation: slideInRight 0.3s ease;
+        }
+
+        .notification.slide-out {
+            animation: slideOutRight 0.3s ease;
+        }
+
+        /* Pagination Styles */
+        .pagination-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            padding: 20px 0;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .pagination-info {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .pagination {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .pagination a,
+        .pagination span {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            background: white;
+            color: #374151;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 14px;
+            min-width: 40px;
+            transition: all 0.2s ease;
+        }
+
+        .pagination a:hover {
+            background: #f3f4f6;
+            border-color: #9ca3af;
+        }
+
+        .pagination .active {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+
+        .pagination .disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .page-size-selector {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-left: 20px;
+        }
+
+        .page-size-selector select {
+            padding: 6px 8px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        /* Search and Filter Improvements */
+        .filters-container {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .filter-label {
+            font-size: 12px;
+            font-weight: 500;
+            color: #6b7280;
+        }
+
+        .search-input,
+        .status-select {
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            min-width: 150px;
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 10px;
+            align-items: end;
+        }
+
+        .btn-filter,
+        .btn-clear {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-filter {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-filter:hover {
+            background: #2563eb;
+        }
+
+        .btn-clear {
+            background: #6b7280;
+            color: white;
+        }
+
+        .btn-clear:hover {
+            background: #4b5563;
+        }
+
+        /* Loading state */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #6b7280;
+        }
+
+        .loading i {
+            font-size: 24px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .filters-container {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .filter-group {
+                width: 100%;
+            }
+
+            .search-input,
+            .status-select {
+                width: 100%;
+                min-width: auto;
+            }
+
+            .filter-actions {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .pagination-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .pagination {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+
+        /* Filter info in statistics */
+        .stat-filter-info {
+            margin-top: 10px;
+            padding: 8px;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 4px;
+            border-left: 3px solid #3b82f6;
+        }
+
+        .stat-filter-info small {
+            color: #3b82f6;
+            font-weight: 500;
             font-size: 11px;
-            margin-right: 5px;
-            display: inline-block;
+        }
+
+        .filter-details {
+            color: #6b7280 !important;
+            font-style: italic;
+        }
+
+        /* Update pagination info to be more clear */
+        .pagination-info {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .pagination-info .highlight {
+            color: #3b82f6;
+            font-weight: 600;
         }
     </style>
 </head>
 <body>
-<div class="header">
-    <h2>👥 Quản lý Nhân viên</h2>
-    <a class="btn" th:href="@{/admin/employees/create}">➕ Thêm nhân viên mới</a>
+<div layout:fragment="main-content">
+    <!-- Success/Error Messages -->
+    <div class="notification success-notification show" id="successNotification" th:if="${successMessage}">
+        <i class="fas fa-check-circle"></i>
+        <span th:text="${successMessage}"></span>
+        <button class="notification-close" onclick="closeNotification('successNotification')" type="button">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <div class="notification error-notification show" id="errorNotification" th:if="${errorMessage}">
+        <i class="fas fa-exclamation-circle"></i>
+        <span th:text="${errorMessage}"></span>
+        <button class="notification-close" onclick="closeNotification('errorNotification')" type="button">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1 class="page-title">Quản lý Nhân viên</h1>
+        <p class="page-subtitle">
+            Quản lý danh sách nhân viên trong bệnh viện
+        </p>
+        <div class="breadcrumb">
+            <a href="/admin">Dashboard</a>
+            <i class="fas fa-chevron-right"></i>
+            <span>Nhân viên</span>
+        </div>
+    </div>
+
+    <!-- Statistics -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon employees">
+                <i class="fas fa-user-tie"></i>
+            </div>
+            <div class="stat-info">
+                <!-- ✅ Hiển thị tổng số nhân viên, không phụ thuộc phân trang -->
+                <h3 th:text="${totalEmployeesCount != null ? totalEmployeesCount : 0}">0</h3>
+                <p>Tổng số nhân viên</p>
+                <div class="stat-trend positive">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>+5 so với tháng trước</span>
+                </div>
+                <!-- ✅ Hiển thị thông tin filter nếu có -->
+                <div class="stat-filter-info" th:if="${isFiltered}">
+                    <small th:text="'Kết quả lọc: ' + ${filteredCount} + ' nhân viên'"></small>
+                    <br/>
+                    <small class="filter-details" th:text="${filterInfo}"></small>
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon active-employees">
+                <i class="fas fa-user-check"></i>
+            </div>
+            <div class="stat-info">
+                <h3 th:text="${activeEmployeesCount != null ? activeEmployeesCount : 0}">0</h3>
+                <p>Nhân viên hoạt động</p>
+                <div class="stat-trend positive">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>+3 so với tháng trước</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon inactive-employees">
+                <i class="fas fa-user-times"></i>
+            </div>
+            <div class="stat-info">
+                <h3 th:text="${inactiveEmployeesCount != null ? inactiveEmployeesCount : 0}">0</h3>
+                <p>Nhân viên ngừng hoạt động</p>
+                <div class="stat-trend negative">
+                    <i class="fas fa-arrow-down"></i>
+                    <span>-2 so với tháng trước</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon new-employees">
+                <i class="fas fa-user-plus"></i>
+            </div>
+            <div class="stat-info">
+                <h3 th:text="${newEmployeesCount != null ? newEmployeesCount : 0}">0</h3>
+                <p>Nhân viên mới tháng này</p>
+                <div class="stat-trend positive">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>+8 so với tháng trước</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content Card -->
+    <div class="content-card">
+        <div class="card-header">
+            <h2 class="card-title">Danh sách nhân viên</h2>
+            <div class="card-actions">
+                <a class="btn-add" th:href="@{/admin/employees/create}">
+                    <i class="fas fa-plus"></i>
+                    Thêm nhân viên mới
+                </a>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <form class="filters-container" method="get" th:action="@{/admin/employees}">
+            <div class="filter-group">
+                <label class="filter-label">Tìm kiếm</label>
+                <input class="search-input" name="search" placeholder="Tên, email, điện thoại, khoa, chức vụ..."
+                       th:value="${search}"
+                       type="text">
+            </div>
+
+            <div class="filter-group">
+                <label class="filter-label">Trạng thái</label>
+                <select class="status-select" name="status">
+                    <option value="">Tất cả trạng thái</option>
+                    <option th:selected="${status == 'active'}" value="active">Hoạt động</option>
+                    <option th:selected="${status == 'inactive'}" value="inactive">Ngừng hoạt động</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label class="filter-label">Số bản ghi/trang</label>
+                <select class="status-select" name="size">
+                    <option th:selected="${size == 5}" value="5">5</option>
+                    <option th:selected="${size == 10}" value="10">10</option>
+                    <option th:selected="${size == 20}" value="20">20</option>
+                    <option th:selected="${size == 50}" value="50">50</option>
+                </select>
+            </div>
+
+            <div class="filter-actions">
+                <button class="btn-filter" type="submit">
+                    <i class="fas fa-search"></i> Tìm kiếm
+                </button>
+                <a class="btn-clear" th:href="@{/admin/employees}">
+                    <i class="fas fa-times"></i> Xóa bộ lọc
+                </a>
+            </div>
+        </form>
+
+        <!-- Loading State -->
+        <div class="loading" id="loadingState" style="display: none;">
+            <i class="fas fa-spinner"></i>
+            <p>Đang tải dữ liệu...</p>
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state" th:if="${employees == null or #lists.isEmpty(employees)}">
+            <div class="empty-icon">
+                <i class="fas fa-user-tie"></i>
+            </div>
+            <h3 th:if="${search != null and search != ''}">Không tìm thấy nhân viên nào</h3>
+            <h3 th:unless="${search != null and search != ''}">Chưa có nhân viên nào</h3>
+            <p th:if="${search != null and search != ''}">
+                Thử thay đổi từ khóa tìm kiếm hoặc bộ lọc
+            </p>
+            <p th:unless="${search != null and search != ''}">
+                Hãy thêm nhân viên đầu tiên cho bệnh viện
+            </p>
+            <a class="btn-add" th:href="@{/admin/employees/create}">
+                <i class="fas fa-plus"></i>
+                Thêm nhân viên mới
+            </a>
+        </div>
+
+        <!-- Table -->
+        <div class="table-container" th:if="${employees != null and not #lists.isEmpty(employees)}">
+            <table class="admin-table">
+                <thead>
+                <tr>
+                    <th>Avatar</th>
+                    <th>Thông tin cá nhân</th>
+                    <th>Liên hệ</th>
+                    <th>Công việc</th>
+                    <th>Ngày bắt đầu</th>
+                    <th>Trạng thái</th>
+                    <th>Thao tác</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="employee : ${employees}">
+                    <td>
+                        <div class="employee-avatar-container">
+                            <img alt="Avatar"
+                                 class="employee-avatar"
+                                 th:if="${employee.avatar != null and employee.avatar != ''}"
+                                 th:src="@{${employee.avatar}}"/>
+                            <div class="avatar-placeholder"
+                                 th:if="${employee.avatar == null or employee.avatar == ''}">
+                                <span th:text="${employee.name != null and #strings.length(employee.name) > 0 ? #strings.substring(employee.name, 0, 1).toUpperCase() : '?'}"></span>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="employee-info">
+                            <strong class="employee-name"
+                                    th:text="${employee.name != null ? employee.name : 'Chưa có tên'}"></strong>
+                            <span class="employee-gender"
+                                  th:text="${employee.gender != null ? (employee.gender ? 'Nam' : 'Nữ') : 'Chưa xác định'}"></span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="contact-info">
+                            <div class="contact-item">
+                                <i class="fas fa-envelope"></i>
+                                <span th:text="${employee.email != null ? employee.email : 'Chưa có email'}"></span>
+                            </div>
+                            <div class="contact-item">
+                                <i class="fas fa-phone"></i>
+                                <span th:text="${employee.phone != null ? employee.phone : 'Chưa có'}"></span>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="job-info">
+                            <div class="department-info">
+                                <i class="fas fa-building"></i>
+                                <span th:text="${employee.department != null ? employee.department.name : 'Chưa phân khoa'}"></span>
+                            </div>
+                            <div class="position-info">
+                                <i class="fas fa-briefcase"></i>
+                                <span th:text="${employee.position != null ? employee.position.name : 'Chưa có chức vụ'}"></span>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="date-info">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span th:text="${employee.startingDate != null ? #temporals.format(employee.startingDate, 'dd/MM/yyyy') : 'Chưa xác định'}"></span>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="status-badge status-active"
+                              th:if="${employee.status != null and employee.status == true}">
+                            <i class="fas fa-check-circle"></i>
+                            Hoạt động
+                        </span>
+                        <span class="status-badge status-inactive"
+                              th:if="${employee.status == null or employee.status == false}">
+                            <i class="fas fa-times-circle"></i>
+                            Ngừng hoạt động
+                        </span>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <a class="btn-view" th:href="@{'/admin/employees/view/' + ${employee.id}}">
+                                <i class="fas fa-eye"></i> Xem
+                            </a>
+                            <a class="btn-edit" th:href="@{'/admin/employees/edit/' + ${employee.id}}">
+                                <i class="fas fa-edit"></i> Sửa
+                            </a>
+                            <button class="btn-delete"
+                                    onclick="showDeleteModal(this)"
+                                    th:attr="data-employee-id=${employee.id}, data-employee-name=${employee.name}"
+                                    type="button">
+                                <i class="fas fa-trash"></i> Xóa
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+    <!-- Pagination -->
+    <div class="pagination" th:if="${totalPages != null and totalPages > 1}">
+        <ul>
+            <li th:if="${currentPage != null and currentPage > 0}">
+                <a th:href="@{|/admin/employees?page=${currentPage - 1}|}">&laquo;</a>
+            </li>
+            <li th:classappend="${i == currentPage} ? 'active' : ''"
+                th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+                <a th:href="@{|/admin/employees?page=${i}|}" th:text="${i + 1}"></a>
+            </li>
+            <li th:if="${currentPage != null and totalPages != null and currentPage < totalPages - 1}">
+                <a th:href="@{|/admin/employees?page=${currentPage + 1}|}">&raquo;</a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal-content delete-modal">
+            <div class="modal-header delete-header">
+                <div class="warning-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <h3>Xác nhận xóa nhân viên</h3>
+            </div>
+
+            <div class="modal-body">
+                <div class="warning-message">
+                    <p class="main-message">
+                        Bạn có chắc chắn muốn xóa nhân viên
+                        <strong class="employee-name" id="deleteEmployeeName">test</strong>?
+                    </p>
+                    <div class="warning-details">
+                        <div class="warning-item">
+                            <i class="fas fa-info-circle"></i>
+                            <span>Hành động này không thể hoàn tác</span>
+                        </div>
+                        <div class="warning-item">
+                            <i class="fas fa-user-times"></i>
+                            <span>Nhân viên sẽ bị xóa khỏi hệ thống</span>
+                        </div>
+                        <div class="warning-item">
+                            <i class="fas fa-calendar-times"></i>
+                            <span>Các dữ liệu liên quan sẽ bị ảnh hưởng</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeDeleteModal()" type="button">
+                    <i class="fas fa-times"></i>
+                    Hủy bỏ
+                </button>
+                <button class="btn-delete-confirm" id="confirmDeleteBtn" type="button">
+                    <i class="fas fa-trash"></i>
+                    Xóa nhân viên
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
 
-<div class="alert alert-info" th:if="${#lists.isEmpty(employees)}">
-    <p>📝 Chưa có nhân viên nào được tạo. Hãy thêm nhân viên đầu tiên!</p>
-</div>
+<script>
+    let currentEmployeeId = null;
+    let currentEmployeeName = null;
 
-<table th:if="${not #lists.isEmpty(employees)}">
-    <thead>
-    <tr>
-        <th>Avatar</th>
-        <th>Tên</th>
-        <th>Email</th>
-        <th>Điện thoại</th>
-        <th>Giới tính</th>
-        <th>Khoa</th>
-        <th>Chức vụ</th>
-        <th>Ngày bắt đầu</th>
-        <th>Trạng thái</th>
-        <th>Thao tác</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="employee : ${employees}">
-        <td>
-            <div th:if="${employee.avatar != null and employee.avatar != ''}">
-                <img alt="Avatar" class="employee-avatar" th:src="@{${employee.avatar}}"/>
-            </div>
-            <div class="no-avatar" th:unless="${employee.avatar != null and employee.avatar != ''}">
-                <span th:text="${employee.name != null ? employee.name.substring(0,1).toUpperCase() : '?'}"></span>
-            </div>
-        </td>
-        <td>
-            <strong th:text="${employee.name}"></strong>
-        </td>
-        <td th:text="${employee.email}"></td>
-        <td th:text="${employee.phone ?: 'Chưa có'}"></td>
-        <td th:text="${employee.gender != null ? (employee.gender ? 'Nam' : 'Nữ') : 'Chưa xác định'}"></td>
-        <td th:text="${employee.department != null ? employee.department.name : 'Chưa phân khoa'}"></td>
-        <td th:text="${employee.position != null ? employee.position.name : 'Chưa có chức vụ'}"></td>
-        <td th:text="${employee.startingDate != null ? #temporals.format(employee.startingDate, 'dd/MM/yyyy') : 'Chưa xác định'}"></td>
-        <td>
-            <span class="status-active" th:if="${employee.status != null and employee.status}">✅ Hoạt động</span>
-            <span class="status-inactive"
-                  th:unless="${employee.status != null and employee.status}">❌ Ngừng hoạt động</span>
-        </td>
-        <td>
-            <div class="actions">
-                <a class="btn btn-warning" th:href="@{'/admin/employees/edit/' + ${employee.id}}">✏️ Sửa</a>
-                <a class="btn btn-danger"
-                   onclick="return confirm('Bạn có chắc chắn muốn xóa nhân viên này không?\nViec xóa sẽ không thể hoàn tác!')"
-                   th:href="@{'/admin/employees/delete/' + ${employee.id}}">🗑️
-                    Xóa</a>
-            </div>
-        </td>
-    </tr>
-    </tbody>
-</table>
+    document.addEventListener('DOMContentLoaded', function () {
 
-<div style="margin-top: 20px;">
-    <a class="btn" href="/admin">🏠 Quay lại trang quản trị</a>
-</div>
+        // Notification handling
+        document.addEventListener('DOMContentLoaded', function () {
+            // Auto-hide notifications after 5 seconds
+            const notifications = document.querySelectorAll('.notification');
+            notifications.forEach(notification => {
+                if (notification.classList.contains('show')) {
+                    setTimeout(() => {
+                        closeNotification(notification.id);
+                    }, 5000);
+                }
+            });
+
+            // Show loading when form submitted
+            const filterForm = document.querySelector('.filters-container');
+            if (filterForm) {
+                filterForm.addEventListener('submit', function () {
+                    document.getElementById('loadingState').style.display = 'block';
+                    document.querySelector('.table-container')?.style.setProperty('display', 'none');
+                });
+            }
+
+            // Auto-submit form when page size changes
+            const pageSizeSelect = document.querySelector('select[name="size"]');
+            if (pageSizeSelect) {
+                pageSizeSelect.addEventListener('change', function () {
+                    this.form.submit();
+                });
+            }
+        });
+
+        function closeNotification(notificationId) {
+            const notification = document.getElementById(notificationId);
+            if (notification) {
+                notification.classList.remove('show');
+                notification.classList.add('slide-out');
+
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            }
+        }
+
+        // Search functionality
+        const searchInput = document.getElementById('searchInput');
+        const statusFilter = document.getElementById('statusFilter');
+        const tableRows = document.querySelectorAll('.admin-table tbody tr');
+
+        // Search filter
+        if (searchInput) {
+            searchInput.addEventListener('input', function () {
+                const searchTerm = this.value.toLowerCase();
+                filterTable(searchTerm, statusFilter.value);
+            });
+        }
+
+        // Status filter
+        if (statusFilter) {
+            statusFilter.addEventListener('change', function () {
+                const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+                filterTable(searchTerm, this.value);
+            });
+        }
+
+        function filterTable(searchTerm, statusFilter) {
+            tableRows.forEach(row => {
+                const name = row.querySelector('.employee-name')?.textContent.toLowerCase() || '';
+                const email = row.querySelector('.contact-item span')?.textContent.toLowerCase() || '';
+                const department = row.querySelector('.department-info span')?.textContent.toLowerCase() || '';
+                const position = row.querySelector('.position-info span')?.textContent.toLowerCase() || '';
+
+                const matchesSearch = name.includes(searchTerm) ||
+                    email.includes(searchTerm) ||
+                    department.includes(searchTerm) ||
+                    position.includes(searchTerm);
+
+                const statusBadge = row.querySelector('.status-badge');
+                const isActive = statusBadge?.classList.contains('status-active');
+
+                let matchesStatus = true;
+                if (statusFilter === 'active') {
+                    matchesStatus = isActive;
+                } else if (statusFilter === 'inactive') {
+                    matchesStatus = !isActive;
+                }
+
+                if (matchesSearch && matchesStatus) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        // Initialize delete button event
+        initializeDeleteButtons();
+
+        // Handle delete confirmation
+        const confirmBtn = document.getElementById('confirmDeleteBtn');
+        if (confirmBtn) {
+            confirmBtn.addEventListener('click', function () {
+                if (currentEmployeeId) {
+                    // Show loading state
+                    this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xóa...';
+                    this.disabled = true;
+
+                    // Redirect to delete URL
+                    setTimeout(() => {
+                        window.location.href = `/admin/employees/delete/${currentEmployeeId}`;
+                    }, 1000);
+                }
+            });
+        }
+
+        // Close modal when clicking outside
+        const modal = document.getElementById('deleteModal');
+        if (modal) {
+            modal.addEventListener('click', function (e) {
+                if (e.target === this) {
+                    closeDeleteModal();
+                }
+            });
+        }
+
+        // Close modal with ESC key
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && modal && modal.style.display === 'flex') {
+                closeDeleteModal();
+            }
+        });
+
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('success') === 'true') {
+            showSuccessMessage();
+        }
+
+        function showSuccessMessage() {
+            const notification = document.createElement('div');
+            notification.className = 'success-notification show';
+            notification.innerHTML = `
+                <i class="fas fa-check-circle"></i>
+                <span>Nhân viên đã được tạo thành công!</span>
+            `;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            }, 3000);
+        }
+    });
+
+    function initializeDeleteButtons() {
+        const deleteButtons = document.querySelectorAll('.btn-delete');
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                showDeleteModal(this);
+            });
+        });
+    }
+
+    function showDeleteModal(button) {
+        try {
+            currentEmployeeId = button.getAttribute('data-employee-id');
+            currentEmployeeName = button.getAttribute('data-employee-name');
+
+            // Update modal content
+            const nameElement = document.getElementById('deleteEmployeeName');
+            if (nameElement) {
+                nameElement.textContent = currentEmployeeName || 'Unknown';
+            }
+
+            // Show modal
+            const modal = document.getElementById('deleteModal');
+            if (modal) {
+                modal.style.display = 'flex';
+                modal.style.opacity = '0';
+
+                // Force reflow
+                modal.offsetHeight;
+
+                // Add animation
+                setTimeout(() => {
+                    modal.style.opacity = '1';
+                    modal.classList.add('show');
+                }, 10);
+
+                // Focus on cancel button for accessibility
+                const cancelBtn = document.querySelector('.btn-cancel');
+                if (cancelBtn) {
+                    setTimeout(() => cancelBtn.focus(), 100);
+                }
+            }
+        } catch (error) {
+            console.error('Error in showDeleteModal:', error);
+        }
+    }
+
+    function closeDeleteModal() {
+        const modal = document.getElementById('deleteModal');
+        if (modal) {
+            modal.classList.remove('show');
+            modal.style.opacity = '0';
+
+            setTimeout(() => {
+                modal.style.display = 'none';
+                currentEmployeeId = null;
+                currentEmployeeName = null;
+            }, 300);
+        }
+    }
+</script>
+
 </body>
 </html>

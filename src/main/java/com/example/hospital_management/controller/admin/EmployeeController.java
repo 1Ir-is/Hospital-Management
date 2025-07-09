@@ -4,9 +4,13 @@ import com.example.hospital_management.dto.EmployeeFormDTO;
 import com.example.hospital_management.entity.*;
 import com.example.hospital_management.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,57 +35,133 @@ public class EmployeeController {
     private IEmployeeRoleRService employeeRoleService;
 
     @GetMapping()
-    public String showListEmployees(Model model) {
-        List<Employee> employees = employeeService.findAllEmployees();
-        model.addAttribute("employees", employees);
-        return "admin/employee/list";
+    public String showListEmployees(@RequestParam(defaultValue = "0") int page,
+                                    @RequestParam(defaultValue = "5") int size,
+                                    @RequestParam(defaultValue = "") String search,
+                                    @RequestParam(defaultValue = "") String status,
+                                    Model model) {
+        // ✅ Set activeMenu ngay từ đầu
+        model.addAttribute("activeMenu", "employees");
+
+        try {
+            // Create Pageable object
+            Pageable pageable = PageRequest.of(page, size);
+
+            // Get paginated and filtered employees
+            Page<Employee> employeePage = employeeService.findEmployeesWithFilters(search, status, pageable);
+
+            // Add paginated data to model
+            model.addAttribute("employees", employeePage.getContent());
+            model.addAttribute("currentPage", page);
+            model.addAttribute("totalPages", employeePage.getTotalPages());
+            model.addAttribute("totalElements", employeePage.getTotalElements());
+            model.addAttribute("size", size);
+            model.addAttribute("search", search);
+            model.addAttribute("status", status);
+
+            // Calculate TOTAL statistics
+            long totalEmployeesCount = employeeService.countTotalEmployees();
+            long activeCount = employeeService.countActiveEmployees();
+            long inactiveCount = employeeService.countInactiveEmployees();
+            long newEmployeesCount = employeeService.countNewEmployeesThisMonth();
+
+            model.addAttribute("totalEmployeesCount", totalEmployeesCount);
+            model.addAttribute("activeEmployeesCount", activeCount);
+            model.addAttribute("inactiveEmployeesCount", inactiveCount);
+            model.addAttribute("newEmployeesCount", newEmployeesCount);
+
+            if (!search.isEmpty() || !status.isEmpty()) {
+                model.addAttribute("filteredCount", employeePage.getTotalElements());
+                model.addAttribute("isFiltered", true);
+                model.addAttribute("filterInfo", createFilterInfo(search, status));
+            } else {
+                model.addAttribute("isFiltered", false);
+            }
+
+
+            return "admin/employee/list";
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("errorMessage", "Có lỗi xảy ra khi tải danh sách nhân viên");
+            return "admin/employee/list";
+        }
+    }
+
+    private String createFilterInfo(String search, String status) {
+        StringBuilder info = new StringBuilder();
+        if (!search.isEmpty()) {
+            info.append("Tìm kiếm: \"").append(search).append("\"");
+        }
+        if (!status.isEmpty()) {
+            if (info.length() > 0) info.append(", ");
+            info.append("Trạng thái: ");
+            info.append(status.equals("active") ? "Hoạt động" : "Ngừng hoạt động");
+        }
+        return info.toString();
     }
 
     @GetMapping("/create")
     public String showCreateForm(Model model) {
+        // ✅ Set activeMenu đúng
+        model.addAttribute("activeMenu", "employees");
+
         EmployeeFormDTO employeeForm = new EmployeeFormDTO();
         model.addAttribute("employeeForm", employeeForm);
 
         List<Department> departments = departmentService.findAllDepartmentsForDropdown();
         List<Position> positions = positionService.findAllPositions();
         List<Role> roles = roleService.findAllRoles();
+
         model.addAttribute("departments", departments);
         model.addAttribute("positions", positions);
         model.addAttribute("roles", roles);
+
+
         return "admin/employee/create-form";
     }
 
     @PostMapping("/create")
-    public String createEmployee(@ModelAttribute("employeeForm") EmployeeFormDTO employeeForm) {
-        Employee employee = new Employee();
-        employee.setName(employeeForm.getName());
-        employee.setPhone(employeeForm.getPhone());
-        employee.setEmail(employeeForm.getEmail());
-        employee.setPassword(employeeForm.getPassword());
-        employee.setGender(employeeForm.getGender());
-        employee.setAddress(employeeForm.getAddress());
-        employee.setStartingDate(employeeForm.getStartingDate());
-        employee.setStatus(employeeForm.getStatus());
-        employee.setAvatar(employeeForm.getAvatar());
+    public String createEmployee(@ModelAttribute("employeeForm") EmployeeFormDTO employeeForm,
+                                 RedirectAttributes redirectAttributes) {
+        try {
+            Employee employee = new Employee();
+            employee.setName(employeeForm.getName());
+            employee.setPhone(employeeForm.getPhone());
+            employee.setEmail(employeeForm.getEmail());
+            employee.setPassword(employeeForm.getPassword());
+            employee.setGender(employeeForm.getGender());
+            employee.setAddress(employeeForm.getAddress());
+            employee.setStartingDate(employeeForm.getStartingDate());
+            employee.setStatus(employeeForm.getStatus());
+            employee.setAvatar(employeeForm.getAvatar());
 
-        // set department
-        if (employeeForm.getDepartmentId() != null) {
-            Department department = departmentService.findDepartmentById(employeeForm.getDepartmentId());
-            employee.setDepartment(department);
-        }
-        // set position
-        if (employeeForm.getPositionId() != null) {
-            Position position = positionService.findPositionById(employeeForm.getPositionId());
-            employee.setPosition(position);
-        }
-        // set role
-        employeeService.saveEmployeeWithRoles(employee, employeeForm.getRoleIds());
+            if (employeeForm.getDepartmentId() != null) {
+                Department department = departmentService.findDepartmentById(employeeForm.getDepartmentId());
+                employee.setDepartment(department);
+            }
 
-        return "redirect:/admin/employees";
+            if (employeeForm.getPositionId() != null) {
+                Position position = positionService.findPositionById(employeeForm.getPositionId());
+                employee.setPosition(position);
+            }
+
+            employeeService.saveEmployeeWithRoles(employee, employeeForm.getRoleIds());
+
+            redirectAttributes.addFlashAttribute("successMessage",
+                    "Nhân viên " + employee.getName() + " đã được tạo thành công!");
+
+            return "redirect:/admin/employees";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    "Có lỗi xảy ra khi tạo nhân viên: " + e.getMessage());
+            return "redirect:/admin/employees/create";
+        }
     }
 
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model) {
+        model.addAttribute("activeMenu", "employees");
         Employee employee = employeeService.findEmployeeById(id);
         if (employee == null) {
             return "redirect:/admin/employees";
@@ -113,55 +193,74 @@ public class EmployeeController {
         employeeForm.setRoleIds(currentRoleIds);
 
         model.addAttribute("employeeForm", employeeForm);
-
         model.addAttribute("departments", departmentService.findAllDepartmentsForDropdown());
         model.addAttribute("positions", positionService.findAllPositions());
         model.addAttribute("roles", roleService.findAllRoles());
+
         return "admin/employee/edit-form";
     }
 
     @PostMapping("/edit/{id}")
-    public String editEmployee(@PathVariable Long id, @ModelAttribute("employeeForm") EmployeeFormDTO employeeForm) {
-        Employee employee = employeeService.findEmployeeById(id);
-        if (employee == null) {
+    public String editEmployee(@PathVariable Long id,
+                               @ModelAttribute("employeeForm") EmployeeFormDTO employeeForm,
+                               RedirectAttributes redirectAttributes) {
+        try {
+            Employee employee = employeeService.findEmployeeById(id);
+            if (employee == null) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Không tìm thấy nhân viên!");
+                return "redirect:/admin/employees";
+            }
+
+            employee.setName(employeeForm.getName());
+            employee.setPhone(employeeForm.getPhone());
+            employee.setEmail(employeeForm.getEmail());
+            employee.setPassword(employeeForm.getPassword());
+            employee.setGender(employeeForm.getGender());
+            employee.setAddress(employeeForm.getAddress());
+            employee.setStartingDate(employeeForm.getStartingDate());
+            employee.setStatus(employeeForm.getStatus());
+            employee.setAvatar(employeeForm.getAvatar());
+
+            if (employeeForm.getDepartmentId() != null) {
+                Department department = departmentService.findDepartmentById(employeeForm.getDepartmentId());
+                employee.setDepartment(department);
+            }
+
+            if (employeeForm.getPositionId() != null) {
+                Position position = positionService.findPositionById(employeeForm.getPositionId());
+                employee.setPosition(position);
+            }
+
+            employeeService.saveEmployee(employee);
+            employeeService.updateEmployeeRoles(id, employeeForm.getRoleIds());
+
+            redirectAttributes.addFlashAttribute("successMessage",
+                    "Nhân viên " + employee.getName() + " đã được cập nhật thành công!");
+
             return "redirect:/admin/employees";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    "Có lỗi xảy ra khi cập nhật nhân viên: " + e.getMessage());
+            return "redirect:/admin/employees/edit/" + id;
         }
-
-        // Update employee info
-        employee.setName(employeeForm.getName());
-        employee.setPhone(employeeForm.getPhone());
-        employee.setEmail(employeeForm.getEmail());
-        employee.setPassword(employeeForm.getPassword());
-        employee.setGender(employeeForm.getGender());
-        employee.setAddress(employeeForm.getAddress());
-        employee.setStartingDate(employeeForm.getStartingDate());
-        employee.setStatus(employeeForm.getStatus());
-        employee.setAvatar(employeeForm.getAvatar());
-
-        // Update Department
-        if (employeeForm.getDepartmentId() != null) {
-            Department department = departmentService.findDepartmentById(employeeForm.getDepartmentId());
-            employee.setDepartment(department);
-        }
-
-        // Update Position
-        if (employeeForm.getPositionId() != null) {
-            Position position = positionService.findPositionById(employeeForm.getPositionId());
-            employee.setPosition(position);
-        }
-
-        // Save employee
-        employeeService.saveEmployee(employee);
-
-        // Update roles
-        employeeService.updateEmployeeRoles(id, employeeForm.getRoleIds());
-
-        return "redirect:/admin/employees";
     }
 
     @GetMapping("/delete/{id}")
-    public String deleteEmployee(@PathVariable Long id) {
-        employeeService.deleteEmployeeById(id);
+    public String deleteEmployee(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            Employee employee = employeeService.findEmployeeById(id);
+            if (employee != null) {
+                String employeeName = employee.getName();
+                employeeService.deleteEmployeeById(id);
+                redirectAttributes.addFlashAttribute("successMessage",
+                        "Nhân viên " + employeeName + " đã được xóa thành công!");
+            } else {
+                redirectAttributes.addFlashAttribute("errorMessage", "Không tìm thấy nhân viên!");
+            }
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    "Có lỗi xảy ra khi xóa nhân viên: " + e.getMessage());
+        }
         return "redirect:/admin/employees";
     }
 }

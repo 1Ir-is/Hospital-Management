@@ -27,21 +27,13 @@
     <div class="quick-actions">
         <h2 class="section-title">Thao tác nhanh</h2>
         <div class="quick-actions-grid">
-            <a class="quick-action-card" href="#">
-                <i class="fas fa-user-plus"></i>
-                <span>Thêm bệnh nhân</span>
-            </a>
-            <a class="quick-action-card" href="#">
-                <i class="fas fa-calendar-plus"></i>
-                <span>Đặt lịch hẹn</span>
-            </a>
             <a class="quick-action-card" href="/admin/departments">
                 <i class="fas fa-building"></i>
                 <span>Quản lý khoa</span>
             </a>
-            <a class="quick-action-card" href="#">
-                <i class="fas fa-file-medical"></i>
-                <span>Báo cáo y tế</span>
+            <a class="quick-action-card" href="/admin/employees">
+                <i class="fas fa-user-tie"></i>
+                <span>Quản lý nhân viên</span>
             </a>
         </div>
     </div>
@@ -77,8 +69,21 @@
                 </div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon patients">
+                <div class="stat-icon employees">
                     <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>156</h3>
+                    <p>Nhân viên</p>
+                    <div class="stat-trend positive">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>+12 so với tháng trước</span>
+                    </div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon patients">
+                    <i class="fas fa-bed"></i>
                 </div>
                 <div class="stat-info">
                     <h3>1,234</h3>
@@ -140,15 +145,15 @@
         <div class="dashboard-card activity-card">
             <div class="card-header">
                 <h3>Hoạt động gần đây</h3>
-                <a class="view-all-link" href="#">Xem tất cả</a>
+                <a class="view-all-link" href="/admin/activities">Xem tất cả</a>
             </div>
             <div class="activity-list">
                 <div class="activity-item">
-                    <div class="activity-icon patient-added">
-                        <i class="fas fa-user-plus"></i>
+                    <div class="activity-icon employee-added">
+                        <i class="fas fa-user-tie"></i>
                     </div>
                     <div class="activity-content">
-                        <p><strong>Nguyễn Văn A</strong> đã được thêm vào hệ thống</p>
+                        <p><strong>Nguyễn Văn A</strong> đã được thêm vào vị trí Y tá</p>
                         <span class="activity-time">5 phút trước</span>
                     </div>
                 </div>
@@ -162,12 +167,12 @@
                     </div>
                 </div>
                 <div class="activity-item">
-                    <div class="activity-icon doctor-added">
-                        <i class="fas fa-user-md"></i>
+                    <div class="activity-icon role-updated">
+                        <i class="fas fa-user-shield"></i>
                     </div>
                     <div class="activity-content">
-                        <p><strong>BS. Lê Văn C</strong> đã gia nhập khoa Tim Mạch</p>
-                        <span class="activity-time">2 giờ trước</span>
+                        <p>Vai trò <strong>Quản lý khoa</strong> đã được cập nhật</p>
+                        <span class="activity-time">1 giờ trước</span>
                     </div>
                 </div>
                 <div class="activity-item">
@@ -186,7 +191,7 @@
         <div class="dashboard-card appointments-card">
             <div class="card-header">
                 <h3>Lịch hẹn sắp tới</h3>
-                <a class="view-all-link" href="#">Xem tất cả</a>
+                <a class="view-all-link" href="/admin/appointments">Xem tất cả</a>
             </div>
             <div class="appointments-list">
                 <div class="appointment-item">
@@ -264,15 +269,6 @@
 <div layout:fragment="page-scripts">
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            // Sidebar menu interactions
-            const menuItems = document.querySelectorAll(".menu-item");
-            menuItems.forEach((item) => {
-                item.addEventListener("click", function (e) {
-                    menuItems.forEach((mi) => mi.classList.remove("active"));
-                    this.classList.add("active");
-                });
-            });
-
             // Initialize Charts
             initializeCharts();
 
@@ -385,9 +381,10 @@
             const appointmentCount = document.querySelector(
                 ".stat-card:last-child .stat-info h3"
             );
-            const currentCount = parseInt(appointmentCount.textContent);
-            appointmentCount.textContent =
-                currentCount + Math.floor(Math.random() * 3);
+            if (appointmentCount) {
+                const currentCount = parseInt(appointmentCount.textContent);
+                appointmentCount.textContent = currentCount + Math.floor(Math.random() * 3);
+            }
 
             // Update system metrics
             updateSystemMetrics();
@@ -398,14 +395,16 @@
             metrics.forEach((metric) => {
                 const fill = metric.querySelector(".metric-fill");
                 const value = metric.querySelector(".metric-value");
-                const currentValue = parseInt(value.textContent);
-                const newValue = Math.max(
-                    10,
-                    Math.min(90, currentValue + (Math.random() - 0.5) * 10)
-                );
+                if (fill && value) {
+                    const currentValue = parseInt(value.textContent);
+                    const newValue = Math.max(
+                        10,
+                        Math.min(90, currentValue + (Math.random() - 0.5) * 10)
+                    );
 
-                fill.style.width = newValue + "%";
-                value.textContent = Math.round(newValue) + "%";
+                    fill.style.width = newValue + "%";
+                    value.textContent = Math.round(newValue) + "%";
+                }
             });
         }
 
@@ -413,9 +412,15 @@
         function addNewActivity() {
             const activities = [
                 {
-                    icon: "fas fa-user-plus",
-                    class: "patient-added",
-                    text: "<strong>Nguyễn Văn X</strong> đã được thêm vào hệ thống",
+                    icon: "fas fa-user-tie",
+                    class: "employee-added",
+                    text: "<strong>Nguyễn Văn X</strong> đã được thêm vào vị trí Điều dưỡng",
+                    time: "Vừa xong",
+                },
+                {
+                    icon: "fas fa-user-shield",
+                    class: "role-updated",
+                    text: "Vai trò <strong>Trưởng khoa</strong> đã được cập nhật quyền hạn",
                     time: "Vừa xong",
                 },
                 {
@@ -424,29 +429,36 @@
                     text: "Lịch hẹn với <strong>BS. Trần Thị Y</strong> đã hoàn thành",
                     time: "Vừa xong",
                 },
+                {
+                    icon: "fas fa-briefcase",
+                    class: "position-created",
+                    text: "Chức vụ <strong>Phó khoa</strong> đã được tạo mới",
+                    time: "Vừa xong",
+                },
             ];
 
-            const randomActivity =
-                activities[Math.floor(Math.random() * activities.length)];
+            const randomActivity = activities[Math.floor(Math.random() * activities.length)];
             const activityList = document.querySelector(".activity-list");
 
-            const newActivity = document.createElement("div");
-            newActivity.className = "activity-item";
-            newActivity.innerHTML = `
-          <div class="activity-icon ${randomActivity.class}">
-            <i class="${randomActivity.icon}"></i>
-          </div>
-          <div class="activity-content">
-            <p>${randomActivity.text}</p>
-            <span class="activity-time">${randomActivity.time}</span>
-          </div>
-        `;
+            if (activityList) {
+                const newActivity = document.createElement("div");
+                newActivity.className = "activity-item";
+                newActivity.innerHTML = `
+                    <div class="activity-icon ${randomActivity.class}">
+                        <i class="${randomActivity.icon}"></i>
+                    </div>
+                    <div class="activity-content">
+                        <p>${randomActivity.text}</p>
+                        <span class="activity-time">${randomActivity.time}</span>
+                    </div>
+                `;
 
-            activityList.insertBefore(newActivity, activityList.firstChild);
+                activityList.insertBefore(newActivity, activityList.firstChild);
 
-            // Remove last activity if more than 4
-            if (activityList.children.length > 4) {
-                activityList.removeChild(activityList.lastChild);
+                // Remove last activity if more than 4
+                if (activityList.children.length > 4) {
+                    activityList.removeChild(activityList.lastChild);
+                }
             }
         }
 

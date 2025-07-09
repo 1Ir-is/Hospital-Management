@@ -1,261 +1,676 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="vi"
+      layout:decorate="~{admin/layout/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Thêm Nhân viên mới</title>
+    <title>Thêm Nhân Viên</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            max-width: 800px;
+        .form-section {
+            margin: 40px 0;
+            padding: 30px;
+            background: #f0f4ff;
+            border: 1px solid #dbeafe;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
         }
 
-        .form-container {
-            background-color: #f8f9fa;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+        .employee-form {
+            padding: 50px 60px;
+        }
+
+        .form-section {
+            margin-top: 2px;
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e2e8f0;
         }
 
         .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+            display: flex;
             gap: 20px;
             margin-bottom: 20px;
         }
 
         .form-group {
+            flex: 1;
             margin-bottom: 20px;
         }
 
-        .form-group.full-width {
-            grid-column: 1 / -1;
-        }
-
-        label {
+        .form-label {
             display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #333;
-        }
-
-        input[type="text"], input[type="email"], input[type="password"],
-        input[type="date"], select, textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #374151;
             font-size: 14px;
         }
 
-        select {
-            height: 45px;
-        }
-
-        textarea {
-            height: 80px;
-            resize: vertical;
-        }
-
-        .btn {
-            padding: 12px 24px;
-            margin-right: 10px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 14px;
-            font-weight: bold;
-        }
-
-        .btn-primary {
-            background-color: #007bff;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background-color: #0056b3;
-        }
-
-        .btn-secondary {
-            background-color: #6c757d;
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background-color: #545b62;
-        }
-
-        .form-actions {
-            margin-top: 30px;
-            text-align: center;
+        .form-label i {
+            margin-right: 8px;
+            color: #667eea;
         }
 
         .required {
-            color: red;
+            color: #e53e3e;
+            margin-left: 4px;
         }
 
-        .help-text {
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background-color: #fff;
+            box-sizing: border-box;
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-input::placeholder,
+        .form-textarea::placeholder {
+            color: #9ca3af;
+            font-style: italic;
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-help {
             font-size: 12px;
-            color: #6c757d;
+            color: #6b7280;
             margin-top: 5px;
         }
 
+        .form-error {
+            color: #e53e3e;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        /* Roles Container */
         .roles-container {
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            padding: 15px;
-            background-color: white;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 12px;
             max-height: 200px;
             overflow-y: auto;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+            background: #f8fafc;
         }
 
         .role-item {
             display: flex;
             align-items: center;
-            margin-bottom: 10px;
-            padding: 5px;
-            border-radius: 4px;
+            gap: 8px;
+            padding: 10px;
+            background: #fff;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
         }
 
         .role-item:hover {
-            background-color: #f8f9fa;
+            border-color: #667eea;
+            box-shadow: 0 2px 4px rgba(102, 126, 234, 0.1);
         }
 
         .role-item input[type="checkbox"] {
-            margin-right: 10px;
             width: auto;
+            margin: 0;
+            transform: scale(1.1);
+            accent-color: #667eea;
         }
 
-        .section-title {
-            background-color: #007bff;
+        .role-item label {
+            margin: 0;
+            cursor: pointer;
+            flex: 1;
+            font-size: 13px;
+        }
+
+        .role-item small {
+            color: #6b7280;
+            font-size: 11px;
+        }
+
+        /* Form Actions */
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            padding-top: 30px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 10px 15px;
-            margin: 20px -30px 20px -30px;
-            font-size: 16px;
-            font-weight: bold;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 140px;
+            justify-content: center;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f7fafc;
+            color: #4a5568;
+            border: 2px solid #e2e8f0;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 140px;
+            justify-content: center;
+        }
+
+        .btn-secondary:hover {
+            background: #edf2f7;
+            border-color: #cbd5e0;
+            transform: translateY(-1px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #667eea;
+            border: 2px solid #667eea;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 140px;
+            justify-content: center;
+        }
+
+        .btn-outline:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        /* Animation */
+        .form-card {
+            padding: 20px;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+
+            .roles-container {
+                grid-template-columns: 1fr;
+                max-height: 150px;
+            }
+
+            .form-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn-primary, .btn-secondary, .btn-outline {
+                width: 100%;
+                max-width: 200px;
+            }
+        }
+
+        /* Success notification */
+        .success-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #10b981;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .success-notification.show {
+            transform: translateX(0);
         }
     </style>
 </head>
 <body>
-<div class="form-container">
-    <h2>👤 Thêm Nhân viên mới</h2>
+<div layout:fragment="main-content">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb-nav">
+        <div class="breadcrumb">
+            <a th:href="@{/admin}">Dashboard</a>
+            <i class="fas fa-chevron-right"></i>
+            <a th:href="@{/admin/employees}">Nhân viên</a>
+            <i class="fas fa-chevron-right"></i>
+            <span>Thêm nhân viên mới</span>
+        </div>
+    </nav>
 
-    <form method="post" th:action="@{/admin/employees/create}" th:object="${employeeForm}">
-
-        <div class="section-title">📋 Thông tin cá nhân</div>
-
-        <div class="form-row">
-            <div class="form-group">
-                <label for="name">Họ và tên <span class="required">*</span>:</label>
-                <input id="name" placeholder="Nhập họ và tên đầy đủ" required th:field="*{name}"
-                       type="text"/>
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="page-header-content">
+            <div class="page-title-section">
+                <h1 class="page-title">
+                    <i class="fas fa-user-plus"></i>
+                    Thêm nhân viên mới
+                </h1>
+                <p class="page-subtitle">
+                    Điền thông tin để tạo nhân viên mới trong hệ thống
+                </p>
             </div>
-
-            <div class="form-group">
-                <label for="email">Email <span class="required">*</span>:</label>
-                <input id="email" placeholder="example@hospital.com" required th:field="*{email}"
-                       type="email"/>
+            <div class="page-actions">
+                <a class="btn-secondary" th:href="@{/admin/employees}">
+                    <i class="fas fa-arrow-left"></i>
+                    Quay lại danh sách
+                </a>
             </div>
         </div>
+    </div>
 
-        <div class="form-row">
-            <div class="form-group">
-                <label for="password">Mật khẩu <span class="required">*</span>:</label>
-                <input id="password" placeholder="Mật khẩu đăng nhập" required th:field="*{password}"
-                       type="password"/>
-                <div class="help-text">Mật khẩu nên có ít nhất 6 ký tự</div>
-            </div>
-
-            <div class="form-group">
-                <label for="phone">Số điện thoại:</label>
-                <input id="phone" placeholder="0901234567" th:field="*{phone}"
-                       type="text"/>
-            </div>
+    <!-- Form Card -->
+    <div class="form-card">
+        <div class="form-header">
+            <h2>Thông tin nhân viên</h2>
+            <p>Vui lòng điền đầy đủ thông tin bên dưới</p>
         </div>
 
-        <div class="form-row">
-            <div class="form-group">
-                <label for="gender">Giới tính:</label>
-                <select id="gender" th:field="*{gender}">
-                    <option value="">-- Chọn giới tính --</option>
-                    <option value="true">Nam</option>
-                    <option value="false">Nữ</option>
-                </select>
-            </div>
+        <form class="employee-form" id="employeeForm" method="post"
+              th:action="@{/admin/employees/create}" th:object="${employeeForm}">
 
-            <div class="form-group">
-                <label for="startingDate">Ngày bắt đầu làm việc:</label>
-                <input id="startingDate" th:field="*{startingDate}" type="date"/>
-            </div>
-        </div>
+            <!-- Personal Information Section -->
+            <div class="form-section">
+                <h3 class="section-title">
+                    <i class="fas fa-user"></i>
+                    Thông tin cá nhân
+                </h3>
 
-        <div class="form-group">
-            <label for="address">Địa chỉ:</label>
-            <textarea id="address" placeholder="Nhập địa chỉ đầy đủ..."
-                      th:field="*{address}"></textarea>
-        </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label required" for="employeeName">
+                            <i class="fas fa-id-card"></i>
+                            Họ và tên
+                        </label>
+                        <input class="form-input" id="employeeName" maxlength="100"
+                               placeholder="Nhập họ và tên đầy đủ" required
+                               th:field="*{name}" type="text"/>
+                        <div class="form-error" id="nameError"></div>
+                        <div class="form-help">Họ và tên phải từ 2-100 ký tự</div>
+                    </div>
 
-        <div class="section-title">🏢 Thông tin công việc</div>
+                    <div class="form-group">
+                        <label class="form-label required" for="employeeEmail">
+                            <i class="fas fa-envelope"></i>
+                            Email
+                        </label>
+                        <input class="form-input" id="employeeEmail" placeholder="example@hospital.com"
+                               required th:field="*{email}"
+                               type="email"/>
+                        <div class="form-error" id="emailError"></div>
+                    </div>
+                </div>
 
-        <div class="form-row">
-            <div class="form-group">
-                <label for="departmentId">Khoa <span class="required">*</span>:</label>
-                <select id="departmentId" required th:field="*{departmentId}">
-                    <option value="">-- Chọn khoa --</option>
-                    <option th:each="dept : ${departments}"
-                            th:text="${dept.name}"
-                            th:value="${dept.id}"></option>
-                </select>
-            </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label required" for="employeePassword">
+                            <i class="fas fa-lock"></i>
+                            Mật khẩu
+                        </label>
+                        <input class="form-input" id="employeePassword" minlength="6"
+                               placeholder="Mật khẩu đăng nhập" required
+                               th:field="*{password}" type="password"/>
+                        <div class="form-error" id="passwordError"></div>
+                        <div class="form-help">Mật khẩu phải có ít nhất 6 ký tự</div>
+                    </div>
 
-            <div class="form-group">
-                <label for="positionId">Chức vụ <span class="required">*</span>:</label>
-                <select id="positionId" required th:field="*{positionId}">
-                    <option value="">-- Chọn chức vụ --</option>
-                    <option th:each="pos : ${positions}"
-                            th:text="${pos.name}"
-                            th:value="${pos.id}"></option>
-                </select>
-            </div>
-        </div>
+                    <div class="form-group">
+                        <label class="form-label" for="employeePhone">
+                            <i class="fas fa-phone"></i>
+                            Số điện thoại
+                        </label>
+                        <input class="form-input" id="employeePhone" pattern="[0-9]{10,11}"
+                               placeholder="0901234567" th:field="*{phone}"
+                               type="tel"/>
+                        <div class="form-error" id="phoneError"></div>
+                    </div>
+                </div>
 
-        <div class="form-group">
-            <label for="status">Trạng thái làm việc:</label>
-            <select id="status" th:field="*{status}">
-                <option value="true">Hoạt động</option>
-                <option value="false">Ngừng hoạt động</option>
-            </select>
-        </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="employeeGender">
+                            <i class="fas fa-venus-mars"></i>
+                            Giới tính
+                        </label>
+                        <select class="form-select" id="employeeGender" th:field="*{gender}">
+                            <option value="">Chọn giới tính</option>
+                            <option value="true">Nam</option>
+                            <option value="false">Nữ</option>
+                        </select>
+                    </div>
 
-        <div class="form-group">
-            <label>Vai trò (có thể chọn nhiều) <span class="required">*</span>:</label>
-            <div class="roles-container">
-                <div class="role-item" th:each="role : ${roles}">
-                    <input th:field="*{roleIds}" th:id="'role_' + ${role.id}" th:value="${role.id}"
-                           type="checkbox"/>
-                    <label style="margin-bottom: 0; font-weight: normal;" th:for="'role_' + ${role.id}"
-                           th:text="${role.name}"></label>
-                    <small style="color: #6c757d; margin-left: 5px;" th:text="' (' + ${role.code} + ')'"></small>
+                    <div class="form-group">
+                        <label class="form-label" for="employeeStartingDate">
+                            <i class="fas fa-calendar-alt"></i>
+                            Ngày bắt đầu làm việc
+                        </label>
+                        <input class="form-input" id="employeeStartingDate" th:field="*{startingDate}"
+                               type="date"/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="employeeAddress">
+                        <i class="fas fa-map-marker-alt"></i>
+                        Địa chỉ
+                    </label>
+                    <textarea class="form-textarea" id="employeeAddress"
+                              placeholder="Nhập địa chỉ đầy đủ..." rows="3"
+                              th:field="*{address}"></textarea>
                 </div>
             </div>
-            <div class="help-text">Chọn các vai trò phù hợp với công việc của nhân viên</div>
-        </div>
 
-        <div class="form-group">
-            <label for="avatar">Avatar URL (tùy chọn):</label>
-            <input id="avatar" placeholder="https://example.com/avatar.jpg" th:field="*{avatar}"
-                   type="text"/>
-            <div class="help-text">URL hình ảnh đại diện của nhân viên</div>
-        </div>
+            <!-- Work Information Section -->
+            <div class="form-section">
+                <h3 class="section-title">
+                    <i class="fas fa-briefcase"></i>
+                    Thông tin công việc
+                </h3>
 
-        <div class="form-actions">
-            <button class="btn btn-primary" type="submit">💾 Lưu nhân viên</button>
-            <a class="btn btn-secondary" th:href="@{/admin/employees}">❌ Hủy</a>
-        </div>
-    </form>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label required" for="employeeDepartment">
+                            <i class="fas fa-building"></i>
+                            Khoa
+                        </label>
+                        <select class="form-select" id="employeeDepartment"
+                                required th:field="*{departmentId}">
+                            <option value="">Chọn khoa</option>
+                            <option th:each="dept : ${departments}"
+                                    th:text="${dept.name}"
+                                    th:value="${dept.id}"></option>
+                        </select>
+                        <div class="form-error" id="departmentError"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label required" for="employeePosition">
+                            <i class="fas fa-user-tie"></i>
+                            Chức vụ
+                        </label>
+                        <select class="form-select" id="employeePosition"
+                                required th:field="*{positionId}">
+                            <option value="">Chọn chức vụ</option>
+                            <option th:each="pos : ${positions}"
+                                    th:text="${pos.name}"
+                                    th:value="${pos.id}"></option>
+                        </select>
+                        <div class="form-error" id="positionError"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="employeeStatus">
+                        <i class="fas fa-toggle-on"></i>
+                        Trạng thái làm việc
+                    </label>
+                    <select class="form-select" id="employeeStatus" th:field="*{status}">
+                        <option value="true">Hoạt động</option>
+                        <option value="false">Ngừng hoạt động</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label required">
+                        <i class="fas fa-users-cog"></i>
+                        Vai trò (có thể chọn nhiều)
+                    </label>
+                    <div class="roles-container">
+                        <div class="role-item" th:each="role : ${roles}">
+                            <input th:field="*{roleIds}" th:id="'role_' + ${role.id}"
+                                   th:value="${role.id}"
+                                   type="checkbox"/>
+                            <label th:for="'role_' + ${role.id}"
+                                   th:text="${role.name}"></label>
+                            <small th:text="'(' + ${role.code} + ')'"></small>
+                        </div>
+                    </div>
+                    <div class="form-error" id="rolesError"></div>
+                    <div class="form-help">Chọn các vai trò phù hợp với công việc của nhân viên</div>
+                </div>
+            </div>
+
+            <!-- Additional Information Section -->
+            <div class="form-section">
+                <h3 class="section-title">
+                    <i class="fas fa-info-circle"></i>
+                    Thông tin bổ sung
+                </h3>
+
+                <div class="form-group">
+                    <label class="form-label" for="employeeAvatar">
+                        <i class="fas fa-image"></i>
+                        Avatar URL
+                    </label>
+                    <input class="form-input" id="employeeAvatar" placeholder="https://example.com/avatar.jpg"
+                           th:field="*{avatar}" type="url"/>
+                    <div class="form-help">URL hình ảnh đại diện của nhân viên</div>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="form-actions">
+                <button class="btn-secondary" onclick="history.back()" type="button">
+                    <i class="fas fa-times"></i>
+                    Hủy bỏ
+                </button>
+                <button class="btn-outline" type="reset">
+                    <i class="fas fa-redo"></i>
+                    Đặt lại
+                </button>
+                <button class="btn-primary" id="submitBtn" type="submit">
+                    <i class="fas fa-save"></i>
+                    <span>Lưu nhân viên</span>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('employeeForm');
+            const submitBtn = document.getElementById('submitBtn');
+
+            // Form validation
+            function validateForm() {
+                let isValid = true;
+
+                // Clear previous errors
+                document.querySelectorAll('.form-error').forEach(error => {
+                    error.textContent = '';
+                });
+
+                // Validate name
+                const name = document.getElementById('employeeName').value.trim();
+                if (!name) {
+                    showError('nameError', 'Họ và tên không được để trống');
+                    isValid = false;
+                } else if (name.length < 2) {
+                    showError('nameError', 'Họ và tên phải có ít nhất 2 ký tự');
+                    isValid = false;
+                }
+
+                // Validate email
+                const email = document.getElementById('employeeEmail').value.trim();
+                if (!email) {
+                    showError('emailError', 'Email không được để trống');
+                    isValid = false;
+                } else if (!isValidEmail(email)) {
+                    showError('emailError', 'Định dạng email không hợp lệ');
+                    isValid = false;
+                }
+
+                // Validate password
+                const password = document.getElementById('employeePassword').value;
+                if (!password) {
+                    showError('passwordError', 'Mật khẩu không được để trống');
+                    isValid = false;
+                } else if (password.length < 6) {
+                    showError('passwordError', 'Mật khẩu phải có ít nhất 6 ký tự');
+                    isValid = false;
+                }
+
+                // Validate department
+                const department = document.getElementById('employeeDepartment').value;
+                if (!department) {
+                    showError('departmentError', 'Vui lòng chọn khoa');
+                    isValid = false;
+                }
+
+                // Validate position
+                const position = document.getElementById('employeePosition').value;
+                if (!position) {
+                    showError('positionError', 'Vui lòng chọn chức vụ');
+                    isValid = false;
+                }
+
+                // Validate roles
+                const roles = document.querySelectorAll('input[name="roleIds"]:checked');
+                if (roles.length === 0) {
+                    showError('rolesError', 'Vui lòng chọn ít nhất một vai trò');
+                    isValid = false;
+                }
+
+                return isValid;
+            }
+
+            function showError(elementId, message) {
+                document.getElementById(elementId).textContent = message;
+            }
+
+            function isValidEmail(email) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(email);
+            }
+
+            // Form submission
+            form.addEventListener('submit', function (e) {
+
+                if (validateForm()) {
+                    // Show loading state
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang lưu...';
+                    submitBtn.disabled = true;
+
+                    // Simulate API call
+                    setTimeout(() => {
+                        showSuccessMessage();
+
+                        // Reset button
+                        submitBtn.innerHTML = '<i class="fas fa-save"></i> Lưu nhân viên';
+                        submitBtn.disabled = false;
+
+                        // Redirect after 2 seconds
+                        setTimeout(() => {
+                            window.location.href = '/admin/employees';
+                        }, 2000);
+                    }, 1500);
+                }
+            });
+
+            function showSuccessMessage() {
+                const notification = document.createElement('div');
+                notification.className = 'success-notification';
+                notification.innerHTML = `
+                    <i class="fas fa-check-circle"></i>
+                    <span>Nhân viên đã được tạo thành công!</span>
+                `;
+
+                document.body.appendChild(notification);
+
+                setTimeout(() => {
+                    notification.classList.add('show');
+                }, 100);
+
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    setTimeout(() => {
+                        document.body.removeChild(notification);
+                    }, 300);
+                }, 3000);
+            }
+
+            // Real-time validation
+            const inputs = form.querySelectorAll('input, select');
+            inputs.forEach(input => {
+                input.addEventListener('blur', validateForm);
+            });
+        });
+    </script>
 </div>
 </body>
 </html>

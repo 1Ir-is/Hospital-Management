@@ -18,6 +18,7 @@ public class RoleController {
 
     @GetMapping()
     public String showListRoles(Model model) {
+        model.addAttribute("activeMenu", "roles");
         List<Role> roles = roleService.findAllRoles();
         model.addAttribute("roles", roles);
         return "admin/role/list";
@@ -25,6 +26,7 @@ public class RoleController {
 
     @GetMapping("/create")
     public String showCreateForm(Model model) {
+        model.addAttribute("activeMenu", "roles");
         Role role = new Role();
         model.addAttribute("role", role);
         return "admin/role/create-form";
@@ -38,6 +40,7 @@ public class RoleController {
 
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model) {
+        model.addAttribute("activeMenu", "roles");
         Role role = roleService.findRoleById(id);
         if (role == null) {
             return "redirect:/admin/roles";
