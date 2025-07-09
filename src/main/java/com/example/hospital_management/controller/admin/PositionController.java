@@ -21,7 +21,6 @@ public class PositionController {
         model.addAttribute("activeMenu", "positions");
         List<Position> positions = positionService.findAllPositions();
         model.addAttribute("positions", positions);
-        model.addAttribute("activeMenu", "departments");
         return "admin/position/list";
     }
 
