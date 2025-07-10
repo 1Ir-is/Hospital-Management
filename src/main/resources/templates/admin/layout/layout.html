@@ -42,43 +42,66 @@
                     <span>Dashboard</span>
                 </a>
             </div>
+
             <div class="menu-section">
-                <div class="menu-title">Quản lý</div>
+                <div class="menu-title">Quản lý y tế</div>
                 <a class="menu-item" href="/admin/departments"
                    th:classappend="${activeMenu} == 'departments' ? 'active' : ''">
                     <i class="fas fa-building"></i>
                     <span>Khoa bệnh viện</span>
                 </a>
-                <a class="menu-item" href="#">
-                    <i class="fas fa-user-md"></i>
-                    <span>Bác sĩ</span>
-                </a>
-                <a class="menu-item" href="#">
-                    <i class="fas fa-users"></i>
-                    <span>Bệnh nhân</span>
-                </a>
-                <a class="menu-item" href="#">
+                <a class="menu-item" href="/admin/appointments"
+                   th:classappend="${activeMenu} == 'appointments' ? 'active' : ''">
                     <i class="fas fa-calendar-check"></i>
                     <span>Lịch hẹn</span>
                 </a>
-                <a class="menu-item" href="#">
+                <a class="menu-item" href="/admin/rooms"
+                   th:classappend="${activeMenu} == 'rooms' ? 'active' : ''">
                     <i class="fas fa-bed"></i>
                     <span>Phòng bệnh</span>
                 </a>
             </div>
+
+            <div class="menu-section">
+                <div class="menu-title">Quản lý nhân sự</div>
+                <a class="menu-item" href="/admin/employees"
+                   th:classappend="${activeMenu} == 'employees' ? 'active' : ''">
+                    <i class="fas fa-user-tie"></i>
+                    <span>Nhân viên</span>
+                </a>
+                <a class="menu-item" href="/admin/roles"
+                   th:classappend="${activeMenu} == 'roles' ? 'active' : ''">
+                    <i class="fas fa-user-shield"></i>
+                    <span>Vai trò</span>
+                </a>
+                <a class="menu-item" href="/admin/positions"
+                   th:classappend="${activeMenu} == 'positions' ? 'active' : ''">
+                    <i class="fas fa-briefcase"></i>
+                    <span>Chức vụ</span>
+                </a>
+            </div>
+
             <div class="menu-section">
                 <div class="menu-title">Hệ thống</div>
-                <a class="menu-item" href="#">
+                <a class="menu-item" href="/admin/settings"
+                   th:classappend="${activeMenu} == 'settings' ? 'active' : ''">
                     <i class="fas fa-cog"></i>
                     <span>Cài đặt</span>
                 </a>
-                <a class="menu-item" href="#">
+                <a class="menu-item" href="/admin/reports"
+                   th:classappend="${activeMenu} == 'reports' ? 'active' : ''">
                     <i class="fas fa-chart-bar"></i>
                     <span>Báo cáo</span>
                 </a>
-                <a class="menu-item" href="#">
+                <a class="menu-item" href="/admin/security"
+                   th:classappend="${activeMenu} == 'security' ? 'active' : ''">
                     <i class="fas fa-shield-alt"></i>
                     <span>Bảo mật</span>
+                </a>
+                <a class="menu-item" href="/admin/audit"
+                   th:classappend="${activeMenu} == 'audit' ? 'active' : ''">
+                    <i class="fas fa-history"></i>
+                    <span>Nhật ký hoạt động</span>
                 </a>
             </div>
         </div>
@@ -89,6 +112,65 @@
         <div layout:fragment="main-content"></div>
     </main>
 </div>
+
+<!-- Base JavaScript -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Sidebar menu interactions
+        const menuItems = document.querySelectorAll(".menu-item");
+        const currentPath = window.location.pathname;
+
+        menuItems.forEach((item) => {
+            item.addEventListener("click", function (e) {
+                this.style.opacity = "0.7";
+            });
+        });
+
+        // Mobile menu toggle (if needed)
+        const toggleSidebar = document.querySelector(".sidebar-toggle");
+        const sidebar = document.querySelector(".sidebar");
+
+        if (toggleSidebar) {
+            toggleSidebar.addEventListener("click", function () {
+                sidebar.classList.toggle("collapsed");
+            });
+        }
+
+        // Logout confirmation
+        const logoutBtn = document.querySelector(".logout-btn");
+        if (logoutBtn) {
+            logoutBtn.addEventListener("click", function (e) {
+                e.preventDefault();
+                if (confirm("Bạn có chắc chắn muốn đăng xuất?")) {
+                    window.location.href = "/admin/logout";
+                }
+            });
+        }
+
+        // Auto-close mobile menu when clicking outside
+        document.addEventListener("click", function (e) {
+            if (window.innerWidth <= 768) {
+                const sidebar = document.querySelector(".sidebar");
+                const sidebarToggle = document.querySelector(".sidebar-toggle");
+
+                if (sidebar && !sidebar.contains(e.target) && !sidebarToggle?.contains(e.target)) {
+                    sidebar.classList.remove("active");
+                }
+            }
+        });
+
+        // Responsive sidebar handling
+        function handleResize() {
+            const sidebar = document.querySelector(".sidebar");
+            if (window.innerWidth > 768) {
+                sidebar?.classList.remove("active");
+            }
+        }
+
+        window.addEventListener("resize", handleResize);
+        handleResize(); // Call on initial load
+    });
+</script>
 
 <!-- Các JS library -->
 <script src="https://kit.fontawesome.com/c1df782baf.js"></script>
