@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @PreAuthorize("hasRole('ADMIN')")
 public class AdminController {
 
+
     @GetMapping()
     public String showAdminDashboard(Model model) {
         model.addAttribute("activeMenu", "dashboard");
