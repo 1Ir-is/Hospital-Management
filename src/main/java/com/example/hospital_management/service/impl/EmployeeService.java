@@ -45,6 +45,15 @@ public class EmployeeService implements IEmployeeService {
 
     @Override
     public Employee saveEmployee(Employee employee) {
+        if (employee.getPassword() != null && !employee.getPassword().isEmpty()) {
+            // Kiểm tra xem password đã được mã hóa chưa (BCrypt hash bắt đầu bằng $2a$, $2b$, $2y$)
+            if (!employee.getPassword().startsWith("$2a$") &&
+                    !employee.getPassword().startsWith("$2b$") &&
+                    !employee.getPassword().startsWith("$2y$")) {
+                employee.setPassword(passwordEncoder.encode(employee.getPassword()));
+            }
+        }
+
         if (employee.getStartingDate() == null) {
             employee.setStartingDate(LocalDate.now());
         }
@@ -68,12 +77,7 @@ public class EmployeeService implements IEmployeeService {
     @Override
     @Transactional
     public void saveEmployeeWithRoles(Employee employee, List<Long> roleIds) {
-        // Mã hóa mật khẩu trước khi lưu
-        if (employee.getPassword() != null && !employee.getPassword().isEmpty()) {
-            employee.setPassword(passwordEncoder.encode(employee.getPassword()));
-        }
-
-        // Lưu employee trước
+        // ✅ Bây giờ saveEmployee() đã có logic mã hóa password
         Employee savedEmployee = saveEmployee(employee);
 
         // Lưu roles cho employee
@@ -111,7 +115,39 @@ public class EmployeeService implements IEmployeeService {
         }
     }
 
-    // EmployeeService.java implementation
+    @Override
+    @Transactional
+    public void updateEmployeeWithRoles(Long employeeId, Employee updatedEmployee, List<Long> roleIds) {
+        Employee existingEmployee = findEmployeeById(employeeId);
+        if (existingEmployee == null) {
+            throw new RuntimeException("Employee not found with id: " + employeeId);
+        }
+
+        // Update thông tin employee
+        existingEmployee.setName(updatedEmployee.getName());
+        existingEmployee.setPhone(updatedEmployee.getPhone());
+        existingEmployee.setEmail(updatedEmployee.getEmail());
+        existingEmployee.setGender(updatedEmployee.getGender());
+        existingEmployee.setAddress(updatedEmployee.getAddress());
+        existingEmployee.setStartingDate(updatedEmployee.getStartingDate());
+        existingEmployee.setStatus(updatedEmployee.getStatus());
+        existingEmployee.setAvatar(updatedEmployee.getAvatar());
+        existingEmployee.setDepartment(updatedEmployee.getDepartment());
+        existingEmployee.setPosition(updatedEmployee.getPosition());
+
+        if (updatedEmployee.getPassword() != null && !updatedEmployee.getPassword().trim().isEmpty()) {
+            existingEmployee.setPassword(passwordEncoder.encode(updatedEmployee.getPassword()));
+        }
+        // Nếu password trống thì giữ nguyên password cũ
+
+        // Save employee
+        employeeRepository.save(existingEmployee);
+
+        // Update roles
+        updateEmployeeRoles(employeeId, roleIds);
+    }
+
+
     @Override
     public long countTotalEmployees() {
         return employeeRepository.count();

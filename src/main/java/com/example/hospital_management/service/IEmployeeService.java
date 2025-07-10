@@ -28,4 +28,6 @@ public interface IEmployeeService {
     void saveEmployeeWithRoles(Employee employee, List<Long> roleIds);
 
     void updateEmployeeRoles(Long employeeId, List<Long> roleIds);
+
+    void updateEmployeeWithRoles(Long employeeId, Employee updatedEmployee, List<Long> roleIds);
 }

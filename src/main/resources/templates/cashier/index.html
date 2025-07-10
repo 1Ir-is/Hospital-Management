@@ -1,257 +1,390 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Thu ngân Dashboard - Hệ thống Quản lý Bệnh viện</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<html lang="vi"
+      layout:decorate="~{cashier/layout/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+>
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f5f5;
-        }
+<div layout:fragment="main-content">
 
-        .header {
-            background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
-            color: white;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .header h1 {
-            font-size: 1.5rem;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .logout-btn {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .logout-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 1rem;
-        }
-
-        .welcome-card {
-            background: white;
-            border-radius: 10px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background: white;
-            border-radius: 10px;
-            padding: 1.5rem;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-
-        .stat-icon {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-
-        .stat-number {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #333;
-        }
-
-        .stat-label {
-            color: #666;
-            font-size: 0.9rem;
-        }
-
-        .functions-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1rem;
-        }
-
-        .function-card {
-            background: white;
-            border-radius: 10px;
-            padding: 1.5rem;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .function-card h3 {
-            color: #333;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .function-list {
-            list-style: none;
-        }
-
-        .function-list li {
-            padding: 0.5rem 0;
-            border-bottom: 1px solid #eee;
-        }
-
-        .function-list li:last-child {
-            border-bottom: none;
-        }
-
-        .function-list a {
-            color: #4caf50;
-            text-decoration: none;
-        }
-
-        .function-list a:hover {
-            text-decoration: underline;
-        }
-
-        .user-role {
-            background: rgba(76, 175, 80, 0.1);
-            color: #4caf50;
-            padding: 0.3rem 0.8rem;
-            border-radius: 15px;
-            font-size: 0.8rem;
-        }
-    </style>
-</head>
-<body>
-<header class="header">
-    <h1><i class="fas fa-cash-register"></i> Thu ngân Dashboard</h1>
-    <div class="user-info">
-        <span class="user-role">💰 Thu ngân</span>
-        <span>Xin chào, Thu ngân</span>
-        <form method="post" style="display: inline;" th:action="@{/logout}">
-            <button class="logout-btn" type="submit">
-                <i class="fas fa-sign-out-alt"></i> Đăng xuất
-            </button>
-        </form>
-    </div>
-</header>
-
-<div class="container">
-    <div class="welcome-card">
+    <!-- Welcome Card với màu #4caf50 -->
+    <div class="welcome-card"
+         style="background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%); color: white; border-radius: 15px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 4px 20px rgba(76, 175, 80, 0.3);">
         <h2>💰 Bảng điều khiển Thu ngân</h2>
-        <p><strong>Chức năng chính (do Nhơn thực hiện):</strong></p>
-        <ul style="margin-top: 1rem; line-height: 1.6;">
-            <li>💵 Nhân viên thu ngân có thể thu tiền khám, xét nghiệm, thuốc</li>
-        </ul>
-    </div>
-
-    <div class="stats-grid">
-        <div class="stat-card">
-            <div class="stat-icon" style="color: #4caf50;"><i class="fas fa-money-bill-wave"></i></div>
-            <div class="stat-number">24.5M</div>
-            <div class="stat-label">Doanh thu hôm nay</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon" style="color: #2196f3;"><i class="fas fa-receipt"></i></div>
-            <div class="stat-number">158</div>
-            <div class="stat-label">Hóa đơn đã thanh toán</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon" style="color: #ff9800;"><i class="fas fa-hourglass-half"></i></div>
-            <div class="stat-number">23</div>
-            <div class="stat-label">Chờ thanh toán</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon" style="color: #9c27b0;"><i class="fas fa-credit-card"></i></div>
-            <div class="stat-number">89%</div>
-            <div class="stat-label">Thanh toán thẻ</div>
+        <p style="margin-top: 1rem; font-size: 1.1rem;"><strong>Chức năng chính (do Nhơn thực hiện):</strong></p>
+        <div style="margin-top: 1rem; background: rgba(255,255,255,0.15); padding: 1.5rem; border-radius: 10px; backdrop-filter: blur(10px);">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <i class="fas fa-money-bill-wave" style="font-size: 2rem;"></i>
+                <p style="font-size: 1.2rem; margin: 0;">💵 Thu tiền khám, xét nghiệm, thuốc</p>
+            </div>
         </div>
     </div>
 
-    <div class="functions-grid">
-        <div class="function-card">
-            <h3><i class="fas fa-cash-register"></i> Thu tiền Khám bệnh</h3>
-            <ul class="function-list">
-                <li><a href="#examination-payment">🩺 Thu tiền khám</a></li>
-                <li><a href="#consultation-fees">💵 Phí tư vấn</a></li>
-                <li><a href="#follow-up-payment">🔄 Thu tiền tái khám</a></li>
-                <li><a href="#emergency-payment">🚨 Thu tiền cấp cứu</a></li>
-            </ul>
+    <!-- Statistics Cards -->
+    <div class="stats-grid"
+         style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+        <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(76, 175, 80, 0.1);">
+                <i class="fas fa-money-bill-wave" style="color: #4caf50;"></i>
+            </div>
+            <div class="stat-content">
+                <h3>24.5M</h3>
+                <p>Doanh thu hôm nay</p>
+                <span class="stat-change positive">+2.3M so với hôm qua</span>
+            </div>
         </div>
 
-        <div class="function-card">
-            <h3><i class="fas fa-vial"></i> Thu tiền Xét nghiệm</h3>
-            <ul class="function-list">
-                <li><a href="#lab-payment">🔬 Thu tiền xét nghiệm</a></li>
-                <li><a href="#test-packages">📦 Gói xét nghiệm</a></li>
-                <li><a href="#imaging-payment">📷 Thu tiền chẩn đoán hình ảnh</a></li>
-                <li><a href="#urgent-test-payment">⚡ Xét nghiệm cấp cứu</a></li>
-            </ul>
+        <div class="stat-card">
+            <div class="stat-icon" style="background: #e3f2fd;">
+                <i class="fas fa-receipt" style="color: #2196f3;"></i>
+            </div>
+            <div class="stat-content">
+                <h3>158</h3>
+                <p>Hóa đơn đã thanh toán</p>
+                <span class="stat-change positive">+25 so với hôm qua</span>
+            </div>
         </div>
 
-        <div class="function-card">
-            <h3><i class="fas fa-pills"></i> Thu tiền Thuốc</h3>
-            <ul class="function-list">
-                <li><a href="#medication-payment">💊 Thu tiền thuốc</a></li>
-                <li><a href="#prescription-payment">📋 Thanh toán đơn thuốc</a></li>
-                <li><a href="#otc-payment">🏪 Thuốc không kê đơn</a></li>
-                <li><a href="#medical-supplies">🩹 Vật tư y tế</a></li>
-            </ul>
+        <div class="stat-card">
+            <div class="stat-icon" style="background: #fff3e0;">
+                <i class="fas fa-hourglass-half" style="color: #ff9800;"></i>
+            </div>
+            <div class="stat-content">
+                <h3>23</h3>
+                <p>Chờ thanh toán</p>
+                <span class="stat-change neutral">Trung bình 5 phút/hóa đơn</span>
+            </div>
         </div>
 
-        <div class="function-card">
-            <h3><i class="fas fa-credit-card"></i> Phương thức Thanh toán</h3>
-            <ul class="function-list">
-                <li><a href="#cash-payment">💵 Thanh toán tiền mặt</a></li>
-                <li><a href="#card-payment">💳 Thanh toán thẻ</a></li>
-                <li><a href="#insurance-payment">🆔 Thanh toán bảo hiểm</a></li>
-                <li><a href="#installment-payment">📅 Thanh toán trả góp</a></li>
-            </ul>
+        <div class="stat-card">
+            <div class="stat-icon" style="background: #f3e5f5;">
+                <i class="fas fa-credit-card" style="color: #9c27b0;"></i>
+            </div>
+            <div class="stat-content">
+                <h3>89%</h3>
+                <p>Thanh toán thẻ</p>
+                <span class="stat-change positive">Tăng 5% so với tuần trước</span>
+            </div>
         </div>
+    </div>
 
-        <div class="function-card">
-            <h3><i class="fas fa-file-invoice"></i> Quản lý Hóa đơn</h3>
-            <ul class="function-list">
-                <li><a href="#invoice-generation">📄 Tạo hóa đơn</a></li>
-                <li><a href="#invoice-history">📚 Lịch sử hóa đơn</a></li>
-                <li><a href="#refund-processing">↩️ Xử lý hoàn tiền</a></li>
-                <li><a href="#invoice-search">🔍 Tìm kiếm hóa đơn</a></li>
-            </ul>
+    <!-- Quick Actions -->
+    <div class="dashboard-section">
+        <h2>Thao tác nhanh</h2>
+        <div class="quick-actions"
+             style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
+            <a class="quick-action-card" href="/cashier/examination-payment"
+               onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 10px rgba(0,0,0,0.1)'"
+               onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 25px rgba(76, 175, 80, 0.4)'"
+               style="background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%); color: white; text-decoration: none; padding: 1.5rem; border-radius: 10px; text-align: center; transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                <i class="fas fa-stethoscope" style="font-size: 2rem; margin-bottom: 0.5rem; display: block;"></i>
+                <span>Thu tiền khám</span>
+            </a>
+            <a class="quick-action-card" href="/cashier/lab-payment"
+               onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 10px rgba(0,0,0,0.1)'"
+               onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 25px rgba(56, 142, 60, 0.4)'"
+               style="background: linear-gradient(135deg, #388e3c 0%, #2e7d32 100%); color: white; text-decoration: none; padding: 1.5rem; border-radius: 10px; text-align: center; transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                <i class="fas fa-vial" style="font-size: 2rem; margin-bottom: 0.5rem; display: block;"></i>
+                <span>Thu tiền xét nghiệm</span>
+            </a>
+            <a class="quick-action-card" href="/cashier/medication-payment"
+               onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 10px rgba(0,0,0,0.1)'"
+               onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 25px rgba(46, 125, 50, 0.4)'"
+               style="background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%); color: white; text-decoration: none; padding: 1.5rem; border-radius: 10px; text-align: center; transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                <i class="fas fa-pills" style="font-size: 2rem; margin-bottom: 0.5rem; display: block;"></i>
+                <span>Thu tiền thuốc</span>
+            </a>
+            <a class="quick-action-card" href="/cashier/invoice-generation"
+               onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 10px rgba(0,0,0,0.1)'"
+               onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 25px rgba(27, 94, 32, 0.4)'"
+               style="background: linear-gradient(135deg, #1b5e20 0%, #0d4f0f 100%); color: white; text-decoration: none; padding: 1.5rem; border-radius: 10px; text-align: center; transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                <i class="fas fa-file-invoice" style="font-size: 2rem; margin-bottom: 0.5rem; display: block;"></i>
+                <span>Tạo hóa đơn</span>
+            </a>
         </div>
+    </div>
 
-        <div class="function-card">
-            <h3><i class="fas fa-chart-bar"></i> Báo cáo Tài chính</h3>
-            <ul class="function-list">
-                <li><a href="#daily-revenue">📊 Doanh thu ngày</a></li>
-                <li><a href="#payment-summary">💰 Tổng kết thanh toán</a></li>
-                <li><a href="#cash-flow">📈 Dòng tiền</a></li>
-                <li><a href="#monthly-report">📋 Báo cáo tháng</a></li>
-            </ul>
+    <!-- Payment Overview -->
+    <div class="dashboard-section">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+            <!-- Examination Payments -->
+            <div class="function-card"
+                 style="background: white; padding: 1.5rem; border-radius: 15px; box-shadow: 0 4px 20px rgba(76, 175, 80, 0.1); border-left: 4px solid #4caf50;">
+                <h3 style="color: #4caf50; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-cash-register"></i> Thu tiền Khám bệnh
+                </h3>
+                <ul class="function-list" style="list-style: none;">
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/cashier/examination-payment" style="color: #4caf50; text-decoration: none;">🩺 Thu tiền
+                            khám</a>
+                    </li>
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/cashier/consultation-fees" style="color: #4caf50; text-decoration: none;">💵 Phí tư
+                            vấn</a>
+                    </li>
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/cashier/follow-up-payment" style="color: #4caf50; text-decoration: none;">🔄 Thu tiền
+                            tái khám</a>
+                    </li>
+                    <li style="padding: 0.5rem 0;">
+                        <a href="/cashier/emergency-payment" style="color: #4caf50; text-decoration: none;">🚨 Thu tiền
+                            cấp cứu</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Lab Payments -->
+            <div class="function-card"
+                 style="background: white; padding: 1.5rem; border-radius: 15px; box-shadow: 0 4px 20px rgba(76, 175, 80, 0.1); border-left: 4px solid #388e3c;">
+                <h3 style="color: #388e3c; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-vial"></i> Thu tiền Xét nghiệm
+                </h3>
+                <ul class="function-list" style="list-style: none;">
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/cashier/lab-payment" style="color: #388e3c; text-decoration: none;">🔬 Thu tiền xét
+                            nghiệm</a>
+                    </li>
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/cashier/test-packages" style="color: #388e3c; text-decoration: none;">📦 Gói xét
+                            nghiệm</a>
+                    </li>
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/cashier/imaging-payment" style="color: #388e3c; text-decoration: none;">📷 Thu tiền
+                            chẩn đoán hình ảnh</a>
+                    </li>
+                    <li style="padding: 0.5rem 0;">
+                        <a href="/cashier/urgent-test-payment" style="color: #388e3c; text-decoration: none;">⚡ Xét
+                            nghiệm cấp cứu</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Medication Payments -->
+            <div class="function-card"
+                 style="background: white; padding: 1.5rem; border-radius: 15px; box-shadow: 0 4px 20px rgba(76, 175, 80, 0.1); border-left: 4px solid #2e7d32;">
+                <h3 style="color: #2e7d32; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-pills"></i> Thu tiền Thuốc
+                </h3>
+                <ul class="function-list" style="list-style: none;">
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/cashier/medication-payment" style="color: #2e7d32; text-decoration: none;">💊 Thu tiền
+                            thuốc</a>
+                    </li>
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/cashier/prescription-payment" style="color: #2e7d32; text-decoration: none;">📋 Thanh
+                            toán đơn thuốc</a>
+                    </li>
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/cashier/otc-payment" style="color: #2e7d32; text-decoration: none;">🏪 Thuốc không kê
+                            đơn</a>
+                    </li>
+                    <li style="padding: 0.5rem 0;">
+                        <a href="/cashier/medical-supplies" style="color: #2e7d32; text-decoration: none;">🩹 Vật tư y
+                            tế</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Payment Methods -->
+            <div class="function-card"
+                 style="background: white; padding: 1.5rem; border-radius: 15px; box-shadow: 0 4px 20px rgba(76, 175, 80, 0.1); border-left: 4px solid #1b5e20;">
+                <h3 style="color: #1b5e20; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-credit-card"></i> Phương thức Thanh toán
+                </h3>
+                <ul class="function-list" style="list-style: none;">
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/cashier/cash-payment" style="color: #1b5e20; text-decoration: none;">💵 Thanh toán tiền
+                            mặt</a>
+                    </li>
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/cashier/card-payment" style="color: #1b5e20; text-decoration: none;">💳 Thanh toán
+                            thẻ</a>
+                    </li>
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/cashier/insurance-payment" style="color: #1b5e20; text-decoration: none;">🆔 Thanh toán
+                            bảo hiểm</a>
+                    </li>
+                    <li style="padding: 0.5rem 0;">
+                        <a href="/cashier/installment-payment" style="color: #1b5e20; text-decoration: none;">📅 Thanh
+                            toán trả góp</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Invoice Management -->
+            <div class="function-card"
+                 style="background: white; padding: 1.5rem; border-radius: 15px; box-shadow: 0 4px 20px rgba(76, 175, 80, 0.1); border-left: 4px solid #0d4f0f;">
+                <h3 style="color: #0d4f0f; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-file-invoice"></i> Quản lý Hóa đơn
+                </h3>
+                <ul class="function-list" style="list-style: none;">
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/cashier/invoice-generation" style="color: #0d4f0f; text-decoration: none;">📄 Tạo hóa
+                            đơn</a>
+                    </li>
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/cashier/invoice-history" style="color: #0d4f0f; text-decoration: none;">📚 Lịch sử hóa
+                            đơn</a>
+                    </li>
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/cashier/refund-processing" style="color: #0d4f0f; text-decoration: none;">↩️ Xử lý
+                            hoàn tiền</a>
+                    </li>
+                    <li style="padding: 0.5rem 0;">
+                        <a href="/cashier/invoice-search" style="color: #0d4f0f; text-decoration: none;">🔍 Tìm kiếm hóa
+                            đơn</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Financial Reports -->
+            <div class="function-card"
+                 style="background: white; padding: 1.5rem; border-radius: 15px; box-shadow: 0 4px 20px rgba(76, 175, 80, 0.1); border-left: 4px solid #66bb6a;">
+                <h3 style="color: #66bb6a; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-chart-bar"></i> Báo cáo Tài chính
+                </h3>
+                <ul class="function-list" style="list-style: none;">
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/cashier/daily-revenue" style="color: #66bb6a; text-decoration: none;">📊 Doanh thu
+                            ngày</a>
+                    </li>
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/cashier/payment-summary" style="color: #66bb6a; text-decoration: none;">💰 Tổng kết
+                            thanh toán</a>
+                    </li>
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/cashier/cash-flow" style="color: #66bb6a; text-decoration: none;">📈 Dòng tiền</a>
+                    </li>
+                    <li style="padding: 0.5rem 0;">
+                        <a href="/cashier/monthly-report" style="color: #66bb6a; text-decoration: none;">📋 Báo cáo
+                            tháng</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Real-time Payment Queue -->
+    <div class="dashboard-section">
+        <h2>Hàng đợi thanh toán</h2>
+        <div style="background: white; border-radius: 15px; padding: 1.5rem; margin-top: 1rem; box-shadow: 0 4px 20px rgba(76, 175, 80, 0.1);">
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                    <tr style="background: #f1f8e9;">
+                        <th style="padding: 1rem; text-align: left; border-bottom: 2px solid #4caf50;">STT</th>
+                        <th style="padding: 1rem; text-align: left; border-bottom: 2px solid #4caf50;">Bệnh nhân</th>
+                        <th style="padding: 1rem; text-align: left; border-bottom: 2px solid #4caf50;">Dịch vụ</th>
+                        <th style="padding: 1rem; text-align: left; border-bottom: 2px solid #4caf50;">Số tiền</th>
+                        <th style="padding: 1rem; text-align: left; border-bottom: 2px solid #4caf50;">Trạng thái</th>
+                        <th style="padding: 1rem; text-align: left; border-bottom: 2px solid #4caf50;">Thao tác</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr style="border-bottom: 1px solid #e8f5e8;">
+                        <td style="padding: 1rem;">001</td>
+                        <td style="padding: 1rem;">Nguyễn Văn A</td>
+                        <td style="padding: 1rem;">Khám nội tổng quát</td>
+                        <td style="padding: 1rem; color: #4caf50; font-weight: bold;">200,000 VNĐ</td>
+                        <td style="padding: 1rem;"><span
+                                style="background: #ffc107; color: black; padding: 0.25rem 0.5rem; border-radius: 15px; font-size: 0.8rem;">Chờ thanh toán</span>
+                        </td>
+                        <td style="padding: 1rem;">
+                            <button style="background: #4caf50; color: white; border: none; padding: 0.25rem 0.75rem; border-radius: 4px; margin-right: 0.5rem;">
+                                Thu tiền
+                            </button>
+                        </td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #e8f5e8;">
+                        <td style="padding: 1rem;">002</td>
+                        <td style="padding: 1rem;">Trần Thị B</td>
+                        <td style="padding: 1rem;">Xét nghiệm máu + Thuốc</td>
+                        <td style="padding: 1rem; color: #4caf50; font-weight: bold;">350,000 VNĐ</td>
+                        <td style="padding: 1rem;"><span
+                                style="background: #28a745; color: white; padding: 0.25rem 0.5rem; border-radius: 15px; font-size: 0.8rem;">Đã thanh toán</span>
+                        </td>
+                        <td style="padding: 1rem;">
+                            <button style="background: #17a2b8; color: white; border: none; padding: 0.25rem 0.75rem; border-radius: 4px; margin-right: 0.5rem;">
+                                In hóa đơn
+                            </button>
+                        </td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #e8f5e8;">
+                        <td style="padding: 1rem;">003</td>
+                        <td style="padding: 1rem;">Lê Văn C</td>
+                        <td style="padding: 1rem;">Chụp X-quang</td>
+                        <td style="padding: 1rem; color: #4caf50; font-weight: bold;">150,000 VNĐ</td>
+                        <td style="padding: 1rem;"><span
+                                style="background: #ffc107; color: black; padding: 0.25rem 0.5rem; border-radius: 15px; font-size: 0.8rem;">Chờ thanh toán</span>
+                        </td>
+                        <td style="padding: 1rem;">
+                            <button style="background: #4caf50; color: white; border: none; padding: 0.25rem 0.75rem; border-radius: 4px; margin-right: 0.5rem;">
+                                Thu tiền
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Revenue Chart -->
+    <div class="dashboard-section">
+        <h2>Doanh thu theo giờ hôm nay</h2>
+        <div style="background: white; border-radius: 15px; padding: 1.5rem; margin-top: 1rem; box-shadow: 0 4px 20px rgba(76, 175, 80, 0.1);">
+            <canvas id="revenueChart" style="max-height: 400px;"></canvas>
         </div>
     </div>
 </div>
-</body>
+
+<div layout:fragment="page-scripts">
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Revenue Chart
+            const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+            new Chart(revenueCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['8h', '9h', '10h', '11h', '12h', '13h', '14h', '15h', '16h', '17h'],
+                    datasets: [{
+                        label: 'Doanh thu (VNĐ)',
+                        data: [1200000, 2100000, 3500000, 2800000, 4200000, 3100000, 2900000, 3800000, 2600000, 1900000],
+                        backgroundColor: 'rgba(76, 175, 80, 0.8)',
+                        borderColor: '#4caf50',
+                        borderWidth: 2,
+                        borderRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function (value) {
+                                    return new Intl.NumberFormat('vi-VN', {
+                                        style: 'currency',
+                                        currency: 'VND'
+                                    }).format(value);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Real-time updates
+            setInterval(function () {
+                // Simulate real-time revenue updates
+                console.log('Updating payment queue...');
+            }, 30000);
+        });
+    </script>
+</div>
 </html>
