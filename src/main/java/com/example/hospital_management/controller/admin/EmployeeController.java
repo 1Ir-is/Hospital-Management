@@ -105,7 +105,7 @@ public class EmployeeController {
     @GetMapping("/create")
     public String showCreateForm(Model model) {
         // ✅ Set activeMenu đúng
-        model.addAttribute("activeMenu", "employees");
+        model.addAttribute("activeMenu", "employees-create");
 
         EmployeeFormDTO employeeForm = new EmployeeFormDTO();
         model.addAttribute("employeeForm", employeeForm);
