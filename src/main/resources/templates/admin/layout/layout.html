@@ -23,10 +23,11 @@
                 <div class="user-avatar">A</div>
                 <span>Admin User</span>
             </div>
-            <a class="logout-btn" href="#">
-                <i class="fas fa-sign-out-alt"></i>
-                Đăng xuất
-            </a>
+            <form id="logoutForm" method="post" style="display: inline;" th:action="@{/logout}">
+                <button class="logout-btn" id="logoutButton" type="button">
+                    <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                </button>
+            </form>
         </div>
     </div>
 </header>
@@ -137,15 +138,19 @@
         }
 
         // Logout confirmation
-        const logoutBtn = document.querySelector(".logout-btn");
-        if (logoutBtn) {
-            logoutBtn.addEventListener("click", function (e) {
+        const logoutButton = document.getElementById("logoutButton");
+        const logoutForm = document.getElementById("logoutForm");
+
+        if (logoutButton && logoutForm) {
+            logoutButton.addEventListener("click", function (e) {
                 e.preventDefault();
                 if (confirm("Bạn có chắc chắn muốn đăng xuất?")) {
-                    window.location.href = "/admin/logout";
+                    // Submit the form to Spring Security logout endpoint
+                    logoutForm.submit();
                 }
             });
         }
+
 
         // Auto-close mobile menu when clicking outside
         document.addEventListener("click", function (e) {

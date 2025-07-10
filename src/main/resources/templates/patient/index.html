@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Bệnh nhân Dashboard - Hệ thống Quản lý Bệnh viện</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #03a9f4 0%, #0288d1 100%);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .welcome-card {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .functions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .function-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .function-card h3 {
+            color: #333;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .function-list {
+            list-style: none;
+        }
+
+        .function-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .function-list li:last-child {
+            border-bottom: none;
+        }
+
+        .function-list a {
+            color: #03a9f4;
+            text-decoration: none;
+        }
+
+        .function-list a:hover {
+            text-decoration: underline;
+        }
+
+        .user-role {
+            background: rgba(3, 169, 244, 0.1);
+            color: #03a9f4;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+<header class="header">
+    <h1><i class="fas fa-user-injured"></i> Bệnh nhân Dashboard</h1>
+    <div class="user-info">
+        <span class="user-role">🤒 Bệnh nhân</span>
+        <span>Xin chào, Bệnh nhân</span>
+        <form method="post" style="display: inline;" th:action="@{/logout}">
+            <button class="logout-btn" type="submit">
+                <i class="fas fa-sign-out-alt"></i> Đăng xuất
+            </button>
+        </form>
+    </div>
+</header>
+
+<div class="container">
+    <div class="welcome-card">
+        <h2>🤒 Bảng điều khiển Bệnh nhân</h2>
+        <p><strong>Chức năng chính (do Duy thực hiện):</strong></p>
+        <ul style="margin-top: 1rem; line-height: 1.6;">
+            <li>🎫 Người khám bệnh có thể lấy số phiếu</li>
+            <li>📅 Người khám bệnh có thể đặt lịch khám trước ngày khám</li>
+            <li>🏥 Người khám bệnh có thể xem được phòng mình sẽ được khám</li>
+            <li>📊 Người khám bệnh có thể xem được các kết quả xét nghiệm</li>
+            <li>📋 Người khám bệnh có thể xem được kết quả sau khi khám</li>
+            <li>🗺️ Người khám bệnh có thể biết được vị trí các phòng xét nghiệm mà bác sĩ chỉ định</li>
+            <li>📧 Người khám có thể nhận được mail thông báo ngày tái khám trước 3 ngày theo yêu cầu bác sĩ</li>
+        </ul>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon" style="color: #03a9f4;"><i class="fas fa-calendar-check"></i></div>
+            <div class="stat-number">3</div>
+            <div class="stat-label">Lịch hẹn sắp tới</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon" style="color: #4caf50;"><i class="fas fa-file-medical"></i></div>
+            <div class="stat-number">12</div>
+            <div class="stat-label">Kết quả khám</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon" style="color: #ff9800;"><i class="fas fa-vial"></i></div>
+            <div class="stat-number">8</div>
+            <div class="stat-label">Kết quả xét nghiệm</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon" style="color: #9c27b0;"><i class="fas fa-prescription-bottle"></i></div>
+            <div class="stat-number">5</div>
+            <div class="stat-label">Đơn thuốc</div>
+        </div>
+    </div>
+
+    <div class="functions-grid">
+        <div class="function-card">
+            <h3><i class="fas fa-ticket-alt"></i> Đặt lịch & Lấy số</h3>
+            <ul class="function-list">
+                <li><a href="#get-ticket">🎫 Lấy số phiếu khám</a></li>
+                <li><a href="#book-appointment">📅 Đặt lịch khám trước</a></li>
+                <li><a href="#appointment-history">📚 Lịch sử đặt lịch</a></li>
+                <li><a href="#queue-status">📊 Trạng thái hàng đợi</a></li>
+            </ul>
+        </div>
+
+        <div class="function-card">
+            <h3><i class="fas fa-map-marked-alt"></i> Thông tin Phòng khám</h3>
+            <ul class="function-list">
+                <li><a href="#examination-room">🏥 Phòng khám được chỉ định</a></li>
+                <li><a href="#lab-locations">🗺️ Vị trí phòng xét nghiệm</a></li>
+                <li><a href="#hospital-map">🧭 Bản đồ bệnh viện</a></li>
+                <li><a href="#directions">📍 Hướng dẫn đường đi</a></li>
+            </ul>
+        </div>
+
+        <div class="function-card">
+            <h3><i class="fas fa-file-medical-alt"></i> Kết quả Khám bệnh</h3>
+            <ul class="function-list">
+                <li><a href="#examination-results">📋 Kết quả khám</a></li>
+                <li><a href="#diagnosis">🩺 Chẩn đoán</a></li>
+                <li><a href="#treatment-plan">💊 Kế hoạch điều trị</a></li>
+                <li><a href="#follow-up">🔄 Lịch tái khám</a></li>
+            </ul>
+        </div>
+
+        <div class="function-card">
+            <h3><i class="fas fa-flask"></i> Kết quả Xét nghiệm</h3>
+            <ul class="function-list">
+                <li><a href="#test-results">📊 Kết quả xét nghiệm</a></li>
+                <li><a href="#test-reports">📋 Báo cáo xét nghiệm</a></li>
+                <li><a href="#test-appointments">📅 Lịch hẹn xét nghiệm</a></li>
+                <li><a href="#test-preparation">📝 Hướng dẫn chuẩn bị</a></li>
+            </ul>
+        </div>
+
+        <div class="function-card">
+            <h3><i class="fas fa-bell"></i> Thông báo & Nhắc nhở</h3>
+            <ul class="function-list">
+                <li><a href="#follow-up-reminders">📧 Nhắc nhở tái khám</a></li>
+                <li><a href="#notifications">🔔 Thông báo</a></li>
+                <li><a href="#email-settings">⚙️ Cài đặt email</a></li>
+                <li><a href="#appointment-alerts">⏰ Cảnh báo lịch hẹn</a></li>
+            </ul>
+        </div>
+
+        <div class="function-card">
+            <h3><i class="fas fa-user-cog"></i> Thông tin Cá nhân</h3>
+            <ul class="function-list">
+                <li><a href="#personal-info">👤 Thông tin cá nhân</a></li>
+                <li><a href="#medical-history">🏥 Lịch sử khám bệnh</a></li>
+                <li><a href="#insurance-info">🆔 Thông tin bảo hiểm</a></li>
+                <li><a href="#emergency-contact">📞 Liên hệ khẩn cấp</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+</body>
+</html>

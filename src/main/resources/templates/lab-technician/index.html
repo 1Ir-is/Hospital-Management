@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Kỹ thuật viên Dashboard - Hệ thống Quản lý Bệnh viện</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .welcome-card {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .functions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .function-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .function-card h3 {
+            color: #333;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .function-list {
+            list-style: none;
+        }
+
+        .function-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .function-list li:last-child {
+            border-bottom: none;
+        }
+
+        .function-list a {
+            color: #9c27b0;
+            text-decoration: none;
+        }
+
+        .function-list a:hover {
+            text-decoration: underline;
+        }
+
+        .user-role {
+            background: rgba(156, 39, 176, 0.1);
+            color: #9c27b0;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+<header class="header">
+    <h1><i class="fas fa-microscope"></i> Kỹ thuật viên Xét nghiệm</h1>
+    <div class="user-info">
+        <span class="user-role">🔬 Kỹ thuật viên</span>
+        <span>Xin chào, Kỹ thuật viên</span>
+        <form method="post" style="display: inline;" th:action="@{/logout}">
+            <button class="logout-btn" type="submit">
+                <i class="fas fa-sign-out-alt"></i> Đăng xuất
+            </button>
+        </form>
+    </div>
+</header>
+
+<div class="container">
+    <div class="welcome-card">
+        <h2>🔬 Bảng điều khiển Kỹ thuật viên Xét nghiệm</h2>
+        <p><strong>Chức năng chính (do Nhơn thực hiện):</strong></p>
+        <ul style="margin-top: 1rem; line-height: 1.6;">
+            <li>📋 Kỹ thuật viên có thể xem danh sách các bệnh nhân cần làm xét nghiệm thuộc chuyên môn của phòng mình
+            </li>
+            <li>🧪 Kỹ thuật viên có thể thực hiện xét các xét nghiệm và lưu thông tin kết quả cho người khám</li>
+            <li>👁️ Kỹ thuật viên có thể xem tất cả các xét nghiệm của bệnh nhân và hướng dẫn họ thực hiện các bước xét
+                nghiệm tiếp theo
+            </li>
+            <li>📺 Hiện thị màn hình riêng trước phòng xét nghiệm danh sách bệnh ca khám tại từng phòng xét nghiệm (tự
+                động update danh sách ca khám)
+            </li>
+        </ul>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon" style="color: #9c27b0;"><i class="fas fa-vial"></i></div>
+            <div class="stat-number">28</div>
+            <div class="stat-label">Xét nghiệm chờ thực hiện</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon" style="color: #ff9800;"><i class="fas fa-hourglass-half"></i></div>
+            <div class="stat-number">7</div>
+            <div class="stat-label">Đang thực hiện</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon" style="color: #4caf50;"><i class="fas fa-check-circle"></i></div>
+            <div class="stat-number">42</div>
+            <div class="stat-label">Hoàn thành hôm nay</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon" style="color: #f44336;"><i class="fas fa-exclamation-triangle"></i></div>
+            <div class="stat-number">3</div>
+            <div class="stat-label">Cần làm lại</div>
+        </div>
+    </div>
+
+    <div class="functions-grid">
+        <div class="function-card">
+            <h3><i class="fas fa-list-ul"></i> Danh sách Xét nghiệm</h3>
+            <ul class="function-list">
+                <li><a href="#pending-tests">⏳ Xét nghiệm chờ thực hiện</a></li>
+                <li><a href="#specialty-tests">🔬 Xét nghiệm chuyên môn</a></li>
+                <li><a href="#urgent-tests">🚨 Xét nghiệm cấp cứu</a></li>
+                <li><a href="#routine-tests">📅 Xét nghiệm định kỳ</a></li>
+            </ul>
+        </div>
+
+        <div class="function-card">
+            <h3><i class="fas fa-flask"></i> Thực hiện Xét nghiệm</h3>
+            <ul class="function-list">
+                <li><a href="#start-test">▶️ Bắt đầu xét nghiệm</a></li>
+                <li><a href="#record-results">📝 Ghi nhận kết quả</a></li>
+                <li><a href="#quality-control">✅ Kiểm soát chất lượng</a></li>
+                <li><a href="#equipment-status">⚙️ Trạng thái thiết bị</a></li>
+            </ul>
+        </div>
+
+        <div class="function-card">
+            <h3><i class="fas fa-chart-bar"></i> Quản lý Kết quả</h3>
+            <ul class="function-list">
+                <li><a href="#test-results">📊 Kết quả xét nghiệm</a></li>
+                <li><a href="#result-validation">✔️ Thẩm định kết quả</a></li>
+                <li><a href="#report-generation">📋 Tạo báo cáo</a></li>
+                <li><a href="#result-history">📚 Lịch sử xét nghiệm</a></li>
+            </ul>
+        </div>
+
+        <div class="function-card">
+            <h3><i class="fas fa-users"></i> Hướng dẫn Bệnh nhân</h3>
+            <ul class="function-list">
+                <li><a href="#patient-guidance">📋 Hướng dẫn chuẩn bị</a></li>
+                <li><a href="#test-procedure">🔬 Quy trình xét nghiệm</a></li>
+                <li><a href="#next-steps">➡️ Các bước tiếp theo</a></li>
+                <li><a href="#patient-communication">💬 Trao đổi với bệnh nhân</a></li>
+            </ul>
+        </div>
+
+        <div class="function-card">
+            <h3><i class="fas fa-tv"></i> Màn hình Hiển thị</h3>
+            <ul class="function-list">
+                <li><a href="#room-display">📺 Màn hình phòng xét nghiệm</a></li>
+                <li><a href="#queue-status">📊 Trạng thái hàng đợi</a></li>
+                <li><a href="#auto-update">🔄 Cập nhật tự động</a></li>
+                <li><a href="#display-settings">⚙️ Cài đặt hiển thị</a></li>
+            </ul>
+        </div>
+
+        <div class="function-card">
+            <h3><i class="fas fa-chart-line"></i> Báo cáo & Thống kê</h3>
+            <ul class="function-list">
+                <li><a href="#daily-statistics">📊 Thống kê ngày</a></li>
+                <li><a href="#productivity">📈 Năng suất làm việc</a></li>
+                <li><a href="#accuracy-rate">🎯 Tỷ lệ chính xác</a></li>
+                <li><a href="#monthly-report">📋 Báo cáo tháng</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+</body>
+</html>

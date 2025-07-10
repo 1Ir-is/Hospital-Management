@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Điều dưỡng Dashboard - Hệ thống Quản lý Bệnh viện</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #e91e63 0%, #ad1457 100%);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .welcome-card {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .functions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .function-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .function-card h3 {
+            color: #333;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .function-list {
+            list-style: none;
+        }
+
+        .function-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .function-list li:last-child {
+            border-bottom: none;
+        }
+
+        .function-list a {
+            color: #e91e63;
+            text-decoration: none;
+        }
+
+        .function-list a:hover {
+            text-decoration: underline;
+        }
+
+        .user-role {
+            background: rgba(233, 30, 99, 0.1);
+            color: #e91e63;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+<header class="header">
+    <h1><i class="fas fa-user-nurse"></i> Điều dưỡng Dashboard</h1>
+    <div class="user-info">
+        <span class="user-role">👩‍⚕️ Điều dưỡng</span>
+        <span>Xin chào, Điều dưỡng</span>
+        <form method="post" style="display: inline;" th:action="@{/logout}">
+            <button class="logout-btn" type="submit">
+                <i class="fas fa-sign-out-alt"></i> Đăng xuất
+            </button>
+        </form>
+    </div>
+</header>
+
+<div class="container">
+    <div class="welcome-card">
+        <h2>👩‍⚕️ Bảng điều khiển Điều dưỡng</h2>
+        <p><strong>Chức năng chính (do Khánh thực hiện):</strong></p>
+        <ul style="margin-top: 1rem; line-height: 1.6;">
+            <li>📊 Y tá khoa khám có thể kiểm tra huyết áp, cân nặng của bệnh nhân</li>
+            <li>📋 Điều dưỡng có thể xem danh sách các bệnh án do mình phụ trách</li>
+            <li>💊 Điều dưỡng phụ trách phải thực hiện cấp phát thuốc và làm các công việc hàng ngày mà bác sĩ đã chỉ
+                định cho từng bệnh nhân
+            </li>
+            <li>💰 Điều dưỡng có thể làm yêu cầu tạm ứng viện phí cho bệnh nhân</li>
+            <li>🚪 Điều dưỡng có thể làm thủ tục xuất viện cho bệnh nhân</li>
+            <li>🏥 Lễ tân của khoa có thể làm hồ sơ nhập viện cho bệnh nhân (chọn phòng và giường mà bệnh nhân sẽ nằm)
+            </li>
+        </ul>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon" style="color: #e91e63;"><i class="fas fa-users"></i></div>
+            <div class="stat-number">18</div>
+            <div class="stat-label">Bệnh nhân phụ trách</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon" style="color: #9c27b0;"><i class="fas fa-pills"></i></div>
+            <div class="stat-number">42</div>
+            <div class="stat-label">Thuốc cần cấp phát</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon" style="color: #673ab7;"><i class="fas fa-heartbeat"></i></div>
+            <div class="stat-number">15</div>
+            <div class="stat-label">Sinh hiệu chưa đo</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon" style="color: #3f51b5;"><i class="fas fa-file-medical"></i></div>
+            <div class="stat-number">6</div>
+            <div class="stat-label">Hồ sơ nhập viện hôm nay</div>
+        </div>
+    </div>
+
+    <div class="functions-grid">
+        <div class="function-card">
+            <h3><i class="fas fa-heartbeat"></i> Kiểm tra Sinh hiệu</h3>
+            <ul class="function-list">
+                <li><a href="#vital-signs">📊 Đo huyết áp, cân nặng</a></li>
+                <li><a href="#temperature">🌡️ Đo nhiệt độ</a></li>
+                <li><a href="#pulse">❤️ Đo mạch</a></li>
+                <li><a href="#vital-history">📚 Lịch sử sinh hiệu</a></li>
+            </ul>
+        </div>
+
+        <div class="function-card">
+            <h3><i class="fas fa-file-medical"></i> Quản lý Bệnh án</h3>
+            <ul class="function-list">
+                <li><a href="#patient-records">📋 Danh sách bệnh án phụ trách</a></li>
+                <li><a href="#admission">🏥 Làm hồ sơ nhập viện</a></li>
+                <li><a href="#room-bed-assignment">🛏️ Chọn phòng và giường</a></li>
+                <li><a href="#discharge-procedures">🚪 Thủ tục xuất viện</a></li>
+            </ul>
+        </div>
+
+        <div class="function-card">
+            <h3><i class="fas fa-pills"></i> Cấp phát Thuốc</h3>
+            <ul class="function-list">
+                <li><a href="#medication-orders">📝 Y lệnh thuốc từ bác sĩ</a></li>
+                <li><a href="#medication-distribution">💊 Cấp phát thuốc</a></li>
+                <li><a href="#medication-schedule">⏰ Lịch uống thuốc</a></li>
+                <li><a href="#medication-tracking">📊 Theo dõi thuốc đã uống</a></li>
+            </ul>
+        </div>
+
+        <div class="function-card">
+            <h3><i class="fas fa-credit-card"></i> Tài chính & Thủ tục</h3>
+            <ul class="function-list">
+                <li><a href="#advance-payment">💰 Yêu cầu tạm ứng viện phí</a></li>
+                <li><a href="#payment-status">💳 Trạng thái thanh toán</a></li>
+                <li><a href="#insurance-verification">🆔 Xác minh bảo hiểm</a></li>
+                <li><a href="#financial-summary">📊 Tổng kết chi phí</a></li>
+            </ul>
+        </div>
+
+        <div class="function-card">
+            <h3><i class="fas fa-tasks"></i> Công việc Hàng ngày</h3>
+            <ul class="function-list">
+                <li><a href="#daily-tasks">📅 Nhiệm vụ hàng ngày</a></li>
+                <li><a href="#doctor-orders">📋 Y lệnh từ bác sĩ</a></li>
+                <li><a href="#care-plan">🤝 Kế hoạch chăm sóc</a></li>
+                <li><a href="#progress-notes">📝 Ghi chú tiến triển</a></li>
+            </ul>
+        </div>
+
+        <div class="function-card">
+            <h3><i class="fas fa-chart-line"></i> Báo cáo Chăm sóc</h3>
+            <ul class="function-list">
+                <li><a href="#care-reports">📊 Báo cáo chăm sóc</a></li>
+                <li><a href="#patient-progress">📈 Tiến triển bệnh nhân</a></li>
+                <li><a href="#shift-handover">🔄 Bàn giao ca</a></li>
+                <li><a href="#nursing-summary">📋 Tổng kết điều dưỡng</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+</body>
+</html>

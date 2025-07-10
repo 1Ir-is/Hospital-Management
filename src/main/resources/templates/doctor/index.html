@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Bác sĩ Dashboard - Hệ thống Quản lý Bệnh viện</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .welcome-card {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .functions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .function-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .function-card h3 {
+            color: #333;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .function-list {
+            list-style: none;
+        }
+
+        .function-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .function-list li:last-child {
+            border-bottom: none;
+        }
+
+        .function-list a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .function-list a:hover {
+            text-decoration: underline;
+        }
+
+        .user-role {
+            background: rgba(0, 123, 255, 0.1);
+            color: #007bff;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+        }
+
+        .team-note {
+            background: #e9ecef;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+<header class="header">
+    <h1><i class="fas fa-stethoscope"></i> Bác sĩ Dashboard</h1>
+    <div class="user-info">
+        <span class="user-role">🩺 Bác sĩ</span>
+        <span>Xin chào, Bác sĩ</span>
+        <form method="post" style="display: inline;" th:action="@{/logout}">
+            <button class="logout-btn" type="submit">
+                <i class="fas fa-sign-out-alt"></i> Đăng xuất
+            </button>
+        </form>
+    </div>
+</header>
+
+<div class="container">
+    <div class="welcome-card">
+        <h2>🩺 Bảng điều khiển Bác sĩ</h2>
+        <p><strong>Chức năng chính:</strong></p>
+
+        <div class="team-note">
+            <h4>👨‍⚕️ <strong>Bác sĩ khám (do Vĩnh thực hiện):</strong></h4>
+            <ul style="margin-top: 0.5rem; line-height: 1.6;">
+                <li>🔍 Khám tổng quát và chỉ định các xét nghiệm</li>
+                <li>📊 Biết tiến độ thực hiện các kết quả xét nghiệm cho bệnh nhân</li>
+                <li>📋 Xem các xét nghiệm và đưa ra kết quả và cách điều trị cho bệnh nhân</li>
+                <li>💊 Kê thuốc cho bệnh nhân sau khi khám nếu không phải nhập viện</li>
+                <li>🏥 Yêu cầu bệnh nhân nhập viện nếu tình trạng cấp bách</li>
+            </ul>
+        </div>
+
+        <div class="team-note">
+            <h4>⚕️ <strong>Bác sĩ điều trị (do Chung thực hiện):</strong></h4>
+            <ul style="margin-top: 0.5rem; line-height: 1.6;">
+                <li>🔬 Chỉ định các xét nghiệm và có thể phẫu thuật cho bệnh nhân</li>
+                <li>📊 Xem các kết quả xét nghiệm của từng bệnh nhân</li>
+                <li>💊 Kê thuốc điều trị hàng ngày cho bệnh nhân</li>
+                <li>🚪 Đưa ra kết luận bệnh nhân được xuất viện</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon" style="color: #007bff;"><i class="fas fa-user-injured"></i></div>
+            <div class="stat-number">24</div>
+            <div class="stat-label">Bệnh nhân hôm nay</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon" style="color: #28a745;"><i class="fas fa-vial"></i></div>
+            <div class="stat-number">18</div>
+            <div class="stat-label">Xét nghiệm chờ kết quả</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon" style="color: #ffc107;"><i class="fas fa-prescription-bottle"></i></div>
+            <div class="stat-number">32</div>
+            <div class="stat-label">Đơn thuốc đã kê</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon" style="color: #dc3545;"><i class="fas fa-procedures"></i></div>
+            <div class="stat-number">3</div>
+            <div class="stat-label">Ca phẫu thuật tuần này</div>
+        </div>
+    </div>
+
+    <div class="functions-grid">
+        <div class="function-card">
+            <h3><i class="fas fa-stethoscope"></i> Khám bệnh (Vĩnh)</h3>
+            <ul class="function-list">
+                <li><a href="#examination">🔍 Khám tổng quát</a></li>
+                <li><a href="#test-orders">🧪 Chỉ định xét nghiệm</a></li>
+                <li><a href="#test-progress">📊 Tiến độ xét nghiệm</a></li>
+                <li><a href="#examination-results">📋 Kết quả khám</a></li>
+                <li><a href="#prescriptions">💊 Kê đơn thuốc</a></li>
+                <li><a href="#admission-requests">🏥 Yêu cầu nhập viện</a></li>
+            </ul>
+        </div>
+
+        <div class="function-card">
+            <h3><i class="fas fa-user-md"></i> Điều trị nội trú (Chung)</h3>
+            <ul class="function-list">
+                <li><a href="#inpatient-list">🛏️ Danh sách bệnh nhân</a></li>
+                <li><a href="#daily-prescriptions">💊 Kê thuốc hàng ngày</a></li>
+                <li><a href="#surgery-schedule">⚕️ Lịch phẫu thuật</a></li>
+                <li><a href="#test-results">📊 Kết quả xét nghiệm</a></li>
+                <li><a href="#discharge-decisions">🚪 Quyết định xuất viện</a></li>
+            </ul>
+        </div>
+
+        <div class="function-card">
+            <h3><i class="fas fa-flask"></i> Quản lý Xét nghiệm</h3>
+            <ul class="function-list">
+                <li><a href="#test-orders">📝 Chỉ định xét nghiệm mới</a></li>
+                <li><a href="#pending-tests">⏳ Xét nghiệm đang thực hiện</a></li>
+                <li><a href="#completed-tests">✅ Kết quả đã có</a></li>
+                <li><a href="#test-history">📚 Lịch sử xét nghiệm</a></li>
+            </ul>
+        </div>
+
+        <div class="function-card">
+            <h3><i class="fas fa-chart-line"></i> Báo cáo & Thống kê</h3>
+            <ul class="function-list">
+                <li><a href="#patient-stats">👥 Thống kê bệnh nhân</a></li>
+                <li><a href="#treatment-efficiency">📈 Hiệu quả điều trị</a></li>
+                <li><a href="#prescription-analysis">💊 Phân tích đơn thuốc</a></li>
+                <li><a href="#monthly-summary">📋 Tổng kết tháng</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+</body>
+</html>

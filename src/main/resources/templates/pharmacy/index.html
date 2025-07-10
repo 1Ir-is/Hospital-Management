@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Phòng vật tư Dashboard - Hệ thống Quản lý Bệnh viện</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #00bcd4 0%, #0097a7 100%);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .welcome-card {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .functions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .function-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .function-card h3 {
+            color: #333;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .function-list {
+            list-style: none;
+        }
+
+        .function-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .function-list li:last-child {
+            border-bottom: none;
+        }
+
+        .function-list a {
+            color: #00bcd4;
+            text-decoration: none;
+        }
+
+        .function-list a:hover {
+            text-decoration: underline;
+        }
+
+        .user-role {
+            background: rgba(0, 188, 212, 0.1);
+            color: #00bcd4;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+<header class="header">
+    <h1><i class="fas fa-pills"></i> Phòng vật tư Dashboard</h1>
+    <div class="user-info">
+        <span class="user-role">💊 Nhân viên vật tư</span>
+        <span>Xin chào, Nhân viên vật tư</span>
+        <form method="post" style="display: inline;" th:action="@{/logout}">
+            <button class="logout-btn" type="submit">
+                <i class="fas fa-sign-out-alt"></i> Đăng xuất
+            </button>
+        </form>
+    </div>
+</header>
+
+<div class="container">
+    <div class="welcome-card">
+        <h2>💊 Bảng điều khiển Phòng vật tư</h2>
+        <p><strong>Chức năng chính (do Nhơn thực hiện):</strong></p>
+        <ul style="margin-top: 1rem; line-height: 1.6;">
+            <li>💊 Nhân viên phòng vật tư và thiết bị y tế có thể cấp thuốc cho bệnh nhân theo đơn thuốc điều trị của bác
+                sĩ
+            </li>
+        </ul>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon" style="color: #00bcd4;"><i class="fas fa-prescription"></i></div>
+            <div class="stat-number">47</div>
+            <div class="stat-label">Đơn thuốc chờ cấp</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon" style="color: #4caf50;"><i class="fas fa-pills"></i></div>
+            <div class="stat-number">1,248</div>
+            <div class="stat-label">Thuốc trong kho</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon" style="color: #ff9800;"><i class="fas fa-exclamation-triangle"></i></div>
+            <div class="stat-number">23</div>
+            <div class="stat-label">Thuốc sắp hết</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon" style="color: #f44336;"><i class="fas fa-calendar-times"></i></div>
+            <div class="stat-number">8</div>
+            <div class="stat-label">Thuốc gần hết hạn</div>
+        </div>
+    </div>
+
+    <div class="functions-grid">
+        <div class="function-card">
+            <h3><i class="fas fa-prescription-bottle"></i> Cấp phát Thuốc</h3>
+            <ul class="function-list">
+                <li><a href="#prescription-dispensing">📋 Cấp thuốc theo đơn</a></li>
+                <li><a href="#prescription-verification">✅ Xác minh đơn thuốc</a></li>
+                <li><a href="#dosage-check">⚖️ Kiểm tra liều lượng</a></li>
+                <li><a href="#drug-interaction">⚠️ Kiểm tra tương tác thuốc</a></li>
+            </ul>
+        </div>
+
+        <div class="function-card">
+            <h3><i class="fas fa-warehouse"></i> Quản lý Kho thuốc</h3>
+            <ul class="function-list">
+                <li><a href="#inventory-management">📦 Quản lý tồn kho</a></li>
+                <li><a href="#stock-levels">📊 Mức tồn kho</a></li>
+                <li><a href="#expiry-tracking">📅 Theo dõi hạn sử dụng</a></li>
+                <li><a href="#reorder-alerts">🔔 Cảnh báo đặt hàng</a></li>
+            </ul>
+        </div>
+
+        <div class="function-card">
+            <h3><i class="fas fa-truck"></i> Nhập thuốc</h3>
+            <ul class="function-list">
+                <li><a href="#drug-receiving">📥 Nhận thuốc</a></li>
+                <li><a href="#quality-check">🔍 Kiểm tra chất lượng</a></li>
+                <li><a href="#batch-recording">🏷️ Ghi nhận lô hàng</a></li>
+                <li><a href="#supplier-management">🏢 Quản lý nhà cung cấp</a></li>
+            </ul>
+        </div>
+
+        <div class="function-card">
+            <h3><i class="fas fa-user-injured"></i> Tư vấn Bệnh nhân</h3>
+            <ul class="function-list">
+                <li><a href="#medication-counseling">💬 Tư vấn sử dụng thuốc</a></li>
+                <li><a href="#usage-instructions">📋 Hướng dẫn sử dụng</a></li>
+                <li><a href="#side-effects">⚠️ Tác dụng phụ</a></li>
+                <li><a href="#patient-education">📚 Giáo dục bệnh nhân</a></li>
+            </ul>
+        </div>
+
+        <div class="function-card">
+            <h3><i class="fas fa-chart-line"></i> Báo cáo Dược</h3>
+            <ul class="function-list">
+                <li><a href="#dispensing-report">📊 Báo cáo cấp phát</a></li>
+                <li><a href="#inventory-report">📋 Báo cáo tồn kho</a></li>
+                <li><a href="#usage-statistics">📈 Thống kê sử dụng</a></li>
+                <li><a href="#cost-analysis">💰 Phân tích chi phí</a></li>
+            </ul>
+        </div>
+
+        <div class="function-card">
+            <h3><i class="fas fa-shield-alt"></i> An toàn Dược phẩm</h3>
+            <ul class="function-list">
+                <li><a href="#adverse-events">⚠️ Theo dõi tác dụng phụ</a></li>
+                <li><a href="#drug-recalls">🚫 Thuốc thu hồi</a></li>
+                <li><a href="#safety-alerts">🔔 Cảnh báo an toàn</a></li>
+                <li><a href="#regulatory-compliance">📜 Tuân thủ quy định</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+</body>
+</html>

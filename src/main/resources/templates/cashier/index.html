@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Thu ngân Dashboard - Hệ thống Quản lý Bệnh viện</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .welcome-card {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .functions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .function-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .function-card h3 {
+            color: #333;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .function-list {
+            list-style: none;
+        }
+
+        .function-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .function-list li:last-child {
+            border-bottom: none;
+        }
+
+        .function-list a {
+            color: #4caf50;
+            text-decoration: none;
+        }
+
+        .function-list a:hover {
+            text-decoration: underline;
+        }
+
+        .user-role {
+            background: rgba(76, 175, 80, 0.1);
+            color: #4caf50;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+<header class="header">
+    <h1><i class="fas fa-cash-register"></i> Thu ngân Dashboard</h1>
+    <div class="user-info">
+        <span class="user-role">💰 Thu ngân</span>
+        <span>Xin chào, Thu ngân</span>
+        <form method="post" style="display: inline;" th:action="@{/logout}">
+            <button class="logout-btn" type="submit">
+                <i class="fas fa-sign-out-alt"></i> Đăng xuất
+            </button>
+        </form>
+    </div>
+</header>
+
+<div class="container">
+    <div class="welcome-card">
+        <h2>💰 Bảng điều khiển Thu ngân</h2>
+        <p><strong>Chức năng chính (do Nhơn thực hiện):</strong></p>
+        <ul style="margin-top: 1rem; line-height: 1.6;">
+            <li>💵 Nhân viên thu ngân có thể thu tiền khám, xét nghiệm, thuốc</li>
+        </ul>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon" style="color: #4caf50;"><i class="fas fa-money-bill-wave"></i></div>
+            <div class="stat-number">24.5M</div>
+            <div class="stat-label">Doanh thu hôm nay</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon" style="color: #2196f3;"><i class="fas fa-receipt"></i></div>
+            <div class="stat-number">158</div>
+            <div class="stat-label">Hóa đơn đã thanh toán</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon" style="color: #ff9800;"><i class="fas fa-hourglass-half"></i></div>
+            <div class="stat-number">23</div>
+            <div class="stat-label">Chờ thanh toán</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon" style="color: #9c27b0;"><i class="fas fa-credit-card"></i></div>
+            <div class="stat-number">89%</div>
+            <div class="stat-label">Thanh toán thẻ</div>
+        </div>
+    </div>
+
+    <div class="functions-grid">
+        <div class="function-card">
+            <h3><i class="fas fa-cash-register"></i> Thu tiền Khám bệnh</h3>
+            <ul class="function-list">
+                <li><a href="#examination-payment">🩺 Thu tiền khám</a></li>
+                <li><a href="#consultation-fees">💵 Phí tư vấn</a></li>
+                <li><a href="#follow-up-payment">🔄 Thu tiền tái khám</a></li>
+                <li><a href="#emergency-payment">🚨 Thu tiền cấp cứu</a></li>
+            </ul>
+        </div>
+
+        <div class="function-card">
+            <h3><i class="fas fa-vial"></i> Thu tiền Xét nghiệm</h3>
+            <ul class="function-list">
+                <li><a href="#lab-payment">🔬 Thu tiền xét nghiệm</a></li>
+                <li><a href="#test-packages">📦 Gói xét nghiệm</a></li>
+                <li><a href="#imaging-payment">📷 Thu tiền chẩn đoán hình ảnh</a></li>
+                <li><a href="#urgent-test-payment">⚡ Xét nghiệm cấp cứu</a></li>
+            </ul>
+        </div>
+
+        <div class="function-card">
+            <h3><i class="fas fa-pills"></i> Thu tiền Thuốc</h3>
+            <ul class="function-list">
+                <li><a href="#medication-payment">💊 Thu tiền thuốc</a></li>
+                <li><a href="#prescription-payment">📋 Thanh toán đơn thuốc</a></li>
+                <li><a href="#otc-payment">🏪 Thuốc không kê đơn</a></li>
+                <li><a href="#medical-supplies">🩹 Vật tư y tế</a></li>
+            </ul>
+        </div>
+
+        <div class="function-card">
+            <h3><i class="fas fa-credit-card"></i> Phương thức Thanh toán</h3>
+            <ul class="function-list">
+                <li><a href="#cash-payment">💵 Thanh toán tiền mặt</a></li>
+                <li><a href="#card-payment">💳 Thanh toán thẻ</a></li>
+                <li><a href="#insurance-payment">🆔 Thanh toán bảo hiểm</a></li>
+                <li><a href="#installment-payment">📅 Thanh toán trả góp</a></li>
+            </ul>
+        </div>
+
+        <div class="function-card">
+            <h3><i class="fas fa-file-invoice"></i> Quản lý Hóa đơn</h3>
+            <ul class="function-list">
+                <li><a href="#invoice-generation">📄 Tạo hóa đơn</a></li>
+                <li><a href="#invoice-history">📚 Lịch sử hóa đơn</a></li>
+                <li><a href="#refund-processing">↩️ Xử lý hoàn tiền</a></li>
+                <li><a href="#invoice-search">🔍 Tìm kiếm hóa đơn</a></li>
+            </ul>
+        </div>
+
+        <div class="function-card">
+            <h3><i class="fas fa-chart-bar"></i> Báo cáo Tài chính</h3>
+            <ul class="function-list">
+                <li><a href="#daily-revenue">📊 Doanh thu ngày</a></li>
+                <li><a href="#payment-summary">💰 Tổng kết thanh toán</a></li>
+                <li><a href="#cash-flow">📈 Dòng tiền</a></li>
+                <li><a href="#monthly-report">📋 Báo cáo tháng</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+</body>
+</html>

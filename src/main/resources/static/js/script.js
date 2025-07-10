@@ -295,54 +295,35 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // Handle login form submission
-    loginForm.addEventListener("submit", function (e) {
-        e.preventDefault();
+    if (loginForm) {
+        loginForm.addEventListener('submit', function (e) {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
 
-        const formData = new FormData(this);
-        const loginData = {
-            email: formData.get("email"),
-            password: formData.get("password"),
-            remember: formData.get("remember") === "on",
-        };
+            if (!email || !password) {
+                e.preventDefault();
+                alert('Vui lòng nhập đầy đủ email và mật khẩu!');
+                return false;
+            }
 
-        // Basic validation
-        if (!loginData.email || !loginData.password) {
-            alert("Vui lòng điền đầy đủ email và mật khẩu!");
-            return;
-        }
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                e.preventDefault();
+                alert('Email không hợp lệ!');
+                return false;
+            }
 
-        // Email validation
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(loginData.email)) {
-            alert("Email không hợp lệ!");
-            return;
-        }
+            // Show loading state
+            const submitBtn = this.querySelector('.btn-login-submit');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang đăng nhập...';
+            submitBtn.disabled = true;
 
-        // Simulate login process
-        console.log("Login Data:", loginData);
-
-        // Show loading state
-        const submitBtn = this.querySelector(".btn-login-submit");
-        const originalText = submitBtn.innerHTML;
-        submitBtn.innerHTML =
-            '<i class="fas fa-spinner fa-spin"></i> Đang đăng nhập...';
-        submitBtn.disabled = true;
-
-        // Simulate API call
-        setTimeout(() => {
-            // Reset button
-            submitBtn.innerHTML = originalText;
-            submitBtn.disabled = false;
-
-            // Simulate successful login
-            alert("Đăng nhập thành công!");
-            closeLoginModal();
-
-            // You can redirect or update UI here
-            // window.location.href = '/dashboard';
-        }, 2000);
-    });
+            // Let the form submit naturally to Spring Security
+            // Spring Security will handle authentication and redirect
+        });
+    }
 
     // Social login handlers
     document.querySelector(".btn-google").addEventListener("click", function () {

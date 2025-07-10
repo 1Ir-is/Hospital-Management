@@ -10,6 +10,7 @@ import com.example.hospital_management.service.IEmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +29,9 @@ public class EmployeeService implements IEmployeeService {
 
     @Autowired
     private IRoleRepository roleRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public List<Employee> findAllEmployees() {
@@ -64,16 +68,21 @@ public class EmployeeService implements IEmployeeService {
     @Override
     @Transactional
     public void saveEmployeeWithRoles(Employee employee, List<Long> roleIds) {
-        // luu employee
-        Employee saveEmployee = saveEmployee(employee);
+        // Mã hóa mật khẩu trước khi lưu
+        if (employee.getPassword() != null && !employee.getPassword().isEmpty()) {
+            employee.setPassword(passwordEncoder.encode(employee.getPassword()));
+        }
 
-        // luu role cho nhan vien
+        // Lưu employee trước
+        Employee savedEmployee = saveEmployee(employee);
+
+        // Lưu roles cho employee
         if (roleIds != null && !roleIds.isEmpty()) {
             for (Long roleId : roleIds) {
                 Role role = roleRepository.findById(roleId).orElse(null);
                 if (role != null) {
                     EmployeeRole employeeRole = new EmployeeRole();
-                    employeeRole.setEmployee(saveEmployee);
+                    employeeRole.setEmployee(savedEmployee);
                     employeeRole.setRole(role);
                     employeeRoleRepository.save(employeeRole);
                 }
