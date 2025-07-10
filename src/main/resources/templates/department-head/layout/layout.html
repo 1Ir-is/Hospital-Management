@@ -1,10 +1,336 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+>
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="UTF-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Dashboard - Quản lý Khoa - Codegym Hospital</title>
+    <script src="https://kit.fontawesome.com/c1df782baf.js"></script>
+    <link href="/css/admin.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* Thêm vào file admin.css */
+
+        /* Avatar container styles */
+        .user-avatar-container {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            flex-shrink: 0;
+        }
+
+        /* Avatar image styles */
+        .user-avatar-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            display: block;
+            transition: opacity 0.3s ease;
+        }
+
+        /* Avatar fallback styles */
+        .user-avatar-fallback {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+            text-transform: uppercase;
+        }
+
+        .user-avatar-fallback.hidden {
+            display: none;
+        }
+
+        /* User info container */
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            transition: background 0.3s ease;
+        }
+
+        .user-info:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .user-avatar-container {
+                width: 35px;
+                height: 35px;
+            }
+
+            .user-avatar-fallback {
+                font-size: 14px;
+            }
+
+            .user-details {
+                display: none;
+            }
+
+            .user-info {
+                padding: 8px;
+            }
+        }
+    </style>
 </head>
 <body>
+<!-- Header -->
+<header class="admin-header" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
+    <div class="header-content">
+        <div class="admin-logo">
+            <i class="fas fa-user-md"></i>
+            <span>Trưởng Khoa - Codegym Hospital</span>
+        </div>
+        <div class="admin-nav">
+            <!-- ✅ Dynamic User Info -->
+            <div class="user-info">
+                <!-- Avatar với ảnh thật hoặc fallback -->
+                <div class="user-avatar-container">
+                    <!-- Hiển thị ảnh nếu có -->
+                    <img class="user-avatar-img"
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                         th:alt="${currentUserName}"
+                         th:if="${hasAvatar}"
+                         th:src="${currentUserAvatarUrl}">
 
+                    <!-- Fallback chữ cái nếu không có ảnh hoặc ảnh lỗi -->
+                    <div th:class="'user-avatar-fallback ' + (${hasAvatar} ? 'hidden' : '')"
+                         th:text="${currentUserAvatar ?: 'T'}">T
+                    </div>
+                </div>
+
+                <div class="user-details">
+                    <span class="user-name" th:text="${currentUserName ?: 'Trưởng khoa'}">Trưởng khoa</span>
+                    <small class="user-email" style="display: block; font-size: 0.8em; opacity: 0.7;"
+                           th:text="${currentUserEmail ?: ''}"></small>
+                </div>
+                <span class="user-role">👨‍⚕️ Trưởng khoa</span>
+            </div>
+            <form id="logoutForm" method="post" style="display: inline;" th:action="@{/logout}">
+                <button class="logout-btn" id="logoutButton" type="button">
+                    <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                </button>
+            </form>
+        </div>
+    </div>
+</header>
+
+<div class="admin-container">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-menu">
+            <div class="menu-section">
+                <div class="menu-title">Tổng quan</div>
+                <a class="menu-item" href="/department-head"
+                   th:classappend="${activeMenu} == 'dashboard' ? 'active' : ''">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-title">Quản lý Nhân viên</div>
+                <a class="menu-item" href="/department-head/staff"
+                   th:classappend="${activeMenu} == 'staff' ? 'active' : ''">
+                    <i class="fas fa-users"></i>
+                    <span>Danh sách nhân viên khoa</span>
+                </a>
+                <a class="menu-item" href="/department-head/doctor-assignments"
+                   th:classappend="${activeMenu} == 'doctor-assignments' ? 'active' : ''">
+                    <i class="fas fa-user-md"></i>
+                    <span>Phân công bác sĩ điều trị</span>
+                </a>
+                <a class="menu-item" href="/department-head/nurse-assignments"
+                   th:classappend="${activeMenu} == 'nurse-assignments' ? 'active' : ''">
+                    <i class="fas fa-user-nurse"></i>
+                    <span>Phân công điều dưỡng</span>
+                </a>
+                <a class="menu-item" href="/department-head/schedule"
+                   th:classappend="${activeMenu} == 'schedule' ? 'active' : ''">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Lịch làm việc khoa</span>
+                </a>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-title">Quản lý Phẫu thuật</div>
+                <a class="menu-item" href="/department-head/surgery-schedule"
+                   th:classappend="${activeMenu} == 'surgery-schedule' ? 'active' : ''">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Lịch phẫu thuật</span>
+                </a>
+                <a class="menu-item" href="/department-head/surgeon-assignments"
+                   th:classappend="${activeMenu} == 'surgeon-assignments' ? 'active' : ''">
+                    <i class="fas fa-procedures"></i>
+                    <span>Phân công bác sĩ phẫu thuật</span>
+                </a>
+                <a class="menu-item" href="/department-head/surgery-rooms"
+                   th:classappend="${activeMenu} == 'surgery-rooms' ? 'active' : ''">
+                    <i class="fas fa-hospital"></i>
+                    <span>Phòng phẫu thuật</span>
+                </a>
+                <a class="menu-item" href="/department-head/surgery-reports"
+                   th:classappend="${activeMenu} == 'surgery-reports' ? 'active' : ''">
+                    <i class="fas fa-clipboard-list"></i>
+                    <span>Báo cáo phẫu thuật</span>
+                </a>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-title">Quản lý Bệnh nhân</div>
+                <a class="menu-item" href="/department-head/inpatients"
+                   th:classappend="${activeMenu} == 'inpatients' ? 'active' : ''">
+                    <i class="fas fa-bed"></i>
+                    <span>Bệnh nhân nội trú</span>
+                </a>
+                <a class="menu-item" href="/department-head/room-assignments"
+                   th:classappend="${activeMenu} == 'room-assignments' ? 'active' : ''">
+                    <i class="fas fa-door-open"></i>
+                    <span>Phân phòng bệnh nhân</span>
+                </a>
+                <a class="menu-item" href="/department-head/treatment-plans"
+                   th:classappend="${activeMenu} == 'treatment-plans' ? 'active' : ''">
+                    <i class="fas fa-notes-medical"></i>
+                    <span>Kế hoạch điều trị</span>
+                </a>
+                <a class="menu-item" href="/department-head/discharge"
+                   th:classappend="${activeMenu} == 'discharge' ? 'active' : ''">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Xuất viện</span>
+                </a>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-title">Báo cáo & Thống kê</div>
+                <a class="menu-item" href="/department-head/statistics"
+                   th:classappend="${activeMenu} == 'statistics' ? 'active' : ''">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Thống kê khoa</span>
+                </a>
+                <a class="menu-item" href="/department-head/performance"
+                   th:classappend="${activeMenu} == 'performance' ? 'active' : ''">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Hiệu suất điều trị</span>
+                </a>
+                <a class="menu-item" href="/department-head/quality"
+                   th:classappend="${activeMenu} == 'quality' ? 'active' : ''">
+                    <i class="fas fa-star"></i>
+                    <span>Chất lượng dịch vụ</span>
+                </a>
+                <a class="menu-item" href="/department-head/monthly-report"
+                   th:classappend="${activeMenu} == 'monthly-report' ? 'active' : ''">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Báo cáo tháng</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div layout:fragment="main-content"></div>
+    </main>
+</div>
+
+<!-- Base JavaScript -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Sidebar menu interactions
+        const menuItems = document.querySelectorAll(".menu-item");
+
+        menuItems.forEach((item) => {
+            item.addEventListener("click", function (e) {
+                this.style.opacity = "0.7";
+            });
+        });
+
+        // Mobile menu toggle
+        const toggleSidebar = document.querySelector(".sidebar-toggle");
+        const sidebar = document.querySelector(".sidebar");
+
+        if (toggleSidebar) {
+            toggleSidebar.addEventListener("click", function () {
+                sidebar.classList.toggle("collapsed");
+            });
+        }
+
+        // Logout confirmation
+        const logoutButton = document.getElementById("logoutButton");
+        const logoutForm = document.getElementById("logoutForm");
+
+        if (logoutButton && logoutForm) {
+            logoutButton.addEventListener("click", function (e) {
+                e.preventDefault();
+                if (confirm("Bạn có chắc chắn muốn đăng xuất?")) {
+                    logoutForm.submit();
+                }
+            });
+        }
+
+        // Auto-close mobile menu when clicking outside
+        document.addEventListener("click", function (e) {
+            if (window.innerWidth <= 768) {
+                const sidebar = document.querySelector(".sidebar");
+                const sidebarToggle = document.querySelector(".sidebar-toggle");
+
+                if (sidebar && !sidebar.contains(e.target) && !sidebarToggle?.contains(e.target)) {
+                    sidebar.classList.remove("active");
+                }
+            }
+        });
+
+        // Responsive sidebar handling
+        function handleResize() {
+            const sidebar = document.querySelector(".sidebar");
+            if (window.innerWidth > 768) {
+                sidebar?.classList.remove("active");
+            }
+        }
+
+        window.addEventListener("resize", handleResize);
+        handleResize();
+    });
+</script>
+
+<!-- CSS cho user role badge -->
+<style>
+    .user-role {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 0.3rem 0.8rem;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        margin-left: 10px;
+        white-space: nowrap;
+    }
+
+    .admin-nav {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+</style>
+
+<!-- Các JS library -->
+<script src="https://kit.fontawesome.com/c1df782baf.js"></script>
+<!-- Placeholder cho script riêng của từng page -->
+<div layout:fragment="page-scripts"></div>
 </body>
 </html>

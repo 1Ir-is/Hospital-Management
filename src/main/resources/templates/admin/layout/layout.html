@@ -20,8 +20,26 @@
         </div>
         <div class="admin-nav">
             <div class="user-info">
-                <div class="user-avatar">A</div>
-                <span>Admin User</span>
+                <!-- Avatar với ảnh thật hoặc fallback -->
+                <div class="user-avatar-container">
+                    <!-- Hiển thị ảnh nếu có -->
+                    <img class="user-avatar-img"
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                         th:alt="${currentUserName}"
+                         th:if="${hasAvatar}"
+                         th:src="${currentUserAvatarUrl}">
+
+                    <!-- Fallback chữ cái nếu không có ảnh hoặc ảnh lỗi -->
+                    <div th:class="'user-avatar-fallback ' + (${hasAvatar} ? 'hidden' : '')"
+                         th:text="${currentUserAvatar ?: 'A'}">A
+                    </div>
+                </div>
+
+                <div class="user-details">
+                    <span class="user-name" th:text="${currentUserName ?: 'User'}">User</span>
+                    <small class="user-email" style="display: block; font-size: 0.8em; opacity: 0.7;"
+                           th:text="${currentUserEmail ?: ''}"></small>
+                </div>
             </div>
             <form id="logoutForm" method="post" style="display: inline;" th:action="@{/logout}">
                 <button class="logout-btn" id="logoutButton" type="button">
