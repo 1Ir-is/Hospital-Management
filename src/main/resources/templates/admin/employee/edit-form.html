@@ -6,6 +6,7 @@
 <head>
     <title>Chỉnh sửa Nhân viên</title>
     <style>
+        /* Your existing CSS styles */
         .info-card, .form-card {
             background: #fff;
             border-radius: 12px;
@@ -28,8 +29,7 @@
             align-items: flex-start;
         }
 
-        .form-left,
-        .form-right {
+        .form-left, .form-right {
             flex: 1;
             min-width: 0;
         }
@@ -133,44 +133,210 @@
             margin-top: 4px;
         }
 
-        .success-notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #d4edda;
-            color: #155724;
-            padding: 16px 20px;
-            border-radius: 8px;
-            border: 1px solid #c3e6cb;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            z-index: 1000;
-            transform: translateX(100%);
-            transition: transform 0.3s ease;
-        }
-
-        .success-notification.show {
-            transform: translateX(0);
-        }
-
-        .success-notification i {
-            font-size: 18px;
-            color: #28a745;
-        }
-
         .employee-form {
             max-width: 100%;
-            padding: 0 40px; /* hoặc 0 20px nếu cần sát hơn */
+            padding: 0 40px;
             box-sizing: border-box;
         }
 
+        /* Simplified Image Upload Styles */
+        .image-upload-section {
+            background: #f8f9fa;
+            border: 2px dashed #dee2e6;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .current-avatar {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+            padding: 16px;
+            background: #fff;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+
+        .current-avatar img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #dee2e6;
+        }
+
+        .upload-tabs {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 12px 16px;
+            background: #fff;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .tab-button:hover {
+            border-color: #007bff;
+            background: #f8f9fa;
+        }
+
+        .tab-button.active {
+            border-color: #007bff;
+            background: #e3f2fd;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* File Upload Specific Styles */
+        .file-upload-container {
+            text-align: center;
+            padding: 40px 20px;
+            border: 2px dashed #007bff;
+            border-radius: 8px;
+            background: #f8f9fa;
+            margin-bottom: 20px;
+        }
+
+        .file-upload-container.dragover {
+            background: #e3f2fd;
+            border-color: #0056b3;
+        }
+
+        .file-upload-icon {
+            font-size: 48px;
+            color: #007bff;
+            margin-bottom: 16px;
+        }
+
+        .file-upload-text {
+            margin-bottom: 16px;
+            color: #6c757d;
+        }
+
+        /* Critical: Make sure the file input is properly hidden but functional */
+        .file-input-hidden {
+            position: absolute;
+            left: -9999px;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .file-select-button {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s ease;
+            text-decoration: none;
+        }
+
+        .file-select-button:hover {
+            background: #0056b3;
+        }
+
+        .image-preview-section {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .preview-image {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 8px;
+            border: 2px solid #dee2e6;
+            margin-bottom: 12px;
+        }
+
+        .image-info {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+        }
+
+        .image-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-info {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 12px;
+            margin-top: 8px;
+            text-align: center;
+        }
+
+        .file-requirements {
+            margin-top: 16px;
+            padding: 12px;
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 6px;
+            font-size: 12px;
+            color: #856404;
+        }
+
+        @media (max-width: 768px) {
+            .form-layout {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .upload-tabs {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .employee-form {
+                padding: 0 20px;
+            }
+        }
     </style>
 </head>
 <body>
 <div layout:fragment="main-content">
-    <!-- Breadcrumb -->
     <nav class="breadcrumb-nav">
         <div class="breadcrumb">
             <a th:href="@{/admin}">Dashboard</a>
@@ -181,7 +347,6 @@
         </div>
     </nav>
 
-    <!-- Page Header -->
     <div class="page-header">
         <div class="page-header-content">
             <div class="page-title-section">
@@ -202,11 +367,11 @@
         </div>
     </div>
 
-    <!-- Employee Info Card -->
     <div class="info-card">
         <div class="employee-info">
             <div class="employee-avatar">
-                <img alt="Avatar" id="avatarPreview" th:src="${employeeForm.avatar}"/>
+                <img alt="Avatar" id="headerAvatarPreview"
+                     th:src="${employeeForm.avatar != null and employeeForm.avatar != ''} ? ${employeeForm.avatar} : '/images/default-avatar.png'"/>
                 <div class="employee-id">ID: <span th:text="${employeeForm.id}">EMP001</span></div>
             </div>
             <div class="employee-details">
@@ -223,22 +388,16 @@
         </div>
     </div>
 
-    <!-- Form Card -->
     <div class="form-card">
         <div class="form-header">
             <h2>Thông tin nhân viên</h2>
             <p>Cập nhật thông tin nhân viên bên dưới</p>
         </div>
 
-        <form
-                class="employee-form"
-                id="employeeForm"
-                method="post"
-                th:action="@{'/admin/employees/edit/' + ${employeeForm.id}}"
-                th:object="${employeeForm}"
-        >
+        <form class="employee-form" enctype="multipart/form-data" id="employeeForm" method="post"
+              th:action="@{'/admin/employees/edit/' + ${employeeForm.id}}" th:object="${employeeForm}">
+
             <div class="form-layout">
-                <!-- CỘT TRÁI: THÔNG TIN CÁ NHÂN -->
                 <div class="form-left">
                     <!-- Personal Information Section -->
                     <div class="form-section">
@@ -253,15 +412,8 @@
                                     <i class="fas fa-user"></i>
                                     Họ và tên
                                 </label>
-                                <input
-                                        class="form-input"
-                                        id="name"
-                                        maxlength="100"
-                                        placeholder="Nhập họ và tên đầy đủ"
-                                        required
-                                        th:field="*{name}"
-                                        type="text"
-                                />
+                                <input class="form-input" id="name" maxlength="100" placeholder="Nhập họ và tên đầy đủ"
+                                       required th:field="*{name}" type="text"/>
                                 <div class="form-error" id="nameError"></div>
                             </div>
 
@@ -270,14 +422,8 @@
                                     <i class="fas fa-envelope"></i>
                                     Email
                                 </label>
-                                <input
-                                        class="form-input"
-                                        id="email"
-                                        placeholder="example@hospital.com"
-                                        required
-                                        th:field="*{email}"
-                                        type="email"
-                                />
+                                <input class="form-input" id="email" placeholder="example@hospital.com" required
+                                       th:field="*{email}" type="email"/>
                                 <div class="form-error" id="emailError"></div>
                             </div>
                         </div>
@@ -288,13 +434,8 @@
                                     <i class="fas fa-lock"></i>
                                     Mật khẩu
                                 </label>
-                                <input
-                                        class="form-input"
-                                        id="password"
-                                        placeholder="Để trống nếu không muốn thay đổi"
-                                        th:field="*{password}"
-                                        type="password"
-                                />
+                                <input class="form-input" id="password" placeholder="Để trống nếu không muốn thay đổi"
+                                       th:field="*{password}" type="password"/>
                                 <div class="form-error" id="passwordError"></div>
                                 <div class="form-help">Để trống nếu không muốn thay đổi mật khẩu</div>
                             </div>
@@ -304,14 +445,8 @@
                                     <i class="fas fa-phone"></i>
                                     Số điện thoại
                                 </label>
-                                <input
-                                        class="form-input"
-                                        id="phone"
-                                        pattern="[0-9]{10,11}"
-                                        placeholder="0901234567"
-                                        th:field="*{phone}"
-                                        type="tel"
-                                />
+                                <input class="form-input" id="phone" pattern="[0-9]{10,11}" placeholder="0901234567"
+                                       th:field="*{phone}" type="tel"/>
                                 <div class="form-error" id="phoneError"></div>
                             </div>
                         </div>
@@ -334,12 +469,7 @@
                                     <i class="fas fa-calendar-alt"></i>
                                     Ngày bắt đầu làm việc
                                 </label>
-                                <input
-                                        class="form-input"
-                                        id="startingDate"
-                                        th:field="*{startingDate}"
-                                        type="date"
-                                />
+                                <input class="form-input" id="startingDate" th:field="*{startingDate}" type="date"/>
                             </div>
                         </div>
 
@@ -348,14 +478,9 @@
                                 <i class="fas fa-map-marker-alt"></i>
                                 Địa chỉ
                             </label>
-                            <textarea
-                                    class="form-textarea"
-                                    id="address"
-                                    maxlength="200"
-                                    placeholder="Nhập địa chỉ đầy đủ..."
-                                    rows="3"
-                                    th:field="*{address}"
-                            ></textarea>
+                            <textarea class="form-textarea" id="address" maxlength="200"
+                                      placeholder="Nhập địa chỉ đầy đủ..."
+                                      rows="3" th:field="*{address}"></textarea>
                             <div class="character-count">
                                 <span id="addressCharCount">0</span>/200 ký tự
                             </div>
@@ -363,9 +488,7 @@
                     </div>
                 </div>
 
-                <!-- CỘT PHẢI: THÔNG TIN CÔNG VIỆC + BỔ SUNG -->
                 <div class="form-right">
-                    <!-- Work Information Section -->
                     <!-- Work Information Section -->
                     <div class="form-section">
                         <h3 class="section-title">
@@ -419,12 +542,8 @@
                             </label>
                             <div class="roles-container">
                                 <div class="role-item" th:each="role : ${roles}">
-                                    <input
-                                            th:field="*{roleIds}"
-                                            th:id="'role_' + ${role.id}"
-                                            th:value="${role.id}"
-                                            type="checkbox"
-                                    />
+                                    <input th:field="*{roleIds}" th:id="'role_' + ${role.id}" th:value="${role.id}"
+                                           type="checkbox"/>
                                     <label class="role-label" th:for="'role_' + ${role.id}">
                                         <span th:text="${role.name}"></span>
                                         <small th:text="' (' + ${role.code} + ')'"></small>
@@ -436,36 +555,109 @@
                         </div>
                     </div>
 
-
-                    <!-- Additional Information Section -->
+                    <!-- Simplified Avatar Section -->
                     <div class="form-section">
                         <h3 class="section-title">
-                            <i class="fas fa-info-circle"></i>
-                            Thông tin bổ sung
+                            <i class="fas fa-image"></i>
+                            Ảnh đại diện
                         </h3>
 
-                        <div class="form-group">
-                            <label class="form-label" for="avatar">
-                                <i class="fas fa-image"></i>
-                                Avatar URL
-                            </label>
-                            <input
-                                    class="form-input"
-                                    id="avatar"
-                                    placeholder="https://example.com/avatar.jpg"
-                                    th:field="*{avatar}"
-                                    type="text"
-                            />
-                            <div class="form-help">URL hình ảnh đại diện của nhân viên</div>
+                        <div class="image-upload-section">
+                            <!-- Current Avatar Display -->
+                            <div class="current-avatar" id="currentAvatarDisplay"
+                                 th:if="${employeeForm.avatar != null and employeeForm.avatar != ''}">
+                                <img alt="Current Avatar" id="currentAvatarImg" th:src="${employeeForm.avatar}"/>
+                                <div class="current-avatar-info">
+                                    <h4>Ảnh đại diện hiện tại</h4>
+                                    <p>Chọn phương thức bên dưới để thay đổi</p>
+                                </div>
+                            </div>
+
+                            <!-- Upload Method Tabs -->
+                            <div class="upload-tabs">
+                                <div class="tab-button active" id="fileTab">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <h4>Tải lên file</h4>
+                                    <p>Chọn ảnh từ thiết bị</p>
+                                </div>
+                                <div class="tab-button" id="urlTab">
+                                    <i class="fas fa-link"></i>
+                                    <h4>Sử dụng URL</h4>
+                                    <p>Nhập địa chỉ ảnh</p>
+                                </div>
+                            </div>
+
+                            <!-- File Upload Content -->
+                            <div class="tab-content active" id="fileContent">
+                                <div class="file-upload-container" id="fileUploadContainer">
+                                    <div class="file-upload-icon">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                    </div>
+                                    <div class="file-upload-text">
+                                        <h4>Kéo thả file vào đây hoặc nhấn để chọn</h4>
+                                        <p>Hỗ trợ: JPG, JPEG, PNG, GIF (tối đa 5MB)</p>
+                                    </div>
+                                    <button class="file-select-button" id="fileSelectButton" type="button">
+                                        <i class="fas fa-folder-open"></i>
+                                        Chọn file
+                                    </button>
+                                </div>
+
+                                <!-- Hidden file input -->
+                                <input accept="image/*" class="file-input-hidden" id="avatarFile" name="avatarFile"
+                                       type="file"/>
+                            </div>
+
+                            <!-- URL Input Content -->
+                            <div class="tab-content" id="urlContent">
+                                <div class="form-group">
+                                    <label class="form-label" for="avatar">
+                                        <i class="fas fa-link"></i>
+                                        URL ảnh đại diện
+                                    </label>
+                                    <input class="form-input" id="avatar" placeholder="https://example.com/avatar.jpg"
+                                           th:field="*{avatar}" type="url"/>
+                                    <div class="form-help">Nhập URL hình ảnh đại diện của nhân viên</div>
+                                </div>
+                            </div>
+
+                            <!-- Image Preview -->
+                            <div class="image-preview-section" id="imagePreviewSection" style="display: none;">
+                                <img alt="Preview" class="preview-image" id="imagePreview"/>
+                                <div class="image-info" id="imageInfo">
+                                    <h5>Thông tin ảnh</h5>
+                                    <p id="imageDetails"></p>
+                                </div>
+                                <div class="image-actions">
+                                    <button class="btn-small btn-danger" id="removeImageBtn" type="button">
+                                        <i class="fas fa-times"></i>
+                                        Xóa ảnh
+                                    </button>
+                                    <button class="btn-small btn-info" id="changeImageBtn" type="button">
+                                        <i class="fas fa-edit"></i>
+                                        Thay đổi
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Error Message -->
+                            <div class="error-message" id="imageError"></div>
+
+                            <!-- File Requirements -->
+                            <div class="file-requirements">
+                                <h5>Yêu cầu file ảnh:</h5>
+                                <ul>
+                                    <li>Định dạng: JPG, JPEG, PNG, GIF</li>
+                                    <li>Kích thước tối đa: 5MB</li>
+                                    <li>Khuyến nghị: Ảnh vuông (1:1) để hiển thị tốt nhất</li>
+                                    <li>Độ phân giải khuyến nghị: 300x300px trở lên</li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Personal Information Section -->
-
-
-            <!-- Form Actions -->
             <div class="form-actions">
                 <button class="btn-secondary" onclick="history.back()" type="button">
                     <i class="fas fa-times"></i>
@@ -483,209 +675,358 @@
         </form>
     </div>
 </div>
+
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        // Sidebar menu interactions
-        const menuItems = document.querySelectorAll(".menu-item");
-        menuItems.forEach((item) => {
-            item.addEventListener("click", function (e) {
-                menuItems.forEach((mi) => mi.classList.remove("active"));
-                this.classList.add("active");
-            });
+        console.log("Starting simplified image upload initialization...");
+
+        // Get all required elements
+        const fileTab = document.getElementById("fileTab");
+        const urlTab = document.getElementById("urlTab");
+        const fileContent = document.getElementById("fileContent");
+        const urlContent = document.getElementById("urlContent");
+        const fileSelectButton = document.getElementById("fileSelectButton");
+        const avatarFileInput = document.getElementById("avatarFile");
+        const avatarUrlInput = document.getElementById("avatar");
+        const fileUploadContainer = document.getElementById("fileUploadContainer");
+        const imagePreviewSection = document.getElementById("imagePreviewSection");
+        const imagePreview = document.getElementById("imagePreview");
+        const imageDetails = document.getElementById("imageDetails");
+        const removeImageBtn = document.getElementById("removeImageBtn");
+        const changeImageBtn = document.getElementById("changeImageBtn");
+        const imageError = document.getElementById("imageError");
+        const headerAvatarPreview = document.getElementById("headerAvatarPreview");
+        const currentAvatarImg = document.getElementById("currentAvatarImg");
+
+        let currentMode = "file";
+        let selectedFile = null;
+
+        // Debug: Check if all elements exist
+        console.log("Elements found:", {
+            fileTab: !!fileTab,
+            urlTab: !!urlTab,
+            fileSelectButton: !!fileSelectButton,
+            avatarFileInput: !!avatarFileInput,
+            avatarUrlInput: !!avatarUrlInput
         });
 
-        // Form validation and interactions
-        const form = document.getElementById("employeeForm");
-        const submitBtn = document.getElementById("submitBtn");
+        // Initialize based on existing avatar
+        function initialize() {
+            if (avatarUrlInput && avatarUrlInput.value.trim()) {
+                switchToUrlMode();
+                showImagePreview(avatarUrlInput.value, "url");
+            } else {
+                switchToFileMode();
+            }
+        }
+
+        // Tab switching
+        function switchToFileMode() {
+            console.log("Switching to file mode");
+            currentMode = "file";
+
+            fileTab.classList.add("active");
+            urlTab.classList.remove("active");
+            fileContent.classList.add("active");
+            urlContent.classList.remove("active");
+
+            if (avatarUrlInput) {
+                avatarUrlInput.value = "";
+            }
+
+            clearError();
+        }
+
+        function switchToUrlMode() {
+            console.log("Switching to URL mode");
+            currentMode = "url";
+
+            urlTab.classList.add("active");
+            fileTab.classList.remove("active");
+            urlContent.classList.add("active");
+            fileContent.classList.remove("active");
+
+            selectedFile = null;
+            if (avatarFileInput) {
+                avatarFileInput.value = "";
+            }
+
+            clearError();
+        }
+
+        // File handling
+        function handleFileSelect(file) {
+            console.log("File selected:", file ? file.name : "none");
+
+            if (!file) {
+                return;
+            }
+
+            // Validate file
+            if (!validateFile(file)) {
+                return;
+            }
+
+            selectedFile = file;
+            clearError();
+
+            // Show preview
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                showImagePreview(e.target.result, "file");
+            };
+            reader.onerror = function () {
+                showError("Không thể đọc file");
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function validateFile(file) {
+            const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+            const maxSize = 5 * 1024 * 1024; // 5MB
+
+            if (!allowedTypes.includes(file.type)) {
+                showError("Định dạng file không được hỗ trợ. Vui lòng chọn JPG, JPEG, PNG hoặc GIF.");
+                return false;
+            }
+
+            if (file.size > maxSize) {
+                showError("Kích thước file quá lớn. Vui lòng chọn file nhỏ hơn 5MB.");
+                return false;
+            }
+
+            return true;
+        }
+
+        function showImagePreview(src, type) {
+            console.log("Showing preview:", src, type);
+
+            if (imagePreview) {
+                imagePreview.src = src;
+            }
+
+            if (imagePreviewSection) {
+                imagePreviewSection.style.display = "block";
+            }
+
+            // Update header avatar
+            if (headerAvatarPreview) {
+                headerAvatarPreview.src = src;
+            }
+
+            // Update current avatar
+            if (currentAvatarImg) {
+                currentAvatarImg.src = src;
+            }
+
+            // Update image details
+            if (imageDetails) {
+                if (type === "file" && selectedFile) {
+                    const sizeInMB = (selectedFile.size / (1024 * 1024)).toFixed(2);
+                    imageDetails.textContent = `${selectedFile.name} | ${sizeInMB}MB | ${selectedFile.type}`;
+                } else {
+                    imageDetails.textContent = `URL: ${src}`;
+                }
+            }
+        }
+
+        function hideImagePreview() {
+            if (imagePreviewSection) {
+                imagePreviewSection.style.display = "none";
+            }
+
+            // Reset to default
+            const defaultSrc = "/images/default-avatar.png";
+            if (headerAvatarPreview) {
+                headerAvatarPreview.src = defaultSrc;
+            }
+            if (currentAvatarImg) {
+                currentAvatarImg.src = defaultSrc;
+            }
+        }
+
+        function showError(message) {
+            console.log("Error:", message);
+            if (imageError) {
+                imageError.textContent = message;
+            }
+        }
+
+        function clearError() {
+            if (imageError) {
+                imageError.textContent = "";
+            }
+        }
+
+        // Event Listeners
+
+        // Tab switching
+        if (fileTab) {
+            fileTab.addEventListener("click", function (e) {
+                e.preventDefault();
+                switchToFileMode();
+            });
+        }
+
+        if (urlTab) {
+            urlTab.addEventListener("click", function (e) {
+                e.preventDefault();
+                switchToUrlMode();
+            });
+        }
+
+        // File selection - CRITICAL: This is the main fix
+        if (fileSelectButton && avatarFileInput) {
+            fileSelectButton.addEventListener("click", function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log("File select button clicked - triggering file input");
+
+                // Force the file input to be accessible
+                avatarFileInput.style.position = "absolute";
+                avatarFileInput.style.left = "-9999px";
+                avatarFileInput.style.opacity = "0";
+
+                // Trigger click
+                avatarFileInput.click();
+            });
+
+            avatarFileInput.addEventListener("change", function (e) {
+                console.log("File input changed");
+                const file = e.target.files[0];
+                handleFileSelect(file);
+            });
+        }
+
+        // Container click
+        if (fileUploadContainer) {
+            fileUploadContainer.addEventListener("click", function (e) {
+                if (e.target !== fileSelectButton && avatarFileInput) {
+                    e.preventDefault();
+                    console.log("Container clicked - triggering file input");
+                    avatarFileInput.click();
+                }
+            });
+        }
+
+        // Drag and drop
+        if (fileUploadContainer) {
+            fileUploadContainer.addEventListener("dragover", function (e) {
+                e.preventDefault();
+                this.classList.add("dragover");
+            });
+
+            fileUploadContainer.addEventListener("dragleave", function (e) {
+                e.preventDefault();
+                this.classList.remove("dragover");
+            });
+
+            fileUploadContainer.addEventListener("drop", function (e) {
+                e.preventDefault();
+                this.classList.remove("dragover");
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    handleFileSelect(files[0]);
+                }
+            });
+        }
+
+        // URL input
+        if (avatarUrlInput) {
+            let urlTimeout;
+            avatarUrlInput.addEventListener("input", function () {
+                clearTimeout(urlTimeout);
+                urlTimeout = setTimeout(() => {
+                    const url = this.value.trim();
+                    if (url) {
+                        validateUrl(url);
+                    } else {
+                        hideImagePreview();
+                    }
+                }, 500);
+            });
+        }
+
+        function validateUrl(url) {
+            try {
+                new URL(url);
+            } catch {
+                showError("URL không hợp lệ");
+                return;
+            }
+
+            const img = new Image();
+            img.onload = function () {
+                clearError();
+                showImagePreview(url, "url");
+            };
+            img.onerror = function () {
+                showError("URL không phải là hình ảnh hợp lệ");
+                hideImagePreview();
+            };
+            img.src = url;
+        }
+
+        // Remove image
+        if (removeImageBtn) {
+            removeImageBtn.addEventListener("click", function (e) {
+                e.preventDefault();
+                selectedFile = null;
+                if (avatarFileInput) {
+                    avatarFileInput.value = "";
+                }
+                if (avatarUrlInput) {
+                    avatarUrlInput.value = "";
+                }
+                hideImagePreview();
+            });
+        }
+
+        // Change image
+        if (changeImageBtn) {
+            changeImageBtn.addEventListener("click", function (e) {
+                e.preventDefault();
+                if (currentMode === "file" && avatarFileInput) {
+                    avatarFileInput.click();
+                } else if (currentMode === "url" && avatarUrlInput) {
+                    avatarUrlInput.focus();
+                }
+            });
+        }
 
         // Character count for address
         const addressTextarea = document.getElementById("address");
         const addressCharCount = document.getElementById("addressCharCount");
+        if (addressTextarea && addressCharCount) {
+            addressTextarea.addEventListener("input", function () {
+                const count = this.value.length;
+                addressCharCount.textContent = count;
 
-        addressTextarea.addEventListener("input", function () {
-            const count = this.value.length;
-            addressCharCount.textContent = count;
-
-            if (count > 180) {
-                addressCharCount.style.color = "#dc3545";
-            } else if (count > 150) {
-                addressCharCount.style.color = "#ffc107";
-            } else {
-                addressCharCount.style.color = "#28a745";
-            }
-        });
-
-        // Phone number formatting
-        const phoneInput = document.getElementById("phone");
-        phoneInput.addEventListener("input", function () {
-            // Remove non-numeric characters
-            this.value = this.value.replace(/\D/g, "");
-        });
-
-        // Avatar preview
-        const avatarInput = document.getElementById("avatar");
-        const avatarPreview = document.getElementById("avatarPreview");
-
-        avatarInput.addEventListener("input", function () {
-            const url = this.value.trim();
-            if (url && isValidUrl(url)) {
-                avatarPreview.src = url;
-            }
-        });
-
-        function isValidUrl(string) {
-            try {
-                new URL(string);
-                return true;
-            } catch (_) {
-                return false;
-            }
-        }
-
-        // Form validation
-        function validateForm() {
-            let isValid = true;
-
-            // Clear previous errors
-            document.querySelectorAll(".form-error").forEach((error) => {
-                error.textContent = "";
+                if (count > 180) {
+                    addressCharCount.style.color = "#dc3545";
+                } else if (count > 150) {
+                    addressCharCount.style.color = "#ffc107";
+                } else {
+                    addressCharCount.style.color = "#28a745";
+                }
             });
 
-            // Validate name
-            const name = document.getElementById("name").value.trim();
-            if (!name) {
-                showError("nameError", "Tên nhân viên không được để trống");
-                isValid = false;
-            } else if (name.length < 2) {
-                showError("nameError", "Tên nhân viên phải có ít nhất 2 ký tự");
-                isValid = false;
-            }
-
-            // Validate email
-            const email = document.getElementById("email").value.trim();
-            if (!email) {
-                showError("emailError", "Email không được để trống");
-                isValid = false;
-            } else if (!isValidEmail(email)) {
-                showError("emailError", "Định dạng email không hợp lệ");
-                isValid = false;
-            }
-
-            // Validate phone if provided
-            const phone = phoneInput.value.trim();
-            if (phone && (phone.length < 10 || phone.length > 11)) {
-                showError("phoneError", "Số điện thoại phải có 10-11 chữ số");
-                isValid = false;
-            }
-
-            // Validate department
-            const department = document.getElementById("departmentId").value;
-            if (!department) {
-                showError("departmentError", "Vui lòng chọn khoa");
-                isValid = false;
-            }
-
-            // Validate position
-            const position = document.getElementById("positionId").value;
-            if (!position) {
-                showError("positionError", "Vui lòng chọn chức vụ");
-                isValid = false;
-            }
-
-            // Validate roles
-            const roles = document.querySelectorAll('input[name="roleIds"]:checked');
-            if (roles.length === 0) {
-                showError("rolesError", "Vui lòng chọn ít nhất một vai trò");
-                isValid = false;
-            }
-
-            // Validate password if provided
-            const password = document.getElementById("password").value;
-            if (password && password.length < 6) {
-                showError("passwordError", "Mật khẩu phải có ít nhất 6 ký tự");
-                isValid = false;
-            }
-
-            return isValid;
+            // Initialize count
+            addressTextarea.dispatchEvent(new Event("input"));
         }
 
-        function showError(elementId, message) {
-            document.getElementById(elementId).textContent = message;
+        // Phone formatting
+        const phoneInput = document.getElementById("phone");
+        if (phoneInput) {
+            phoneInput.addEventListener("input", function () {
+                this.value = this.value.replace(/\D/g, "");
+            });
         }
 
-        function isValidEmail(email) {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return emailRegex.test(email);
-        }
+        // Initialize
+        initialize();
 
-        // Form submission
-        form.addEventListener("submit", function (e) {
-            e.preventDefault();
-
-            if (validateForm()) {
-                // Show loading state
-                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang cập nhật...';
-                submitBtn.disabled = true;
-
-                // Simulate API call (replace with actual form submission)
-                setTimeout(() => {
-                    // Success message
-                    showSuccessMessage();
-
-                    // Reset button
-                    submitBtn.innerHTML = '<i class="fas fa-save"></i> Cập nhật nhân viên';
-                    submitBtn.disabled = false;
-
-                    // Redirect after 2 seconds
-                    setTimeout(() => {
-                        window.location.href = "employees.html";
-                    }, 2000);
-                }, 1500);
-            } else {
-                // Scroll to first error
-                const firstError = document.querySelector(".form-error:not(:empty)");
-                if (firstError) {
-                    firstError.scrollIntoView({
-                        behavior: "smooth",
-                        block: "center",
-                    });
-                }
-            }
-        });
-
-        function showSuccessMessage() {
-            // Create and show success notification
-            const notification = document.createElement("div");
-            notification.className = "success-notification";
-            notification.innerHTML = `
-            <i class="fas fa-check-circle"></i>
-            <span>Thông tin nhân viên đã được cập nhật thành công!</span>
-          `;
-
-            document.body.appendChild(notification);
-
-            // Trigger animation
-            setTimeout(() => {
-                notification.classList.add("show");
-            }, 100);
-
-            // Remove after 3 seconds
-            setTimeout(() => {
-                notification.classList.remove("show");
-                setTimeout(() => {
-                    document.body.removeChild(notification);
-                }, 300);
-            }, 3000);
-        }
-
-        // Real-time validation
-        const inputs = form.querySelectorAll("input, select, textarea");
-        inputs.forEach((input) => {
-            input.addEventListener("blur", validateForm);
-        });
-
-        // Initialize character count
-        addressTextarea.dispatchEvent(new Event("input"));
+        console.log("Simplified image upload initialization completed");
     });
 </script>
 </body>

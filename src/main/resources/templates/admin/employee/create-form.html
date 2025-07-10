@@ -15,7 +15,6 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
         }
 
-
         .employee-form {
             padding: 50px 60px;
         }
@@ -108,6 +107,125 @@
             color: #e53e3e;
             font-size: 12px;
             margin-top: 5px;
+            display: block;
+        }
+
+        /* Avatar Upload Styles */
+        .avatar-upload-container {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .avatar-preview {
+            width: 120px;
+            height: 120px;
+            border: 3px dashed #e2e8f0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8fafc;
+            overflow: hidden;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .avatar-preview:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .avatar-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .avatar-placeholder {
+            color: #9ca3af;
+            font-size: 48px;
+        }
+
+        .avatar-upload-controls {
+            flex: 1;
+        }
+
+        .upload-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .upload-tab {
+            padding: 8px 16px;
+            border: 2px solid #e2e8f0;
+            background: #f8fafc;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .upload-tab.active {
+            border-color: #667eea;
+            background: #667eea;
+            color: white;
+        }
+
+        .upload-tab:not(.active):hover {
+            border-color: #cbd5e0;
+            background: #edf2f7;
+        }
+
+        .upload-content {
+            display: none;
+        }
+
+        .upload-content.active {
+            display: block;
+        }
+
+        .file-upload-area {
+            border: 2px dashed #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            background: #f8fafc;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .file-upload-area:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .file-upload-area.dragover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .file-upload-input {
+            display: none;
+        }
+
+        .file-upload-icon {
+            font-size: 36px;
+            color: #9ca3af;
+            margin-bottom: 10px;
+        }
+
+        .file-upload-text {
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .file-upload-hint {
+            color: #9ca3af;
+            font-size: 12px;
         }
 
         /* Roles Container */
@@ -261,6 +379,11 @@
                 gap: 0;
             }
 
+            .avatar-upload-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
             .roles-container {
                 grid-template-columns: 1fr;
                 max-height: 150px;
@@ -341,7 +464,8 @@
             <p>Vui lòng điền đầy đủ thông tin bên dưới</p>
         </div>
 
-        <form class="employee-form" id="employeeForm" method="post"
+        <form class="employee-form" enctype="multipart/form-data" id="employeeForm"
+              method="post"
               th:action="@{/admin/employees/create}" th:object="${employeeForm}">
 
             <!-- Personal Information Section -->
@@ -491,8 +615,9 @@
                         Vai trò (có thể chọn nhiều)
                     </label>
                     <div class="roles-container">
-                        <div class="role-item" th:each="role : ${roles}">
-                            <input th:field="*{roleIds}" th:id="'role_' + ${role.id}"
+                        <div class="role-item" th:each="role, iterStat : ${roles}">
+                            <input name="roleIds"
+                                   th:id="'role_' + ${role.id}"
                                    th:value="${role.id}"
                                    type="checkbox"/>
                             <label th:for="'role_' + ${role.id}"
@@ -513,13 +638,51 @@
                 </h3>
 
                 <div class="form-group">
-                    <label class="form-label" for="employeeAvatar">
+                    <label class="form-label">
                         <i class="fas fa-image"></i>
-                        Avatar URL
+                        Ảnh đại diện
                     </label>
-                    <input class="form-input" id="employeeAvatar" placeholder="https://example.com/avatar.jpg"
-                           th:field="*{avatar}" type="url"/>
-                    <div class="form-help">URL hình ảnh đại diện của nhân viên</div>
+                    <div class="avatar-upload-container">
+                        <div class="avatar-preview" id="avatarPreview">
+                            <i class="fas fa-user avatar-placeholder"></i>
+                        </div>
+                        <div class="avatar-upload-controls">
+                            <div class="upload-tabs">
+                                <div class="upload-tab active" data-tab="file">
+                                    <i class="fas fa-upload"></i>
+                                    Tải lên file
+                                </div>
+                                <div class="upload-tab" data-tab="url">
+                                    <i class="fas fa-link"></i>
+                                    Nhập URL
+                                </div>
+                            </div>
+
+                            <div class="upload-content active" id="file-upload">
+                                <div class="file-upload-area" id="fileUploadArea">
+                                    <div class="file-upload-icon">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                    </div>
+                                    <div class="file-upload-text">
+                                        Kéo thả file ảnh vào đây hoặc click để chọn
+                                    </div>
+                                    <div class="file-upload-hint">
+                                        Hỗ trợ: JPG, PNG, GIF (tối đa 5MB)
+                                    </div>
+                                </div>
+                                <input accept="image/*" class="file-upload-input" id="avatarFile" name="avatarFile"
+                                       type="file"/>
+                                <div class="form-error" id="avatarFileError"></div>
+                            </div>
+
+                            <div class="upload-content" id="url-upload">
+                                <input class="form-input" id="employeeAvatar"
+                                       placeholder="https://example.com/avatar.jpg"
+                                       th:field="*{avatar}" type="url"/>
+                                <div class="form-help">URL hình ảnh đại diện của nhân viên</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -545,9 +708,132 @@
         document.addEventListener('DOMContentLoaded', function () {
             const form = document.getElementById('employeeForm');
             const submitBtn = document.getElementById('submitBtn');
+            const avatarFile = document.getElementById('avatarFile');
+            const avatarPreview = document.getElementById('avatarPreview');
+            const fileUploadArea = document.getElementById('fileUploadArea');
+            const avatarUrlInput = document.getElementById('employeeAvatar');
 
-            // Form validation
+            console.log('Form initialized');
+
+            // Tab switching logic (keep existing)
+            const uploadTabs = document.querySelectorAll('.upload-tab');
+            const uploadContents = document.querySelectorAll('.upload-content');
+
+            uploadTabs.forEach(tab => {
+                tab.addEventListener('click', function () {
+                    const targetTab = this.dataset.tab;
+                    uploadTabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    uploadContents.forEach(content => {
+                        content.classList.remove('active');
+                        if (content.id === targetTab + '-upload') {
+                            content.classList.add('active');
+                        }
+                    });
+                    if (targetTab === 'file' && avatarUrlInput) {
+                        avatarUrlInput.value = '';
+                    } else if (targetTab === 'url' && avatarFile) {
+                        avatarFile.value = '';
+                    }
+                });
+            });
+
+            // File upload handling (keep existing)
+            if (fileUploadArea) {
+                fileUploadArea.addEventListener('click', function () {
+                    avatarFile.click();
+                });
+
+                fileUploadArea.addEventListener('dragover', function (e) {
+                    e.preventDefault();
+                    this.classList.add('dragover');
+                });
+
+                fileUploadArea.addEventListener('dragleave', function (e) {
+                    e.preventDefault();
+                    this.classList.remove('dragover');
+                });
+
+                fileUploadArea.addEventListener('drop', function (e) {
+                    e.preventDefault();
+                    this.classList.remove('dragover');
+                    const files = e.dataTransfer.files;
+                    if (files.length > 0) {
+                        handleFileSelect(files[0]);
+                    }
+                });
+            }
+
+            if (avatarFile) {
+                avatarFile.addEventListener('change', function (e) {
+                    if (e.target.files.length > 0) {
+                        handleFileSelect(e.target.files[0]);
+                    }
+                });
+            }
+
+            function handleFileSelect(file) {
+                console.log('File selected:', file.name);
+
+                if (!file.type.startsWith('image/')) {
+                    showError('avatarFileError', 'Vui lòng chọn file ảnh hợp lệ');
+                    return;
+                }
+
+                if (file.size > 5 * 1024 * 1024) {
+                    showError('avatarFileError', 'Kích thước file không được vượt quá 5MB');
+                    return;
+                }
+
+                const errorElement = document.getElementById('avatarFileError');
+                if (errorElement) {
+                    errorElement.textContent = '';
+                }
+
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    if (avatarPreview) {
+                        avatarPreview.innerHTML = `<img src="${e.target.result}" alt="Avatar Preview">`;
+                    }
+                };
+                reader.readAsDataURL(file);
+
+                if (avatarUrlInput) {
+                    avatarUrlInput.value = '';
+                }
+            }
+
+            // Avatar URL preview (keep existing)
+            if (avatarUrlInput) {
+                avatarUrlInput.addEventListener('input', function () {
+                    const url = this.value.trim();
+                    if (url && isValidUrl(url)) {
+                        if (avatarPreview) {
+                            avatarPreview.innerHTML = `<img src="${url}" alt="Avatar Preview" onerror="this.style.display='none'">`;
+                        }
+                        if (avatarFile) {
+                            avatarFile.value = '';
+                        }
+                    } else if (!url) {
+                        if (avatarPreview) {
+                            avatarPreview.innerHTML = '<i class="fas fa-user avatar-placeholder"></i>';
+                        }
+                    }
+                });
+            }
+
+            function isValidUrl(string) {
+                try {
+                    new URL(string);
+                    return true;
+                } catch (_) {
+                    return false;
+                }
+            }
+
+            // Simplified form validation
             function validateForm() {
+                console.log('=== STARTING FORM VALIDATION ===');
                 let isValid = true;
 
                 // Clear previous errors
@@ -555,49 +841,23 @@
                     error.textContent = '';
                 });
 
-                // Validate name
-                const name = document.getElementById('employeeName').value.trim();
-                if (!name) {
-                    showError('nameError', 'Họ và tên không được để trống');
-                    isValid = false;
-                } else if (name.length < 2) {
-                    showError('nameError', 'Họ và tên phải có ít nhất 2 ký tự');
-                    isValid = false;
-                }
+                // Basic validation for required fields
+                const requiredFields = [
+                    {id: 'employeeName', error: 'nameError', message: 'Họ và tên không được để trống'},
+                    {id: 'employeeEmail', error: 'emailError', message: 'Email không được để trống'},
+                    {id: 'employeePassword', error: 'passwordError', message: 'Mật khẩu không được để trống'},
+                    {id: 'employeeDepartment', error: 'departmentError', message: 'Vui lòng chọn khoa'},
+                    {id: 'employeePosition', error: 'positionError', message: 'Vui lòng chọn chức vụ'}
+                ];
 
-                // Validate email
-                const email = document.getElementById('employeeEmail').value.trim();
-                if (!email) {
-                    showError('emailError', 'Email không được để trống');
-                    isValid = false;
-                } else if (!isValidEmail(email)) {
-                    showError('emailError', 'Định dạng email không hợp lệ');
-                    isValid = false;
-                }
-
-                // Validate password
-                const password = document.getElementById('employeePassword').value;
-                if (!password) {
-                    showError('passwordError', 'Mật khẩu không được để trống');
-                    isValid = false;
-                } else if (password.length < 6) {
-                    showError('passwordError', 'Mật khẩu phải có ít nhất 6 ký tự');
-                    isValid = false;
-                }
-
-                // Validate department
-                const department = document.getElementById('employeeDepartment').value;
-                if (!department) {
-                    showError('departmentError', 'Vui lòng chọn khoa');
-                    isValid = false;
-                }
-
-                // Validate position
-                const position = document.getElementById('employeePosition').value;
-                if (!position) {
-                    showError('positionError', 'Vui lòng chọn chức vụ');
-                    isValid = false;
-                }
+                requiredFields.forEach(field => {
+                    const element = document.getElementById(field.id);
+                    const value = element ? element.value.trim() : '';
+                    if (!value) {
+                        showError(field.error, field.message);
+                        isValid = false;
+                    }
+                });
 
                 // Validate roles
                 const roles = document.querySelectorAll('input[name="roleIds"]:checked');
@@ -606,68 +866,52 @@
                     isValid = false;
                 }
 
+                console.log('Form validation result:', isValid);
                 return isValid;
             }
 
             function showError(elementId, message) {
-                document.getElementById(elementId).textContent = message;
-            }
-
-            function isValidEmail(email) {
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                return emailRegex.test(email);
+                const errorElement = document.getElementById(elementId);
+                if (errorElement) {
+                    errorElement.textContent = message;
+                    errorElement.style.display = 'block';
+                }
             }
 
             // Form submission
             form.addEventListener('submit', function (e) {
+                console.log('Form submission triggered');
+                e.preventDefault();
+
+                // Clean up inactive inputs
+                const activeTab = document.querySelector('.upload-tab.active');
+                if (activeTab) {
+                    const activeTabType = activeTab.dataset.tab;
+                    if (activeTabType === 'file' && avatarUrlInput) {
+                        avatarUrlInput.value = '';
+                    } else if (activeTabType === 'url' && avatarFile) {
+                        avatarFile.value = '';
+                    }
+                }
 
                 if (validateForm()) {
-                    // Show loading state
+                    console.log('Validation passed, submitting form...');
+
                     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang lưu...';
                     submitBtn.disabled = true;
 
-                    // Simulate API call
                     setTimeout(() => {
-                        showSuccessMessage();
-
-                        // Reset button
-                        submitBtn.innerHTML = '<i class="fas fa-save"></i> Lưu nhân viên';
-                        submitBtn.disabled = false;
-
-                        // Redirect after 2 seconds
-                        setTimeout(() => {
-                            window.location.href = '/admin/employees';
-                        }, 2000);
-                    }, 1500);
+                        console.log('Actually submitting form now...');
+                        this.removeEventListener('submit', arguments.callee);
+                        this.submit();
+                    }, 100);
+                } else {
+                    console.log('Validation failed - form not submitted');
+                    const firstError = document.querySelector('.form-error:not(:empty)');
+                    if (firstError) {
+                        firstError.scrollIntoView({behavior: 'smooth', block: 'center'});
+                    }
                 }
-            });
-
-            function showSuccessMessage() {
-                const notification = document.createElement('div');
-                notification.className = 'success-notification';
-                notification.innerHTML = `
-                    <i class="fas fa-check-circle"></i>
-                    <span>Nhân viên đã được tạo thành công!</span>
-                `;
-
-                document.body.appendChild(notification);
-
-                setTimeout(() => {
-                    notification.classList.add('show');
-                }, 100);
-
-                setTimeout(() => {
-                    notification.classList.remove('show');
-                    setTimeout(() => {
-                        document.body.removeChild(notification);
-                    }, 300);
-                }, 3000);
-            }
-
-            // Real-time validation
-            const inputs = form.querySelectorAll('input, select');
-            inputs.forEach(input => {
-                input.addEventListener('blur', validateForm);
             });
         });
     </script>
