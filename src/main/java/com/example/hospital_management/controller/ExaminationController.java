@@ -44,7 +44,7 @@ public class ExaminationController {
 
     @GetMapping("/room/{roomId}")
     public String chooseRoom(Model model, @PathVariable("roomId") Long room_id, HttpSession session) {
-        Employee employee = employeeService.findById(20L).get();
+        Employee employee = employeeService.findById(1L).get();
         session.setAttribute("roomId", room_id);
         session.setAttribute("employee", employee);
         return "redirect:/examination";
@@ -94,7 +94,7 @@ public class ExaminationController {
 
         model.addAttribute("medicalRecords", medicalRecords);
         model.addAttribute("medicalRecord", null);
-        model.addAttribute("doctor", employeeService.findById(20L).get());
+        model.addAttribute("doctor", employeeService.findById(1L).get());
         return "/examination/detail";
 
     }
@@ -111,7 +111,7 @@ public class ExaminationController {
         MedicalRecordDto medicalRecordDto = medicalRecordService.getCurrentPatient(roomId);
 
         model.addAttribute("medicalRecords", medicalRecords);
-        model.addAttribute("doctor", employeeService.findById(20L).get());
+        model.addAttribute("doctor", employeeService.findById(1L).get());
         if (medicalRecordDto != null) {
             model.addAttribute("medicalRecord", medicalRecordDto);
             return "/examination/detail";
@@ -130,7 +130,7 @@ public class ExaminationController {
         Page<MedicalRecordDto> medicalRecords = medicalRecordService.getWaitingRecords(pageable, roomId);
         model.addAttribute("medicalRecords", medicalRecords);
 //        model.addAttribute("roomInfo", medicalRecords.getContent().get(0));
-        model.addAttribute("doctor", employeeService.findById(20L).get());
+        model.addAttribute("doctor", employeeService.findById(1L).get());
         model.addAttribute("medicalRecord", medicalRecordDto);
         return "/examination/list";
     }
@@ -138,7 +138,7 @@ public class ExaminationController {
     @PostMapping("/complete")
     public String completeExamination(@RequestParam("id") Long id, @RequestParam("note") String note) {
         //User tạm thời
-        Employee employee = employeeService.findById(20L).get();
+        Employee employee = employeeService.findById(1L).get();
 
         MedicalRecord medicalRecord = medicalRecordService.findById(id);
         if (medicalRecord != null) {
