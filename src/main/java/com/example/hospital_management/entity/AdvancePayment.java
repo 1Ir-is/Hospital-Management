@@ -20,6 +20,7 @@ public class AdvancePayment { // Tạm ứng viện phí
     private Long id;
     private Long fee;
     private LocalDate date;
+    private String reason;
 
     //Foreign Key
     @ManyToOne

@@ -42,4 +42,9 @@ public class DepartmentService implements IDepartmentService {
     public void deleteDepartmentById(Long id) {
         departmentRepository.deleteById(id);
     }
+
+    @Override
+    public List<Department> findAll() {
+        return departmentRepository.findAll();
+    }
 }

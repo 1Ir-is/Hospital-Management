@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form th:action="@{/nurse/advance-payments/create}" method="post" th:object="${advancePaymentDto}">
+<fieldset>
+  <legend>Tạo đơn ứng tiền</legend>
+  <label>Số tiền</label>
+  <input type="number" placeholder="Nhập số tiền" th:field="*{fee}">
+  <small style="color:red" th:if="${#fields.hasErrors('fee')}" th:errors="*{fee}"></small>
+  <br>
+  <label>Ngày mượn tiền</label>
+  <input type="date" placeholder="Nhập ngày mượn tiền" th:field="*{date}">
+  <small style="color:red" th:if="${#fields.hasErrors('date')}" th:errors="*{date}"></small>
+  <br>
+  <label>Lý do mượn tiền</label>
+  <input type="text" placeholder="Nhập lý do mượn tiền" th:field="*{reason}">
+  <small style="color:red" th:if="${#fields.hasErrors('reason')}" th:errors="*{reason}"></small>
+  <br>
+  <label>Chọn bệnh án nội trú:</label>
+  <select th:field="*{impatientRecord.id}" class="form-select">
+    <option value="">-- Chọn --</option>
+    <option th:each="impatientRecord : ${impatientRecordList}"
+            th:value="${impatientRecord.id}"
+            th:text="${impatientRecord.patient.name}">
+    </option>
+  </select>
+  <input type="hidden"  th:field="*{employee.id}" value="1">
+  <button>Tạo đơn</button>
+</fieldset>
+</form>
+
+</body>
+</html>

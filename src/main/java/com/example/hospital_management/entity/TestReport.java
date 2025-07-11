@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -17,20 +19,29 @@ public class TestReport { // Phiếu xét nghiệm
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String result;
-    private String date;
+    private LocalDate date;
     private Boolean status;
     private String note;
+    @Column(name = "image_path")
+    private String imagePath;
+    private boolean payStatus;
 
     //Foreign Key
     @ManyToOne
     @JoinColumn(name = "medical_record_id")
     private MedicalRecord medicalRecord;
 
+
     @ManyToOne
     @JoinColumn(name = "test_id")
     private Test test;
 
+
     @ManyToOne
     @JoinColumn(name = "employee_id")
     private Employee employee;
+    @ManyToOne
+
+    @JoinColumn(name = "test_status_id")
+    private TestStatus testStatus;
 }

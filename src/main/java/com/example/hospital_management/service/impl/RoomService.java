@@ -53,6 +53,36 @@ public class RoomService implements IRoomService {
     }
 
     @Override
+    public List<Room> findAll() {
+        return roomRepository.findAll();
+    }
+
+    @Override
+    public List<Room> findAllByDepartment_Id(Long id) {
+        return roomRepository.findAllByDepartment_Id(id);
+    }
+
+    @Override
+    public Room findById(Long id) {
+        return roomRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public List<Room> findAllClinicRoomsByDepartment(Long departmentId) {
+        return roomRepository.findAllClinicRoomsByDepartment(departmentId);
+    }
+
+    @Override
+    public List<Room> findAllTestRoom() {
+        return roomRepository.findAllTestRoom();
+    }
+
+    @Override
+    public List<Room> findAllExaminationRoom() {
+        return roomRepository.findAllExaminationRoom();
+    }
+
+    @Override
     public Long getActiveRoomCount() {
         return roomRepository.countActiveRooms();
     }

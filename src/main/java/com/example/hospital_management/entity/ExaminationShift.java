@@ -34,4 +34,9 @@ public class ExaminationShift { // Ca khám
     @ManyToOne
     @JoinColumn(name = "examination_shift_status_id")
     private ExaminationShiftStatus examinationShiftStatus;
+
+    @ManyToOne
+    @JoinColumn(name = "medical_record_id")
+    private MedicalRecord medicalRecord;
+
 }

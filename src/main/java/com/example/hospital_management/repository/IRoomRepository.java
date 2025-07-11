@@ -33,6 +33,18 @@ public interface IRoomRepository extends JpaRepository<Room, Long> {
     @Query("SELECT r FROM Room r WHERE r.status = :status")
     Page<Room> findByStatus(@Param("status") Boolean status, Pageable pageable);
 
+    List<Room> findAllByDepartment_Id(Long id);
+
+    @Query("SELECT r FROM Room r WHERE r.department.id = :departmentId AND r.roomType.id = 6")
+    List<Room> findAllClinicRoomsByDepartment(@Param("departmentId") Long departmentId);
+
+    @Query(value = "SELECT * FROM rooms where room_type_id = 6", nativeQuery = true)
+    List<Room> findAllExaminationRoom();
+
+
+    @Query(value = "SELECT * FROM rooms where room_type_id = 7", nativeQuery = true)
+    List<Room> findAllTestRoom();
+
     // Tìm kiếm phòng với filter tổng hợp
     @Query("SELECT r FROM Room r WHERE " + "(:name IS NULL OR r.name LIKE %:name%) AND " + "(:number IS NULL OR r.number = :number) AND " + "(:departmentId IS NULL OR r.department.id = :departmentId) AND " + "(:roomTypeId IS NULL OR r.roomType.id = :roomTypeId) AND " + "(:status IS NULL OR r.status = :status)")
     Page<Room> findWithFilters(@Param("name") String name, @Param("number") Integer number, @Param("departmentId") Long departmentId, @Param("roomTypeId") Long roomTypeId, @Param("status") Boolean status, Pageable pageable);

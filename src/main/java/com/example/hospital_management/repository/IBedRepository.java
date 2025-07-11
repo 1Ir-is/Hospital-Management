@@ -23,6 +23,29 @@ public interface IBedRepository extends JpaRepository<Bed, Long> {
     @Query("SELECT b.room.id, COUNT(b) FROM Bed b WHERE b.room.id IN :roomIds GROUP BY b.room.id")
     List<Object[]> countBedsForRooms(@Param("roomIds") List<Long> roomIds);
 
+    @Query(
+            value = "SELECT DISTINCT b.* " +
+                    "FROM beds b " +
+                    "LEFT JOIN impatient_records ir ON b.id = ir.bed_id " +
+                    "WHERE ir.id IS NULL OR ir.discharge_date IS NOT NULL",
+
+            countQuery = "SELECT COUNT(DISTINCT b.id) " +
+                    "FROM beds b " +
+                    "LEFT JOIN impatient_records ir ON b.id = ir.bed_id " +
+                    "WHERE ir.id IS NULL OR ir.discharge_date IS NOT NULL",
+
+            nativeQuery = true
+    )
+    List<Bed> getListBedNotUsage();
+
+
+    @Query("SELECT b FROM Bed b " +
+            "JOIN b.room r " +
+            "LEFT JOIN ImpatientRecord ir ON b.id = ir.bed.id " +
+            "WHERE (ir.id IS NULL OR ir.dischargeDate IS NOT NULL) " +
+            "AND r.id = :roomId")
+    List<Bed> findAvailableBedsByRoomId(@Param("roomId") Integer roomId);
+
     // Kiểm tra số giường có tồn tại trong phòng
     @Query("SELECT COUNT(b) > 0 FROM Bed b WHERE b.room.id = :roomId AND b.number = :bedNumber")
     boolean existsByRoomIdAndBedNumber(@Param("roomId") Long roomId, @Param("bedNumber") Integer bedNumber);

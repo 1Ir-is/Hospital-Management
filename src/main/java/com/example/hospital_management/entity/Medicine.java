@@ -23,4 +23,8 @@ public class Medicine { // Thuốc
     @ManyToOne
     @JoinColumn(name = "medicine_type_id")
     private MedicineType medicineType;
+
+    @ManyToOne
+    @JoinColumn(name = "medicine_unit_id")
+    private MedicineUnit medicineUnit;
 }

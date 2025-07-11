@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Tra cứu hồ sơ khám</title>
+</head>
+<body>
+<h2> Tra cứu hồ sơ khám bệnh</h2>
+<form th:action="@{/patient/records}" method="post">
+    <label for="idCard">Nhập số CCCD:</label>
+    <input type="text" id="idCard" name="idCard" required>
+    <button type="submit">Tra cứu</button>
+</form>
+<div th:if="${notFound}">
+    <p style="color: red">Không tìm thấy bệnh nhân nào với CCCD đã nhập</p>
+</div>
+</body>
+</html>

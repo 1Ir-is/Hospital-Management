@@ -69,10 +69,26 @@ public class EmployeeService implements IEmployeeService {
         return employeeOptional.orElse(null);
     }
 
+//    @Override
+//    public Employee findEmployeeById(Long id) {
+//        return employeeRepository.findEmployeeById(id);
+//    }
+
+    @Override
+    public List<Employee> findAll() {
+        return employeeRepository.findAll();
+    }
+
+    @Override
+    public Optional<Employee> findById(Long id) {
+        return employeeRepository.findById(id);
+    }
+
     @Override
     public void deleteEmployeeById(Long id) {
         employeeRepository.deleteById(id);
     }
+
 
     @Override
     @Transactional
@@ -93,6 +109,7 @@ public class EmployeeService implements IEmployeeService {
             }
         }
     }
+
 
     @Override
     @Transactional
