@@ -27,4 +27,6 @@ public class EmployeeAssignment {
     @ManyToOne
     @JoinColumn(name = "impatient_record_id")
     private ImpatientRecord impatientRecord;
+
+
 }

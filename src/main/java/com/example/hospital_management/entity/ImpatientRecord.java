@@ -23,14 +23,24 @@ public class ImpatientRecord { // Hồ sơ nhập viện
     private Boolean status;
     private String note;
     private String reason;
+    @Transient
+    private Employee assignedDoctor;
+    @Transient
+    private Employee assignedNurse;
+
+
+    //Foreign Key
+    //Room - phòng
 
     //Bed - giường
     @ManyToOne
     @JoinColumn(name = "bed_id")
     private Bed bed;
 
-    //medical - thuốc
+
+    //Patient - bênh nhân
     @OneToOne
     @JoinColumn(name = "medical_record_id")
     private MedicalRecord medicalRecord;
+
 }
