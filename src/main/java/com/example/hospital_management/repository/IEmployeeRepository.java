@@ -15,8 +15,6 @@ public interface IEmployeeRepository extends JpaRepository<Employee, Long> {
     List<Employee> findByDepartment_Id(Long departmentId);
     Optional<Employee> findByEmail(String email); // dùng cho login
 
-
-
     @Query("SELECT e FROM Employee e WHERE e.position.name = 'Bác sĩ'")
     List<Employee> findAllDoctors();
     @Query("SELECT e FROM Employee e WHERE e.position.name = 'Điều dưỡng'")
@@ -27,4 +25,5 @@ public interface IEmployeeRepository extends JpaRepository<Employee, Long> {
     @Query("SELECT e FROM Employee e WHERE e.position.name = 'Điều dưỡng' AND e.department.id = :departmentId")
     List<Employee> findNursesByDepartment(@Param("departmentId") Long departmentId);
 
+    Employee findEmployeeById(Long id);
 }

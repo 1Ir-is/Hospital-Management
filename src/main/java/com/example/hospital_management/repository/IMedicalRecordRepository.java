@@ -4,4 +4,5 @@ import com.example.hospital_management.entity.MedicalRecord;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface IMedicalRecordRepository extends JpaRepository<MedicalRecord, Long> {
+    MedicalRecord getMedicalRecordById(Long id);
 }

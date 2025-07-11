@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Getter
@@ -18,8 +19,10 @@ public class TestOrder { // Chỉ địng xét nghiệm
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private LocalTime date;
+    private LocalDate date;
     private String note;
+    private Boolean status;
+    private String result;
 
     //Foreign Key
     //Impatient Record - hồ sơ nhập viện (nội trú)

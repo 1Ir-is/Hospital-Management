@@ -32,14 +32,12 @@ public class ImpatientRecord { // Hồ sơ nhập viện
     //Foreign Key
     //Room - phòng
 
-
     //Bed - giường
     @ManyToOne
     @JoinColumn(name = "bed_id")
     private Bed bed;
 
-
-    //Patient - bênh nhân
+    //medical - thuốc
     @OneToOne
     @JoinColumn(name = "medical_record_id")
     private MedicalRecord medicalRecord;
