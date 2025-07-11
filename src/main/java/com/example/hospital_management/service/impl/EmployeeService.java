@@ -17,4 +17,24 @@ public class EmployeeService implements IEmployeeService {
     public List<Employee> findByDepartment(Long departmentId) {
         return employeeRepository.findByDepartment_Id(departmentId);
     }
+
+    @Override
+    public List<Employee> findAllDoctors() {
+        return employeeRepository.findAllDoctors();
+    }
+
+    @Override
+    public List<Employee> findAllNurses() {
+        return employeeRepository.findAllNurses();
+    }
+
+    @Override
+    public List<Employee> findDoctorsByDepartment(Long departmentId) {
+        return employeeRepository.findDoctorsByDepartment(departmentId);
+    }
+
+    @Override
+    public List<Employee> findNursesByDepartment(Long departmentId) {
+        return employeeRepository.findNursesByDepartment(departmentId);
+    }
 }

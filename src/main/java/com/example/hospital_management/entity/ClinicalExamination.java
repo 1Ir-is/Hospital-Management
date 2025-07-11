@@ -6,27 +6,27 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
-@Table(name = "employee_assignments")
-public class EmployeeAssigment { // phan cong nhan vien
+@Table(name = "clinical_examination")
+public class ClinicalExamination {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    //role ???
-
-    //Foreign Key
-    @ManyToOne
-    @JoinColumn(name = "employee_id")
-    private Employee employee;
+    private LocalDate date;
+    private String note;
+    private Boolean status;
 
     @ManyToOne
     @JoinColumn(name = "impatient_record_id")
     private ImpatientRecord impatientRecord;
 
-
+    @ManyToOne
+    @JoinColumn(name = "vital_sign_id")
+    private VitalSign vitalSign;
 }

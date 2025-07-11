@@ -14,7 +14,7 @@ import lombok.Setter;
 @Table(name = "vital_sighs")
 public class VitalSign { // Thông số sinh hiệu
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Float weight;
     private Float height;

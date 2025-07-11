@@ -22,12 +22,16 @@ public class ImpatientRecord { // Hồ sơ nhập viện
     private LocalDate dischargeDate; //Ngày xuất viện
     private Boolean status;
     private String note;
+    private String reason;
+    @Transient
+    private Employee assignedDoctor;
+    @Transient
+    private Employee assignedNurse;
+
 
     //Foreign Key
     //Room - phòng
-    @ManyToOne
-    @JoinColumn(name = "room_id")
-    private Room room;
+
 
     //Bed - giường
     @ManyToOne
@@ -36,8 +40,8 @@ public class ImpatientRecord { // Hồ sơ nhập viện
 
 
     //Patient - bênh nhân
-    @ManyToOne
-    @JoinColumn(name = "patient_id")
-    private Patient patient;
+    @OneToOne
+    @JoinColumn(name = "medical_record_id")
+    private MedicalRecord medicalRecord;
 
 }
