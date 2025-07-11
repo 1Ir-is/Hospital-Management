@@ -7,12 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class RoomService implements IRoomService {
-
     private final IRoomRepository roomRepository;
 
+    @Autowired
     public RoomService(IRoomRepository roomRepository) {
         this.roomRepository = roomRepository;
     }
@@ -21,4 +22,34 @@ public class RoomService implements IRoomService {
     public List<Room> findAll() {
         return roomRepository.findAll();
     }
+
+    @Override
+    public List<Room> findAllByDepartment_Id(Long id) {
+        return roomRepository.findAllByDepartment_Id(id);
+    }
+
+    @Override
+    public Room findById(Long id) {
+        return roomRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public List<Room> findAllClinicRoomsByDepartment(Long departmentId) {
+        return roomRepository.findAllClinicRoomsByDepartment(departmentId);
+    }
+
+    @Override
+    public List<Room> findAllTestRoom() {
+        return roomRepository.findAllTestRoom();
+    }
+
+    @Override
+    public List<Room> findAllExaminationRoom() {
+        return roomRepository.findAllExaminationRoom();
+    }
+
+//    @Override
+//    public Optional<Room> findById(Long roomId) {
+//        return roomRepository.findById(roomId);
+//    }
 }

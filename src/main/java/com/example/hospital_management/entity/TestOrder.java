@@ -14,12 +14,13 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @Entity
 @Table(name = "test_orders")
-public class TestOrder { // Chỉ địng xét nghiệm
+public class TestOrder { // Chỉ định xét nghiệm
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private LocalTime date;
     private String note;
+    private String result;
     private boolean status;
     private boolean payStatus;
     @Column(name = "image_path")

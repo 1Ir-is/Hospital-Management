@@ -3,6 +3,8 @@ package com.example.hospital_management.service.impl;
 import com.example.hospital_management.dto.PrescriptionRequestDto;
 import com.example.hospital_management.entity.Prescription;
 import com.example.hospital_management.repository.IPrescriptionRepository;
+import com.example.hospital_management.entity.Prescription;
+import com.example.hospital_management.repository.IPrescriptionRepository;
 import com.example.hospital_management.service.IPrescriptionService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,12 +32,13 @@ public class PrescriptionService implements IPrescriptionService {
     }
 
     @Override
-    public void save(Prescription prescription) {
-        prescriptionRepository.save(prescription);
+    public Prescription save(Prescription prescription) {
+        return prescriptionRepository.save(prescription);
     }
 
     @Override
     public Optional<PrescriptionRequestDto> findFirstUnprocessedPrescription() {
         return prescriptionRepository.findFirstUnprocessedPrescription();
     }
+
 }

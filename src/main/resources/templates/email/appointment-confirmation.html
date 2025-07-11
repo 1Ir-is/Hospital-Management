@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }
+    .email-container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 8px; }
+    .header { text-align: center; }
+    .header img { width: 120px; }
+    .content { margin-top: 20px; }
+    .footer { margin-top: 30px; font-size: 12px; color: #555; text-align: center; }
+  </style>
+</head>
+<body>
+<div class="email-container">
+  <div class="header">
+    <img src="https://i.imgur.com/L04R9tB.png" alt="Logo Bệnh viện ABC"> <!-- Thay link logo nếu bạn có -->
+    <h2>Xác nhận đặt lịch khám bệnh</h2>
+  </div>
+  <div class="content">
+    <p>Xin chào <strong th:text="${name}">[Tên]</strong>,</p>
+
+    <p>Bạn đã đặt lịch khám thành công vào ngày <strong th:text="${date}">[dd/MM/yyyy]</strong>.<br>
+      Số thứ tự ưu tiên của bạn là: <strong th:text="${queueNumber}">[Số]</strong>.</p>
+
+    <p>Vui lòng đến sớm <strong>30 phút</strong> để làm thủ tục tại quầy lễ tân.</p>
+
+    <p>Trân trọng,<br><strong>Bệnh viện ABC</strong></p>
+  </div>
+  <div class="footer">
+    Địa chỉ: 123 Lê Lợi, Q.1, TP.HCM | Điện thoại: (028) 1234 5678
+  </div>
+</div>
+</body>
+</html>

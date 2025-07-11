@@ -1,4 +1,4 @@
-package com.example.hospital_management.controller.technicans;
+package com.example.hospital_management.controller.cashier;
 import com.example.hospital_management.dto.BillingSummaryDto;
 import com.example.hospital_management.dto.MedicalRecordBasicDto;
 import com.example.hospital_management.dto.ImpatientRecordDto;

@@ -7,12 +7,13 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.Optional;
 
+import com.example.hospital_management.entity.Prescription;
+
 public interface IPrescriptionService {
+    Prescription save(Prescription prescription);
     Page<PrescriptionRequestDto> getAllPrescriptions(Pageable pageable);
 
     Optional<Prescription> findById(Long id);
-
-    void save(Prescription prescription);
 
     Optional<PrescriptionRequestDto> findFirstUnprocessedPrescription();
 }

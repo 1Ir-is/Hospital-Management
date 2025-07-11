@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Title</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+
+    <!-- Bootstrap CSS v5.2.1 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous"/>
+</head>
+
+<body>
+<header>
+    <!-- place navbar here -->
+</header>
+<main>
+    <div class="card">
+        <div class="card-body">
+            <div class="text-center bg-primary">
+                <h4 class="text-light">
+                    <span>Phòng: </span><span th:text="${medicalRecord.roomName}"></span>
+                </h4>
+                <h4 class="text-light">
+                    <span>Bác sĩ trực: </span> <span th:text="${doctor.name}">Vĩnh</span>
+                </h4>
+            </div>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Tên</th>
+                    <th scope="col">Ngày sinh</th>
+                    <th scope="col">Số thứ tự</th>
+                    <th scope="col">Trạng thái</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item, itemStatus: ${medicalRecords.getContent()}">
+                    <th scope="row">
+                        <p th:text="${itemStatus.count}"></p>
+                    </th>
+                    <td>
+                        <p th:text="${item.patientName}"></p>
+                    </td>
+                    <td>
+                        <p th:text="${item.birthday}"></p>
+                    </td>
+                    <td>
+                        <p th:text="${item.queueNumber}"></p>
+                    </td>
+                    <td>
+                        <div class="p-0">
+                                <span class="text-bg-primary p-1"
+                                      th:if="${itemStatus.first && medicalRecord != null && medicalRecord.id == item.patientId}">Đang khám</span>
+                            <span class="text-bg-secondary p-1"
+                                  th:unless="${itemStatus.first && medicalRecord != null && medicalRecord.id == item.patientId}">Đang chờ</span>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="d-flex justify-content-center align-content-between">
+                <a th:unless="${medicalRecords.hasPrevious()}" class="btn btn-secondary disabled">Trước</a>
+                <a th:if="${medicalRecords.hasPrevious()}"
+                   th:href="@{/examination/list(page=${medicalRecords.number - 1})}" class="btn btn-secondary">Trước</a>
+                <div class="btn">
+                    <span th:text="${medicalRecords.number + 1}"></span>
+                    <span>/</span>
+                    <span th:text="${medicalRecords.totalPages}"></span>
+                </div>
+                <a th:unless="${medicalRecords.hasNext()}" class="btn btn-secondary disabled">Sau</a>
+                <a th:if="${medicalRecords.hasNext()}"
+                   th:href="@{/examination/list(page=${medicalRecords.number + 1})}" class="btn btn-secondary">Sau</a>
+            </div>
+            <div class="d-flex justify-content-center align-content-between">
+                <small>
+                    <span th:text="${medicalRecords.number * medicalRecords.size + 1}"></span>
+                    <span>–</span>
+                    <span th:text="${medicalRecords.number * medicalRecords.size + medicalRecords.numberOfElements}"></span>
+                    <span>trong tổng số</span>
+                    <span th:text="${medicalRecords.totalElements}"></span>
+                </small>
+            </div>
+        </div>
+    </div>
+
+</main>
+<footer>
+    <!-- place footer here -->
+</footer>
+<!-- Bootstrap JavaScript Libraries -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+        integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

@@ -22,10 +22,12 @@ public class MedicalRecord { // Hồ sơ khám
     private String code;
     private Integer queueNumber;
     private LocalDate visitDate;
+    private String note;
     private String conclusion;
     private Boolean status;
     private Long fee;
     private LocalDate followupDate;
+    private String symptom; // triệu chứng
 
     @Column(name = "payment_status")
     private Boolean paymentStatus = false;
@@ -37,16 +39,17 @@ public class MedicalRecord { // Hồ sơ khám
     private Patient patient;
 
     //Room - phòng
-    @ManyToOne
-    @JoinColumn(name = "room_id")
-    private Room room;
+//    @ManyToOne
+//    @JoinColumn(name = "room_id")
+//    private Room room;
 
-    //Examination Shift - Ca khám
-    @ManyToOne
-    @JoinColumn(name = "examtination_shift_id")
-    private ExaminationShift examinationShift;
 
     @ManyToOne
     @JoinColumn(name = "vital_sign_id")
     private VitalSign vitalSign;
+
+//    //Ticket - Số Phiếu Khám
+//    @ManyToOne
+//    @JoinColumn(name = "ticket_id")
+//    private Ticket ticket;
 }

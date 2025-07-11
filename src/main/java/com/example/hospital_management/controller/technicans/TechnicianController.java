@@ -37,7 +37,7 @@ public class TechnicianController {
     public String dashboard(Model model) {
         Employee employee = new Employee();
         employee.setEmail("lt1@hospital.com");
-        List<Room> roomList = roomService.findAll();
+        List<Room> roomList = roomService.findAllTestRoom();
         model.addAttribute("roomList", roomList);
         model.addAttribute("technicianEmail", employee.getEmail());
         return "/technician/dashboard";

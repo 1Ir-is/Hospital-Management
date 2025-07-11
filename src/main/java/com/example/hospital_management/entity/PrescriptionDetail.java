@@ -18,7 +18,8 @@ public class PrescriptionDetail { // Chi tiết đơn thuốc
     private Long id;
     private String dosage;
     private String usageInstruction;
-    private String quantity;
+    private Integer duration;
+    private Integer quantity;
 
     //Foreign Key
     @ManyToOne

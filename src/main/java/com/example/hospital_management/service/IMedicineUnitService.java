@@ -1,5 +1,4 @@
 package com.example.hospital_management.service;
 
-
-public interface IEmployeeAssigmentService {
+public interface IMedicineUnitService {
 }

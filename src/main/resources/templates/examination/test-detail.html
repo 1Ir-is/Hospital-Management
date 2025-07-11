@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en"
+        xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Title</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+
+    <!-- Bootstrap CSS v5.2.1 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+</head>
+
+<body>
+<header>
+    <!-- place navbar here -->
+</header>
+<main>
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex justify-content-center">
+                <table class="table text-center w-50">
+                    <thead class="table-info">
+                    <tr>
+                        <th colspan="2">Thông tin bệnh nhân</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>Tên bệnh nhân:</td>
+                        <td>
+                            <p th:text="${medicalRecord.patient.name}"></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Mã bệnh nhân:</td>
+                        <td>
+                            <p th:text="${medicalRecord.patient.id}"></p>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Tên xét nghiệm</th>
+                    <th scope="col">Bác sĩ xét nghiệm</th>
+                    <th scope="col">Trạng thái</th>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item, itemStatus: ${testReportList}">
+                    <th scope="row">
+                        <p th:text="${itemStatus.count}"></p>
+                    </th>
+                    <td>
+                        <p th:text="${item.test.name}"></p>
+                    </td>
+                    <td>
+                        <p th:unless="${item.employee}">Trống</p>
+                        <p th:if="${item.employee}" th:text="${item.employee.name}"></p>
+                    </td>
+                    <td>
+                        <div class="p-0" th:if="${item.status}">
+                            <span class="text-bg-success p-1">Đã hoàn thành</span>
+                        </div>
+                        <div th:unless="${item.status}">
+                            <span class="text-bg-warning p-1">Đang chờ</span>
+                        </div>
+                    </td>
+                    <td ><a href="#" th:if="${item.status}" th:attr="data-result=${item.result}" onclick="showResult(this)"
+                            data-bs-target="#exampleModal" data-bs-toggle="modal">Kết quả</a></td>
+                </tr>
+                </tbody>
+            </table>
+            <form>
+                <div class="mb-3">
+                    <label for="note" class="form-label">Kết luận của bác sĩ:</label>
+                    <textarea name="note" id="note" class="form-control" rows="8"
+                              placeholder="Các kết luận..."></textarea>
+                </div>
+                <button type="button" class="btn btn-success">Kê đơn thuốc</button>
+                <button type="submit" class="btn btn-secondary">Hoàn tất khám</button>
+                <button type="button" class="btn btn-danger">Cho nhập viện</button>
+            </form>
+        </div>
+    </div>
+
+</main>
+<footer>
+    <!-- place footer here -->
+</footer>
+
+<!-- Modal -->
+<div class="modal fade " id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Kết quả xét nghiệm</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="result"></div>
+            </div>
+            <div class="modal-footer">
+<!--                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>-->
+<!--                <button type="button" class="btn btn-primary">Save changes</button>-->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showResult(button) {
+        const result = button.getAttribute("data-result");
+        document.getElementById("result").innerText = result;
+    }
+</script>
+<!-- Bootstrap JavaScript Libraries -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+        integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
