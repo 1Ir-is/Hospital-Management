@@ -10,15 +10,25 @@ import java.util.List;
 
 @Service
 public class BedService implements IBedService {
-    private IBedRepository bedRepository;
-    @Autowired
+    private final IBedRepository iBedRepository;
 
-    public BedService(IBedRepository bedRepository) {
-        this.bedRepository = bedRepository;
+    public BedService(IBedRepository iBedRepository) {
+        this.iBedRepository = iBedRepository;
     }
 
     @Override
+    public List<Bed> getListBedNotUsage() {
+        return iBedRepository.getListBedNotUsage();
+    }
+
+    @Override
+    public List<Bed> findAvailableBedsByRoomId(Integer roomId) {
+        return iBedRepository.findAvailableBedsByRoomId(roomId);
+    }
+
+
+    @Override
     public List<Bed> findAll() {
-        return bedRepository.findAll();
+        return iBedRepository.findAll();
     }
 }

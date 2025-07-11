@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface IPatientRepository extends JpaRepository<Patient, Long> {
+    Patient findPatientById(Long id);
     @Query(value = "SELECT * FROM patients WHERE title LIKE CONCAT('%', :searchName, '%')", nativeQuery = true)
     Page<Patient> searchByName(@Param("searchName") String searchName, Pageable pageable);
 }

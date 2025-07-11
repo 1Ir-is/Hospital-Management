@@ -9,6 +9,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -17,11 +19,6 @@ public class PatientService implements IPatientService {
     @Autowired
     public PatientService(IPatientRepository patientRepository) {
         this.patientRepository = patientRepository;
-    }
-
-    @Override
-    public List<Patient> findAll() {
-        return patientRepository.findAll();
     }
 
     @Override
@@ -47,5 +44,15 @@ patientRepository.save(patient);
     @Override
     public Page<Patient> searchByName(String searchByName, Pageable pageable) {
         return patientRepository.searchByName(searchByName,pageable);
+    }
+
+    @Override
+    public List<Patient> findAll() {
+        return patientRepository.findAll();
+    }
+
+    @Override
+    public Patient getPatientById(Long id) {
+        return patientRepository.findPatientById(id);
     }
 }

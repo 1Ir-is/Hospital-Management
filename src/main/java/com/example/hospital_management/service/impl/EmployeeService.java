@@ -28,4 +28,9 @@ public class EmployeeService implements IEmployeeService {
     public Optional<Employee> findById(Long id) {
         return employeeRepository.findById(id);
     }
+
+    @Override
+    public Employee findEmployeeById(Long id) {
+        return employeeRepository.findEmployeeById(id);
+    }
 }

@@ -10,15 +10,14 @@ import java.util.List;
 
 @Service
 public class RoomService implements IRoomService {
-    private IRoomRepository roomRepository;
-    @Autowired
+    private final IRoomRepository iRoomRepository;
 
-    public RoomService(IRoomRepository roomRepository) {
-        this.roomRepository = roomRepository;
+    public RoomService(IRoomRepository iRoomRepository) {
+        this.iRoomRepository = iRoomRepository;
     }
 
     @Override
     public List<Room> findAll() {
-        return roomRepository.findAll();
+        return iRoomRepository.findAll();
     }
 }

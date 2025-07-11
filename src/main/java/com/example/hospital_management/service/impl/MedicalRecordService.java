@@ -10,15 +10,19 @@ import java.util.List;
 
 @Service
 public class MedicalRecordService implements IMedicalRecordService {
-    private IMedicalRecordRepository medicalRecordRepository;
-    @Autowired
-    public MedicalRecordService(IMedicalRecordRepository medicalRecordRepository) {
-        this.medicalRecordRepository = medicalRecordRepository;
+    private final IMedicalRecordRepository iMedicalRecordRepository;
+
+    public MedicalRecordService(IMedicalRecordRepository iMedicalRecordRepository) {
+        this.iMedicalRecordRepository = iMedicalRecordRepository;
     }
 
+    @Override
+    public MedicalRecord getMedicalRecordById(Long id) {
+        return iMedicalRecordRepository.getMedicalRecordById(id);
+    }
 
     @Override
     public List<MedicalRecord> findAll() {
-        return medicalRecordRepository.findAll();
+        return iMedicalRecordRepository.findAll();
     }
 }

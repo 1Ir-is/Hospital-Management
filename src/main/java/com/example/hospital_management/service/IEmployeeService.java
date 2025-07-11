@@ -7,7 +7,10 @@ import com.example.hospital_management.entity.TestOrder;
 import java.util.List;
 import java.util.Optional;
 
+import com.example.hospital_management.entity.Employee;
+
 public interface IEmployeeService {
     List<Employee> findAll();
     Optional<Employee> findById(Long id);
+    Employee findEmployeeById(Long id);
 }
