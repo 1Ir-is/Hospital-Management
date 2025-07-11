@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalTime;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -14,12 +14,17 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @Entity
 @Table(name = "test_orders")
-public class TestOrder { // Chỉ địng xét nghiệm
+public class TestOrder { // Chỉ định xét nghiệm
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private LocalTime date;
+    private LocalDate date;
     private String note;
+    private String result;
+    private Boolean status;
+    private boolean payStatus;
+    @Column(name = "image_path")
+    private String imagePath;
 
     //Foreign Key
     //Impatient Record - hồ sơ nhập viện (nội trú)
@@ -36,4 +41,8 @@ public class TestOrder { // Chỉ địng xét nghiệm
     @ManyToOne
     @JoinColumn(name = "test_id")
     private Test test;
+
+    @ManyToOne
+    @JoinColumn(name = "test_status_id")
+    private TestStatus testStatus;
 }

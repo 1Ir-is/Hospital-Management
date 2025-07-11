@@ -12,7 +12,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity
 @Table(name = "beds")
-public class Bed { // giuong
+public class Bed { // Giường
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

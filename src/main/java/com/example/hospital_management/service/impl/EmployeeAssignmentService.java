@@ -1,13 +1,14 @@
 package com.example.hospital_management.service.impl;
 
 import com.example.hospital_management.entity.Employee;
-import com.example.hospital_management.entity.EmployeeAssigment;
+import com.example.hospital_management.entity.EmployeeAssignment;
 import com.example.hospital_management.entity.ImpatientRecord;
 import com.example.hospital_management.repository.IEmployeeAssigmentRepository;
 import com.example.hospital_management.repository.IEmployeeRepository;
 import com.example.hospital_management.repository.IImpatientRecordRepository;
-import com.example.hospital_management.service.IEmployeeAssigmentService;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import com.example.hospital_management.service.IEmployeeAssignmentService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -15,7 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class EmployeeAssignmentService implements IEmployeeAssigmentService {
+public class EmployeeAssignmentService implements IEmployeeAssignmentService {
     @Autowired
     private IEmployeeAssigmentRepository employeeAssigmentRepository;
     @Autowired
@@ -34,7 +35,7 @@ public class EmployeeAssignmentService implements IEmployeeAssigmentService {
         ImpatientRecord record = impatientRecordRepository.findById(recordId)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy hồ sơ nội trú"));
 
-        EmployeeAssigment ea = new EmployeeAssigment();
+        EmployeeAssignment ea = new EmployeeAssignment();
         ea.setEmployee(employee);
         ea.setImpatientRecord(record);
         employeeAssigmentRepository.save(ea);
@@ -47,7 +48,7 @@ public class EmployeeAssignmentService implements IEmployeeAssigmentService {
         ImpatientRecord record = impatientRecordRepository.findById(recordId)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy hồ sơ nội trú")); // 👈 QUAN TRỌNG
 
-        EmployeeAssigment assignment = new EmployeeAssigment();
+        EmployeeAssignment assignment = new EmployeeAssignment();
         assignment.setEmployee(nurse);
         assignment.setImpatientRecord(record); // 👈 set bản ghi đã tồn tại
         employeeAssigmentRepository.save(assignment);
@@ -63,6 +64,4 @@ public class EmployeeAssignmentService implements IEmployeeAssigmentService {
     public Optional<Employee> findNurseByRecordId(Long recordId) {
         return employeeAssigmentRepository.findLatestNurseByRecordId(recordId);
     }
-
-
 }

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách chờ xét nghiệm</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script>
+        setInterval(() => location.reload(), 10000); // Tự động reload mỗi 10s
+    </script>
+</head>
+<body class="container mt-4">
+<h2 class="text-center text-danger">Danh sách bệnh nhân chờ trước phòng xét nghiệm</h2>
+<table class="table table-hover table-bordered">
+    <thead>
+    <tr><th>Thời gian</th><th>Tên bệnh nhân</th><th>Loại xét nghiệm</th></tr>
+    </thead>
+    <tbody>
+    <tr th:each="entry : ${waitingList}">
+        <td th:text="${entry.time}"></td>
+        <td th:text="${entry.patientName}"></td>
+        <td th:text="${entry.testName}"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách hồ sơ khám</title>
+</head>
+<body>
+<h2>Danh sách hồ sơ khám của bệnh nhân</h2>
+<p th:if="${medicalRecords.size() == 0}">Không tìm thấy hồ sơ khám nào</p>
+<table border="1" th:if="${medicalRecords.size>0}">
+  <thead>
+  <tr>
+    <th>Mã hồ sơ</th>
+    <th>Số thứ tự</th>
+    <th>Ngày đi khám</th>
+    <th>Kết quả khám</th>
+    <th>Trạng thái khám</th>
+    <th>Chi phí khám</th>
+    <th>Ngày tái khám</th>
+    <th>Hành động</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="record:${medicalRecords}">
+    <td th:text="${record.code}"></td>
+    <td th:text="${record.queueNumber}"></td>
+    <td th:text="${#temporals.format(record.visitDate,'dd/MM/yyyy HH:mm')}"></td>
+    <td th:text="${record.conclusion}"></td>
+    <td th:text="${record.status}"></td>
+    <td th:text="${record.fee}"></td>
+    <td th:text="${#temporals.format(record.followupDate,'dd/MM/yyyy HH:mm')}"></td>
+    <td>
+      <a th:href="@{/patient/showroom(recordId=${record.code})}">Xem phòng khám</a>
+<!--      <a th:href="@{/patient/exam-result(recordCode=${record.code})}">Xem kết quả xét nghiệm</a>-->
+<!--      <a th:href="@{/patient/lab-orders(recordCode=${record.code})}">Xem kết quả sau khi khám</a>-->
+<!--      <a th:href="@{/patient/lab-room{code}(code=${record.code})}">Phòng xét nghiệm</a>-->
+    </td>
+  </tr>
+  </tbody>
+
+
+
+
+</table>
+</body>
+</html>

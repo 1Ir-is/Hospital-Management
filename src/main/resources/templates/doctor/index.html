@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="vi"
+      layout:decorate="~{doctor/layout/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+>
+
+<div layout:fragment="main-content">
+
+    <!-- Welcome Card với màu #007bff -->
+    <div class="welcome-card"
+         style="background: linear-gradient(135deg, #007bff 0%, #0056b3 100%); color: white; border-radius: 15px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 4px 20px rgba(0, 123, 255, 0.3);">
+        <h2>🩺 Bảng điều khiển Bác sĩ</h2>
+        <p style="margin-top: 1rem; font-size: 1.1rem;"><strong>Chức năng chính:</strong></p>
+
+        <!-- Team Functions -->
+        <div style="margin-top: 1.5rem;">
+            <div style="background: rgba(255,255,255,0.15); padding: 1.5rem; border-radius: 10px; backdrop-filter: blur(10px); margin-bottom: 1rem;">
+                <h4 style="margin-bottom: 1rem;">👨‍⚕️ <strong>Bác sĩ khám (do Vĩnh thực hiện):</strong></h4>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+                    <div style="background: rgba(255,255,255,0.1); padding: 1rem; border-radius: 8px;">
+                        <i class="fas fa-search" style="font-size: 1.2rem; margin-bottom: 0.5rem;"></i>
+                        <p>🔍 Khám tổng quát và chỉ định các xét nghiệm</p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.1); padding: 1rem; border-radius: 8px;">
+                        <i class="fas fa-chart-line" style="font-size: 1.2rem; margin-bottom: 0.5rem;"></i>
+                        <p>📊 Biết tiến độ thực hiện các kết quả xét nghiệm cho bệnh nhân</p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.1); padding: 1rem; border-radius: 8px;">
+                        <i class="fas fa-clipboard-check" style="font-size: 1.2rem; margin-bottom: 0.5rem;"></i>
+                        <p>📋 Xem các xét nghiệm và đưa ra kết quả và cách điều trị cho bệnh nhân</p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.1); padding: 1rem; border-radius: 8px;">
+                        <i class="fas fa-pills" style="font-size: 1.2rem; margin-bottom: 0.5rem;"></i>
+                        <p>💊 Kê thuốc cho bệnh nhân sau khi khám nếu không phải nhập viện</p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.1); padding: 1rem; border-radius: 8px;">
+                        <i class="fas fa-hospital" style="font-size: 1.2rem; margin-bottom: 0.5rem;"></i>
+                        <p>🏥 Yêu cầu bệnh nhân nhập viện nếu tình trạng cấp bách</p>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: rgba(255,255,255,0.15); padding: 1.5rem; border-radius: 10px; backdrop-filter: blur(10px);">
+                <h4 style="margin-bottom: 1rem;">⚕️ <strong>Bác sĩ điều trị (do Chung thực hiện):</strong></h4>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+                    <div style="background: rgba(255,255,255,0.1); padding: 1rem; border-radius: 8px;">
+                        <i class="fas fa-vial" style="font-size: 1.2rem; margin-bottom: 0.5rem;"></i>
+                        <p>🔬 Chỉ định các xét nghiệm và có thể phẫu thuật cho bệnh nhân</p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.1); padding: 1rem; border-radius: 8px;">
+                        <i class="fas fa-file-medical" style="font-size: 1.2rem; margin-bottom: 0.5rem;"></i>
+                        <p>📊 Xem các kết quả xét nghiệm của từng bệnh nhân</p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.1); padding: 1rem; border-radius: 8px;">
+                        <i class="fas fa-prescription-bottle" style="font-size: 1.2rem; margin-bottom: 0.5rem;"></i>
+                        <p>💊 Kê thuốc điều trị hàng ngày cho bệnh nhân</p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.1); padding: 1rem; border-radius: 8px;">
+                        <i class="fas fa-sign-out-alt" style="font-size: 1.2rem; margin-bottom: 0.5rem;"></i>
+                        <p>🚪 Đưa ra kết luận bệnh nhân được xuất viện</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="stats-grid"
+         style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+        <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(0, 123, 255, 0.1);">
+                <i class="fas fa-user-injured" style="color: #007bff;"></i>
+            </div>
+            <div class="stat-content">
+                <h3>24</h3>
+                <p>Bệnh nhân hôm nay</p>
+                <span class="stat-change positive">+3 so với hôm qua</span>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon" style="background: #e8f5e8;">
+                <i class="fas fa-vial" style="color: #28a745;"></i>
+            </div>
+            <div class="stat-content">
+                <h3>18</h3>
+                <p>Xét nghiệm chờ kết quả</p>
+                <span class="stat-change neutral">12 hoàn thành hôm nay</span>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon" style="background: #fff3cd;">
+                <i class="fas fa-prescription-bottle" style="color: #ffc107;"></i>
+            </div>
+            <div class="stat-content">
+                <h3>32</h3>
+                <p>Đơn thuốc đã kê</p>
+                <span class="stat-change positive">+8 so với hôm qua</span>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon" style="background: #f8d7da;">
+                <i class="fas fa-procedures" style="color: #dc3545;"></i>
+            </div>
+            <div class="stat-content">
+                <h3>3</h3>
+                <p>Ca phẫu thuật tuần này</p>
+                <span class="stat-change neutral">2 đã hoàn thành</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="dashboard-section">
+        <h2>Thao tác nhanh</h2>
+        <div class="quick-actions"
+             style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
+            <a class="quick-action-card" href="/doctor/examination"
+               onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 10px rgba(0,0,0,0.1)'"
+               onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 25px rgba(0, 123, 255, 0.4)'"
+               style="background: linear-gradient(135deg, #007bff 0%, #0056b3 100%); color: white; text-decoration: none; padding: 1.5rem; border-radius: 10px; text-align: center; transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                <i class="fas fa-stethoscope" style="font-size: 2rem; margin-bottom: 0.5rem; display: block;"></i>
+                <span>Khám bệnh</span>
+            </a>
+            <a class="quick-action-card" href="/doctor/test-orders"
+               onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 10px rgba(0,0,0,0.1)'"
+               onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 25px rgba(0, 86, 179, 0.4)'"
+               style="background: linear-gradient(135deg, #0056b3 0%, #003d82 100%); color: white; text-decoration: none; padding: 1.5rem; border-radius: 10px; text-align: center; transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                <i class="fas fa-vial" style="font-size: 2rem; margin-bottom: 0.5rem; display: block;"></i>
+                <span>Chỉ định xét nghiệm</span>
+            </a>
+            <a class="quick-action-card" href="/doctor/prescriptions"
+               onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 10px rgba(0,0,0,0.1)'"
+               onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 25px rgba(0, 61, 130, 0.4)'"
+               style="background: linear-gradient(135deg, #003d82 0%, #002851 100%); color: white; text-decoration: none; padding: 1.5rem; border-radius: 10px; text-align: center; transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                <i class="fas fa-prescription-bottle"
+                   style="font-size: 2rem; margin-bottom: 0.5rem; display: block;"></i>
+                <span>Kê đơn thuốc</span>
+            </a>
+            <a class="quick-action-card" href="/doctor/inpatient-list"
+               onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 10px rgba(0,0,0,0.1)'"
+               onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 25px rgba(0, 40, 81, 0.4)'"
+               style="background: linear-gradient(135deg, #002851 0%, #001020 100%); color: white; text-decoration: none; padding: 1.5rem; border-radius: 10px; text-align: center; transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                <i class="fas fa-bed" style="font-size: 2rem; margin-bottom: 0.5rem; display: block;"></i>
+                <span>Bệnh nhân nội trú</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Function Overview -->
+    <div class="dashboard-section">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+            <!-- Outpatient Care -->
+            <div class="function-card"
+                 style="background: white; padding: 1.5rem; border-radius: 15px; box-shadow: 0 4px 20px rgba(0, 123, 255, 0.1); border-left: 4px solid #007bff;">
+                <h3 style="color: #007bff; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-stethoscope"></i> Khám bệnh (Vĩnh)
+                </h3>
+                <ul class="function-list" style="list-style: none;">
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/doctor/examination" style="color: #007bff; text-decoration: none;">🔍 Khám tổng
+                            quát</a>
+                    </li>
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/doctor/test-orders" style="color: #007bff; text-decoration: none;">🧪 Chỉ định xét
+                            nghiệm</a>
+                    </li>
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/doctor/test-progress" style="color: #007bff; text-decoration: none;">📊 Tiến độ xét
+                            nghiệm</a>
+                    </li>
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/doctor/examination-results" style="color: #007bff; text-decoration: none;">📋 Kết quả
+                            khám</a>
+                    </li>
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/doctor/prescriptions" style="color: #007bff; text-decoration: none;">💊 Kê đơn
+                            thuốc</a>
+                    </li>
+                    <li style="padding: 0.5rem 0;">
+                        <a href="/doctor/admission-requests" style="color: #007bff; text-decoration: none;">🏥 Yêu cầu
+                            nhập viện</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Inpatient Care -->
+            <div class="function-card"
+                 style="background: white; padding: 1.5rem; border-radius: 15px; box-shadow: 0 4px 20px rgba(0, 123, 255, 0.1); border-left: 4px solid #0056b3;">
+                <h3 style="color: #0056b3; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-user-md"></i> Điều trị nội trú (Chung)
+                </h3>
+                <ul class="function-list" style="list-style: none;">
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/doctor/inpatient-list" style="color: #0056b3; text-decoration: none;">🛏️ Danh sách
+                            bệnh nhân</a>
+                    </li>
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/doctor/daily-prescriptions" style="color: #0056b3; text-decoration: none;">💊 Kê thuốc
+                            hàng ngày</a>
+                    </li>
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/doctor/surgery-schedule" style="color: #0056b3; text-decoration: none;">⚕️ Lịch phẫu
+                            thuật</a>
+                    </li>
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/doctor/inpatient-test-results" style="color: #0056b3; text-decoration: none;">📊 Kết
+                            quả xét nghiệm</a>
+                    </li>
+                    <li style="padding: 0.5rem 0;">
+                        <a href="/doctor/discharge-decisions" style="color: #0056b3; text-decoration: none;">🚪 Quyết
+                            định xuất viện</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Test Management -->
+            <div class="function-card"
+                 style="background: white; padding: 1.5rem; border-radius: 15px; box-shadow: 0 4px 20px rgba(0, 123, 255, 0.1); border-left: 4px solid #003d82;">
+                <h3 style="color: #003d82; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-flask"></i> Quản lý Xét nghiệm
+                </h3>
+                <ul class="function-list" style="list-style: none;">
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/doctor/new-test-orders" style="color: #003d82; text-decoration: none;">📝 Chỉ định xét
+                            nghiệm mới</a>
+                    </li>
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/doctor/pending-tests" style="color: #003d82; text-decoration: none;">⏳ Xét nghiệm đang
+                            thực hiện</a>
+                    </li>
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/doctor/completed-tests" style="color: #003d82; text-decoration: none;">✅ Kết quả đã
+                            có</a>
+                    </li>
+                    <li style="padding: 0.5rem 0;">
+                        <a href="/doctor/test-history" style="color: #003d82; text-decoration: none;">📚 Lịch sử xét
+                            nghiệm</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Reports -->
+            <div class="function-card"
+                 style="background: white; padding: 1.5rem; border-radius: 15px; box-shadow: 0 4px 20px rgba(0, 123, 255, 0.1); border-left: 4px solid #002851;">
+                <h3 style="color: #002851; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-chart-line"></i> Báo cáo & Thống kê
+                </h3>
+                <ul class="function-list" style="list-style: none;">
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/doctor/patient-statistics" style="color: #002851; text-decoration: none;">👥 Thống kê
+                            bệnh nhân</a>
+                    </li>
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/doctor/treatment-efficiency" style="color: #002851; text-decoration: none;">📈 Hiệu quả
+                            điều trị</a>
+                    </li>
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/doctor/prescription-analysis" style="color: #002851; text-decoration: none;">💊 Phân
+                            tích đơn thuốc</a>
+                    </li>
+                    <li style="padding: 0.5rem 0;">
+                        <a href="/doctor/monthly-summary" style="color: #002851; text-decoration: none;">📋 Tổng kết
+                            tháng</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Current Patients Queue -->
+    <div class="dashboard-section">
+        <h2>Danh sách bệnh nhân hôm nay</h2>
+        <div style="background: white; border-radius: 15px; padding: 1.5rem; margin-top: 1rem; box-shadow: 0 4px 20px rgba(0, 123, 255, 0.1);">
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                    <tr style="background: #f8f9fa;">
+                        <th style="padding: 1rem; text-align: left; border-bottom: 2px solid #dee2e6;">STT</th>
+                        <th style="padding: 1rem; text-align: left; border-bottom: 2px solid #dee2e6;">Họ tên</th>
+                        <th style="padding: 1rem; text-align: left; border-bottom: 2px solid #dee2e6;">Giờ hẹn</th>
+                        <th style="padding: 1rem; text-align: left; border-bottom: 2px solid #dee2e6;">Trạng thái</th>
+                        <th style="padding: 1rem; text-align: left; border-bottom: 2px solid #dee2e6;">Thao tác</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr style="border-bottom: 1px solid #dee2e6;">
+                        <td style="padding: 1rem;">001</td>
+                        <td style="padding: 1rem;">Nguyễn Văn A</td>
+                        <td style="padding: 1rem;">08:30</td>
+                        <td style="padding: 1rem;"><span
+                                style="background: #28a745; color: white; padding: 0.25rem 0.5rem; border-radius: 15px; font-size: 0.8rem;">Đã khám xong</span>
+                        </td>
+                        <td style="padding: 1rem;">
+                            <button style="background: #007bff; color: white; border: none; padding: 0.25rem 0.5rem; border-radius: 4px; margin-right: 0.5rem;">
+                                Xem kết quả
+                            </button>
+                        </td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #dee2e6;">
+                        <td style="padding: 1rem;">002</td>
+                        <td style="padding: 1rem;">Trần Thị B</td>
+                        <td style="padding: 1rem;">09:00</td>
+                        <td style="padding: 1rem;"><span
+                                style="background: #17a2b8; color: white; padding: 0.25rem 0.5rem; border-radius: 15px; font-size: 0.8rem;">Đang khám</span>
+                        </td>
+                        <td style="padding: 1rem;">
+                            <button style="background: #28a745; color: white; border: none; padding: 0.25rem 0.5rem; border-radius: 4px; margin-right: 0.5rem;">
+                                Tiếp tục khám
+                            </button>
+                        </td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #dee2e6;">
+                        <td style="padding: 1rem;">003</td>
+                        <td style="padding: 1rem;">Lê Văn C</td>
+                        <td style="padding: 1rem;">09:30</td>
+                        <td style="padding: 1rem;"><span
+                                style="background: #ffc107; color: black; padding: 0.25rem 0.5rem; border-radius: 15px; font-size: 0.8rem;">Chờ khám</span>
+                        </td>
+                        <td style="padding: 1rem;">
+                            <button style="background: #007bff; color: white; border: none; padding: 0.25rem 0.5rem; border-radius: 4px; margin-right: 0.5rem;">
+                                Bắt đầu khám
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</html>

@@ -11,7 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "vital_sighs")
+@Table(name = "vital_signs")
 public class VitalSign { // Thông số sinh hiệu
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,8 +22,4 @@ public class VitalSign { // Thông số sinh hiệu
     private Integer heartRate;
 
     //Foreign Key
-    //Medical Record - Hồ sơ khám
-    @ManyToOne
-    @JoinColumn(name = "medical_record_id")
-    private MedicalRecord medicalRecord;
 }

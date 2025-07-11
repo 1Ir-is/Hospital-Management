@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="vi"
+      layout:decorate="~{admin/layout/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Danh sách khoa</title>
+    <style>
+        /* Success notification for delete */
+        .success-notification {
+            position: fixed;
+            top: 32px;
+            right: 38px;
+            z-index: 99999;
+            background: #28a745;
+            color: #fff;
+            padding: 1.1rem 2.3rem 1.1rem 1.2rem;
+            border-radius: 12px;
+            font-size: 1.08rem;
+            font-weight: 600;
+            box-shadow: 0 4px 24px rgba(102, 126, 234, 0.10);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(-15px) scale(0.98);
+            transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1), transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .success-notification.show {
+            opacity: 1;
+            pointer-events: all;
+            transform: translateY(0) scale(1);
+        }
+
+        .success-notification i {
+            font-size: 1.35rem;
+            color: #fff;
+        }
+
+        @media (max-width: 640px) {
+            .success-notification {
+                left: 50%;
+                right: auto;
+                top: 16px;
+                transform: translateX(-50%);
+                min-width: 180px;
+                padding: 1rem 1.5rem 1rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="main-content">
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1 class="page-title">Quản lý khoa bệnh viện</h1>
+        <p class="page-subtitle">
+            Quản lý danh sách các khoa trong bệnh viện
+        </p>
+        <div class="breadcrumb">
+            <a href="#">Dashboard</a>
+            <i class="fas fa-chevron-right"></i>
+            <span>Khoa bệnh viện</span>
+        </div>
+    </div>
+
+    <!-- Content Card -->
+    <div class="content-card">
+        <div class="card-header">
+            <h2 class="card-title">Danh sách các khoa</h2>
+            <a class="btn-add" th:href="@{/admin/departments/create}">
+                <i class="fas fa-plus"></i>
+                Thêm khoa mới
+            </a>
+        </div>
+
+        <div class="table-container">
+            <table class="admin-table">
+                <thead>
+                <tr>
+                    <th>Tên khoa</th>
+                    <th>Mô tả</th>
+                    <th>Thao tác</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="department : ${departments}">
+                    <td th:text="${department.name}"></td>
+                    <td th:text="${department.description}"></td>
+                    <td>
+                        <div class="action-buttons">
+                            <a
+                                    class="btn-edit"
+                                    th:href="@{'/admin/departments/edit/' + ${department.id}}"
+                            >
+                                <i class="fas fa-edit"></i> Sửa
+                            </a>
+                            <button
+                                    class="btn-delete"
+                                    onclick="showDeleteModal(this)"
+                                    th:attr="data-department-id=${department.id}, data-department-name=${department.name}"
+                                    type="button"
+                            >
+                                <i class="fas fa-trash"></i> Xóa
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="pagination">
+        <ul>
+            <li th:if="${currentPage > 0}">
+                <a th:href="@{|/admin/departments?page=${currentPage - 1}|}">&laquo;</a>
+            </li>
+            <li th:classappend="${i == currentPage} ? 'active' : ''"
+                th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+                <a th:href="@{|/admin/departments?page=${i}|}" th:text="${i + 1}"></a>
+            </li>
+            <li th:if="${currentPage < totalPages - 1}">
+                <a th:href="@{|/admin/departments?page=${currentPage + 1}|}">&raquo;</a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal-content delete-modal">
+            <div class="modal-header delete-header">
+                <div class="warning-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <h3>Xác nhận xóa khoa</h3>
+            </div>
+
+            <div class="modal-body">
+                <div class="warning-message">
+                    <p class="main-message">
+                        Bạn có chắc chắn muốn xóa khoa
+                        <strong class="department-name" id="deleteDepartmentName">test</strong>?
+                    </p>
+                    <div class="warning-details">
+                        <div class="warning-item">
+                            <i class="fas fa-info-circle"></i>
+                            <span>Hành động này không thể hoàn tác</span>
+                        </div>
+                        <div class="warning-item">
+                            <i class="fas fa-users"></i>
+                            <span>Tất cả bác sĩ thuộc khoa sẽ bị ảnh hưởng</span>
+                        </div>
+                        <div class="warning-item">
+                            <i class="fas fa-calendar-times"></i>
+                            <span>Các lịch hẹn liên quan sẽ bị hủy</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeDeleteModal()" type="button">
+                    <i class="fas fa-times"></i>
+                    Hủy bỏ
+                </button>
+                <button class="btn-delete-confirm" id="confirmDeleteBtn" type="button">
+                    <i class="fas fa-trash"></i>
+                    Xóa khoa
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success delete notification -->
+    <div class="success-notification" id="successDeleteNotification" style="display:none;">
+        <i class="fas fa-check-circle"></i>
+        <span>Khoa đã được xóa thành công!</span>
+    </div>
+
+</div>
+
+<div layout:fragment="page-scripts">
+    <script>
+        let currentDepartmentId = null;
+        let currentDepartmentName = null;
+
+        // Wait for DOM to be fully loaded
+        document.addEventListener('DOMContentLoaded', function () {
+            initializeDeleteButtons();
+
+            // Handle delete confirmation
+            const confirmBtn = document.getElementById('confirmDeleteBtn');
+            if (confirmBtn) {
+                confirmBtn.addEventListener('click', function () {
+                    if (currentDepartmentId) {
+                        // Show loading state
+                        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xóa...';
+                        this.disabled = true;
+
+                        // Xoá thật: chuyển hướng tới controller
+                        window.location.href = `/admin/departments/delete/${currentDepartmentId}`;
+                    }
+                });
+            }
+
+            if (window.location.hash === "#deleted") {
+                showDeleteSuccessNotification();
+                setTimeout(() => {
+                    history.replaceState(null, null, ' ');
+                }, 300);
+            }
+
+            // Close modal when clicking outside
+            const modal = document.getElementById('deleteModal');
+            if (modal) {
+                modal.addEventListener('click', function (e) {
+                    if (e.target === this) {
+                        closeDeleteModal();
+                    }
+                });
+            }
+
+            // Close modal with ESC key
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && modal && modal.style.display === 'flex') {
+                    closeDeleteModal();
+                }
+            });
+
+            // Show notification if redirected from delete (server-side)
+            if (window.location.hash === "#deleted") {
+                showDeleteSuccessNotification();
+                // Remove hash after showing
+                setTimeout(() => {
+                    history.replaceState(null, null, ' ');
+                }, 300);
+            }
+        });
+
+        function initializeDeleteButtons() {
+            const deleteButtons = document.querySelectorAll('.btn-delete');
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    showDeleteModal(this);
+                });
+            });
+        }
+
+        function showDeleteModal(button) {
+            currentDepartmentId = button.getAttribute('data-department-id');
+            currentDepartmentName = button.getAttribute('data-department-name');
+            // Update modal content
+            const nameElement = document.getElementById('deleteDepartmentName');
+            if (nameElement) {
+                nameElement.textContent = currentDepartmentName || 'Unknown';
+            }
+            // Show modal
+            const modal = document.getElementById('deleteModal');
+            if (modal) {
+                modal.style.display = 'flex';
+                modal.style.opacity = '0';
+                modal.offsetHeight;
+                setTimeout(() => {
+                    modal.style.opacity = '1';
+                    modal.classList.add('show');
+                }, 10);
+                const cancelBtn = document.querySelector('.btn-cancel');
+                if (cancelBtn) {
+                    setTimeout(() => cancelBtn.focus(), 100);
+                }
+            }
+        }
+
+        function closeDeleteModal() {
+            const modal = document.getElementById('deleteModal');
+            if (modal) {
+                modal.classList.remove('show');
+                modal.style.opacity = '0';
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                    currentDepartmentId = null;
+                    currentDepartmentName = null;
+                }, 300);
+            }
+        }
+
+        function showDeleteSuccessNotification() {
+            const notification = document.getElementById('successDeleteNotification');
+            if (notification) {
+                notification.style.display = 'flex';
+                setTimeout(() => {
+                    notification.classList.add('show');
+                }, 30);
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    setTimeout(() => {
+                        notification.style.display = 'none';
+                    }, 350);
+                }, 1700);
+            }
+        }
+    </script>
+</div>
+</body>
+</html>

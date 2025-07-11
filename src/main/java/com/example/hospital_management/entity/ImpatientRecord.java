@@ -32,7 +32,6 @@ public class ImpatientRecord { // Hồ sơ nhập viện
     //Foreign Key
     //Room - phòng
 
-
     //Bed - giường
     @ManyToOne
     @JoinColumn(name = "bed_id")

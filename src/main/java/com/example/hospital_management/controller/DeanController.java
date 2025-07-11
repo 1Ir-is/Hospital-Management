@@ -3,7 +3,7 @@ package com.example.hospital_management.controller;
 import com.example.hospital_management.entity.Employee;
 import com.example.hospital_management.entity.ImpatientRecord;
 import com.example.hospital_management.entity.Patient;
-import com.example.hospital_management.service.IEmployeeAssigmentService;
+import com.example.hospital_management.service.IEmployeeAssignmentService;
 import com.example.hospital_management.service.IEmployeeService;
 import com.example.hospital_management.service.IImpatientRecordService;
 import com.example.hospital_management.service.IPatientService;
@@ -30,7 +30,7 @@ public class DeanController {
     @Autowired
     private IImpatientRecordService impatientRecordService;
     @Autowired
-    private IEmployeeAssigmentService employeeAssigmentService;
+    private IEmployeeAssignmentService employeeAssignmentService;
 
 
     @GetMapping("/department-head")
@@ -61,9 +61,9 @@ public class DeanController {
         Page<ImpatientRecord> recordPage = impatientRecordService.searchByFields(patientName, roomNumber, doctorName, nurseName, pageable);
 
         recordPage.getContent().forEach(record -> {
-            employeeAssigmentService.findDoctorByRecordId(record.getId())
+            employeeAssignmentService.findDoctorByRecordId(record.getId())
                     .ifPresent(record::setAssignedDoctor);
-            employeeAssigmentService.findNurseByRecordId(record.getId())
+            employeeAssignmentService.findNurseByRecordId(record.getId())
                     .ifPresent(record::setAssignedNurse);
         });
 
@@ -76,9 +76,6 @@ public class DeanController {
         model.addAttribute("nurseName", nurseName);
         return "dean/danh-sach-benh-nhan-noi-tru";
     }
-
-
-
 
     @GetMapping("/department-head/doctors/assign-form")
     public String formPhanCongBacSi(@RequestParam Long recordId, @RequestParam Long departmentId, Model model){
@@ -98,8 +95,8 @@ public class DeanController {
                                    @RequestParam Long nurseId,
                                    @RequestParam Long departmentId, // 👈 giữ lại ID
                                    RedirectAttributes redirect) {
-        employeeAssigmentService.assignDoctorToRecord(recordId, employeeId);
-        employeeAssigmentService.assignNurseToRecord(recordId, nurseId);
+        employeeAssignmentService.assignDoctorToRecord(recordId, employeeId);
+        employeeAssignmentService.assignNurseToRecord(recordId, nurseId);
         redirect.addFlashAttribute("success", "Phân công thành công!");
         return "redirect:/department-head/list-inpatient?departmentId=" + departmentId;
     }

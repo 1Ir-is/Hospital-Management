@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="vi"
+      layout:decorate="~{admin/layout/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Quản lý Chức vụ</title>
+    <style>
+        /* ======================
+           ACTION BUTTONS STYLES
+        ====================== */
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            justify-content: flex-start;
+            flex-wrap: nowrap;
+        }
+
+        .btn-view,
+        .btn-edit,
+        .btn-delete {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.25rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        /* Edit Button */
+        .btn-edit {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background: #d97706;
+            transform: translateY(-1px);
+        }
+
+        .btn-edit i {
+            font-size: 0.875rem;
+        }
+
+        /* Delete Button */
+        .btn-delete {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #dc2626;
+            transform: translateY(-1px);
+        }
+
+        .btn-delete i {
+            font-size: 0.875rem;
+        }
+
+        /* ======================
+           POSITION SPECIFIC STYLES
+        ====================== */
+        .position-icon-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+        }
+
+        .position-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.2s ease;
+        }
+
+        .position-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .position-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            min-width: 0;
+        }
+
+        .position-name {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .position-level {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin: 0;
+        }
+
+        .position-description {
+            color: #374151;
+            font-size: 0.875rem;
+            line-height: 1.4;
+            max-width: 300px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .position-level-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .level-1 {
+            background: #e0f2fe;
+            color: #0369a1;
+            border: 1px solid #bae6fd;
+        }
+
+        .level-2 {
+            background: #ecfccb;
+            color: #365314;
+            border: 1px solid #d9f99d;
+        }
+
+        .level-3 {
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fde68a;
+        }
+
+        .level-4 {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        .level-5 {
+            background: #f3e8ff;
+            color: #7c3aed;
+            border: 1px solid #ddd6fe;
+        }
+
+        /* ======================
+           HOVER EFFECTS
+        ====================== */
+        .admin-table tbody tr:hover {
+            background-color: #f8fafc;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .admin-table tbody tr {
+            transition: all 0.2s ease;
+        }
+
+        /* ======================
+           RESPONSIVE DESIGN
+        ====================== */
+        @media (max-width: 768px) {
+            .action-buttons {
+                flex-wrap: wrap;
+                gap: 0.25rem;
+            }
+
+            .btn-edit,
+            .btn-delete {
+                font-size: 0.75rem;
+                padding: 0.4rem 0.6rem;
+            }
+
+            .position-icon {
+                width: 32px;
+                height: 32px;
+                font-size: 14px;
+            }
+
+            .position-icon-container {
+                width: 40px;
+                height: 40px;
+            }
+
+            .admin-table {
+                font-size: 0.8rem;
+            }
+
+            .admin-table td {
+                padding: 0.5rem 0.25rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .action-buttons {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.25rem;
+            }
+
+            .btn-edit,
+            .btn-delete {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* ======================
+           NOTIFICATION STYLES
+        ====================== */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 300px;
+            max-width: 500px;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            font-weight: 500;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .success-notification {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border-left: 4px solid #047857;
+        }
+
+        .error-notification {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            border-left: 4px solid #b91c1c;
+        }
+
+        .notification-close {
+            background: none;
+            border: none;
+            color: inherit;
+            cursor: pointer;
+            padding: 0;
+            margin-left: auto;
+            font-size: 16px;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+
+        .notification-close:hover {
+            opacity: 1;
+        }
+
+        .notification i:first-child {
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        /* Animation for notification */
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
+        .notification.slide-in {
+            animation: slideInRight 0.3s ease;
+        }
+
+        .notification.slide-out {
+            animation: slideOutRight 0.3s ease;
+        }
+
+        /* ======================
+           STATS GRID FOR POSITIONS
+        ====================== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e5e7eb;
+            transition: all 0.2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-card .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .stat-icon.positions {
+            background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+        }
+
+        .stat-icon.leadership-positions {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+        }
+
+        .stat-icon.staff-positions {
+            background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+        }
+
+        .stat-icon.management-positions {
+            background: linear-gradient(135deg, #c084fc 0%, #a855f7 100%);
+        }
+
+        .stat-info h3 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin: 0 0 0.5rem 0;
+        }
+
+        .stat-info p {
+            color: #6b7280;
+            margin: 0;
+            font-size: 0.875rem;
+        }
+
+        /* ======================
+          MODAL STYLES
+       ====================== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.show .modal-content {
+            transform: scale(1);
+        }
+
+        .delete-modal {
+            text-align: center;
+        }
+
+        .modal-header {
+            padding: 2rem 2rem 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .delete-header {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .warning-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+        }
+
+        .warning-icon i {
+            font-size: 1.5rem;
+            color: #dc2626;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .modal-body {
+            padding: 1rem 2rem;
+        }
+
+        .warning-message {
+            text-align: left;
+        }
+
+        .main-message {
+            font-size: 1rem;
+            color: #374151;
+            margin: 0 0 1rem 0;
+            text-align: center;
+        }
+
+        .warning-details {
+            background: #fef3f2;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        .warning-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            color: #7f1d1d;
+        }
+
+        .warning-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .warning-item i {
+            color: #dc2626;
+            flex-shrink: 0;
+        }
+
+        .modal-footer {
+            padding: 1rem 2rem 2rem;
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .btn-cancel {
+            background: #f3f4f6;
+            color: #374151;
+            border: 1px solid #d1d5db;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-cancel:hover {
+            background: #e5e7eb;
+            border-color: #9ca3af;
+        }
+
+        .btn-delete-confirm {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-delete-confirm:hover {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+        }
+
+        .btn-delete-confirm:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        /* Responsive modal */
+        @media (max-width: 640px) {
+            .modal-content {
+                width: 95%;
+                margin: 1rem;
+            }
+
+            .modal-header,
+            .modal-body,
+            .modal-footer {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+
+            .modal-footer {
+                flex-direction: column;
+            }
+
+            .btn-cancel,
+            .btn-delete-confirm {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="main-content">
+    <!-- Success/Error Messages -->
+    <div class="notification success-notification show" id="successNotification" th:if="${successMessage}">
+        <i class="fas fa-check-circle"></i>
+        <span th:text="${successMessage}"></span>
+        <button class="notification-close" onclick="closeNotification('successNotification')" type="button">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <div class="notification error-notification show" id="errorNotification" th:if="${errorMessage}">
+        <i class="fas fa-exclamation-circle"></i>
+        <span th:text="${errorMessage}"></span>
+        <button class="notification-close" onclick="closeNotification('errorNotification')" type="button">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1 class="page-title">Quản lý Chức vụ</h1>
+        <p class="page-subtitle">
+            Quản lý các chức vụ và cấp bậc trong hệ thống bệnh viện
+        </p>
+        <div class="breadcrumb">
+            <a href="/admin">Dashboard</a>
+            <i class="fas fa-chevron-right"></i>
+            <span>Chức vụ</span>
+        </div>
+    </div>
+
+    <!-- Statistics -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon positions">
+                <i class="fas fa-briefcase"></i>
+            </div>
+            <div class="stat-info">
+                <h3 th:text="${positions != null ? #lists.size(positions) : 0}">0</h3>
+                <p>Tổng số chức vụ</p>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon leadership-positions">
+                <i class="fas fa-crown"></i>
+            </div>
+            <div class="stat-info">
+                <h3 th:text="${leadershipCount != null ? leadershipCount : 0}">0</h3>
+                <p>Chức vụ lãnh đạo</p>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon staff-positions">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-info">
+                <h3 th:text="${staffCount != null ? staffCount : 0}">0</h3>
+                <p>Chức vụ nhân viên</p>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon management-positions">
+                <i class="fas fa-user-tie"></i>
+            </div>
+            <div class="stat-info">
+                <h3 th:text="${managementCount != null ? managementCount : 0}">0</h3>
+                <p>Chức vụ quản lý</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content Card -->
+    <div class="content-card">
+        <div class="card-header">
+            <h2 class="card-title">Danh sách chức vụ</h2>
+            <div class="card-actions">
+                <a class="btn-add" th:href="@{/admin/positions/create}">
+                    <i class="fas fa-plus"></i>
+                    Thêm chức vụ mới
+                </a>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state" th:if="${positions == null or #lists.isEmpty(positions)}">
+            <div class="empty-icon">
+                <i class="fas fa-briefcase"></i>
+            </div>
+            <h3>Chưa có chức vụ nào</h3>
+            <p>Hãy thêm chức vụ đầu tiên cho hệ thống</p>
+            <a class="btn-add" th:href="@{/admin/positions/create}">
+                <i class="fas fa-plus"></i>
+                Thêm chức vụ mới
+            </a>
+        </div>
+
+        <!-- Table -->
+        <div class="table-container" th:if="${positions != null and not #lists.isEmpty(positions)}">
+            <table class="admin-table">
+                <thead>
+                <tr>
+                    <th>Icon</th>
+                    <th>Thông tin chức vụ</th>
+                    <th>Mô tả</th>
+                    <th>Thao tác</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="position : ${positions}">
+                    <td>
+                        <div class="position-icon-container">
+                            <div class="position-icon">
+                                <i class="fas fa-briefcase"></i>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="position-info">
+                            <strong class="position-name"
+                                    th:text="${position.name != null ? position.name : 'Chưa có tên'}"></strong>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="position-description"
+                             th:text="${position.description != null ? position.description : 'Chưa có mô tả'}">
+                            Mô tả chức vụ...
+                        </div>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <a class="btn-edit" th:href="@{'/admin/positions/edit/' + ${position.id}}">
+                                <i class="fas fa-edit"></i> Sửa
+                            </a>
+                            <button class="btn-delete"
+                                    th:attr="data-position-id=${position.id}, data-position-name=${position.name}"
+                                    type="button">
+                                <i class="fas fa-trash"></i> Xóa
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal-content delete-modal">
+            <div class="modal-header delete-header">
+                <div class="warning-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <h3>Xác nhận xóa chức vụ</h3>
+            </div>
+
+            <div class="modal-body">
+                <div class="warning-message">
+                    <p class="main-message">
+                        Bạn có chắc chắn muốn xóa chức vụ
+                        <strong class="position-name" id="deletePositionName">test</strong>?
+                    </p>
+                    <div class="warning-details">
+                        <div class="warning-item">
+                            <i class="fas fa-info-circle"></i>
+                            <span>Hành động này không thể hoàn tác</span>
+                        </div>
+                        <div class="warning-item">
+                            <i class="fas fa-users"></i>
+                            <span>Các nhân viên có chức vụ này sẽ bị ảnh hưởng</span>
+                        </div>
+                        <div class="warning-item">
+                            <i class="fas fa-briefcase"></i>
+                            <span>Cấu trúc tổ chức có thể bị thay đổi</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeDeleteModal()" type="button">
+                    <i class="fas fa-times"></i>
+                    Hủy bỏ
+                </button>
+                <button class="btn-delete-confirm" id="confirmDeleteBtn" type="button">
+                    <i class="fas fa-trash"></i>
+                    Xóa chức vụ
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Script Section -->
+<div layout:fragment="page-scripts">
+    <script>
+        console.log('Position management script loaded');
+
+        var currentPositionId = null;
+        var currentPositionName = null;
+
+        function showDeleteModal(button) {
+            console.log('showDeleteModal called', button);
+
+            currentPositionId = button.getAttribute('data-position-id');
+            currentPositionName = button.getAttribute('data-position-name');
+
+            console.log('Position ID:', currentPositionId, 'Name:', currentPositionName);
+
+            // Update modal
+            var nameElement = document.getElementById('deletePositionName');
+            if (nameElement) {
+                nameElement.textContent = currentPositionName || 'Unknown';
+            }
+
+            // Show modal
+            var modal = document.getElementById('deleteModal');
+            if (modal) {
+                modal.style.display = 'flex';
+                modal.style.opacity = '1';
+                modal.classList.add('show');
+                console.log('Modal shown');
+            }
+        }
+
+        function closeDeleteModal() {
+            console.log('closeDeleteModal called');
+            var modal = document.getElementById('deleteModal');
+            if (modal) {
+                modal.style.display = 'none';
+                modal.classList.remove('show');
+                currentPositionId = null;
+                currentPositionName = null;
+            }
+        }
+
+        function closeNotification(notificationId) {
+            var notification = document.getElementById(notificationId);
+            if (notification) {
+                notification.style.display = 'none';
+            }
+        }
+
+        // Wait for DOM
+        document.addEventListener('DOMContentLoaded', function () {
+            console.log('DOM ready');
+
+            // Event delegation for delete buttons
+            document.addEventListener('click', function (e) {
+                // Check if clicked element is delete button or child of delete button
+                var deleteBtn = e.target.closest('.btn-delete');
+                if (deleteBtn) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('Delete button clicked via delegation');
+                    showDeleteModal(deleteBtn);
+                    return;
+                }
+
+                // Check for cancel button
+                if (e.target.closest('.btn-cancel')) {
+                    closeDeleteModal();
+                    return;
+                }
+
+                // Check for notification close
+                if (e.target.closest('.notification-close')) {
+                    var notification = e.target.closest('.notification');
+                    if (notification) {
+                        notification.style.display = 'none';
+                    }
+                    return;
+                }
+
+                // Check for modal overlay click
+                if (e.target.classList.contains('modal-overlay')) {
+                    closeDeleteModal();
+                    return;
+                }
+            });
+
+            // Confirm delete button
+            var confirmBtn = document.getElementById('confirmDeleteBtn');
+            if (confirmBtn) {
+                confirmBtn.addEventListener('click', function () {
+                    if (currentPositionId) {
+                        console.log('Confirming delete for position:', currentPositionId);
+                        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xóa...';
+                        this.disabled = true;
+
+                        // Redirect
+                        setTimeout(function () {
+                            window.location.href = '/admin/positions/delete/' + currentPositionId;
+                        }, 1000);
+                    }
+                });
+            }
+
+            // ESC key
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') {
+                    closeDeleteModal();
+                }
+            });
+
+            // Auto-hide notifications
+            var notifications = document.querySelectorAll('.notification.show');
+            notifications.forEach(function (notification) {
+                setTimeout(function () {
+                    if (notification.parentNode) {
+                        notification.style.display = 'none';
+                    }
+                }, 5000);
+            });
+
+            // Debug
+            console.log('Delete buttons found:', document.querySelectorAll('.btn-delete').length);
+            console.log('Modal found:', document.getElementById('deleteModal') ? 'YES' : 'NO');
+        });
+
+        // Test function
+        function testModal() {
+            console.log('Testing modal...');
+            var modal = document.getElementById('deleteModal');
+            if (modal) {
+                modal.style.display = 'flex';
+                modal.style.opacity = '1';
+                modal.classList.add('show');
+                console.log('Test modal shown');
+            } else {
+                console.error('Modal not found');
+            }
+        }
+
+        // Make functions global for console testing
+        window.testModal = testModal;
+        window.showDeleteModal = showDeleteModal;
+        window.closeDeleteModal = closeDeleteModal;
+
+        console.log('All position functions defined');
+    </script>
+</div>
+</body>
+</html>

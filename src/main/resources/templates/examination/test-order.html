@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Title</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+
+    <!-- Bootstrap CSS v5.2.1 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous"/>
+</head>
+
+<body>
+<header>
+    <!-- place navbar here -->
+</header>
+<main>
+    <div class="card">
+        <div class="card-body">
+            <div>
+                <h4>Các yêu cầu xét nghiệm cho bệnh nhân: <span th:text="${medicalRecord.patient.name}"></span></h4>
+            </div>
+            <div class="mb-3 d-flex justify-content-end">
+                <input id="searchInput" type="text" class="form-control w-25" placeholder="Tìm theo tên xét nghiệm">
+            </div>
+            <form id="testForm" th:action="@{/examination/{id}/test/save(id=${medicalRecord.id})}" method="post">
+                <table class="table" id="test-body">
+                </table>
+
+                <!-- Phân trang -->
+                <div class="d-flex justify-content-center align-content-between mt-3">
+                    <button type="button" id="prevBtn" class="btn btn-secondary">Trước</button>
+                    <div class="btn">
+                        <span id="currentPage">1</span>
+                        <span>/</span>
+                        <span id="totalPages">1</span>
+                    </div>
+                    <button type="button" id="nextBtn" class="btn btn-secondary">Sau</button>
+                </div>
+
+                <div class="d-flex justify-content-center align-content-between">
+                    <small>
+                        <span id="startIndex">1</span>
+                        <span>–</span>
+                        <span id="endIndex">1</span>
+                        <span>trong tổng số</span>
+                        <span id="totalItems">0</span>
+                    </small>
+                </div>
+                <button class="btn btn-primary" type="submit">Xác nhận</button>
+            </form>
+        </div>
+    </div>
+
+</main>
+<footer>
+    <!-- place footer here -->
+</footer>
+<script th:inline="javascript">
+    let testList = /*[[${testList}]]*/ [];
+</script>
+
+<script>
+    const rowsPerPage = 2;
+    let currentPage = 1;
+    let filteredList = []; // Danh sách sau khi tìm kiếm
+    let selectedIds = new Set(); // dùng Set cho tối ưu
+
+    const tbody = document.getElementById('test-body');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const currentPageEl = document.getElementById('currentPage');
+    const totalPagesEl = document.getElementById('totalPages');
+    const startIndexEl = document.getElementById('startIndex');
+    const endIndexEl = document.getElementById('endIndex');
+    const totalItemsEl = document.getElementById('totalItems');
+    const searchInput = document.getElementById('searchInput');
+
+    const form = document.getElementById('testForm');
+
+    form.addEventListener('submit', function (event) {
+        // Xóa input hidden cũ (nếu có)
+        document.querySelectorAll('.hidden-test-id').forEach(e => e.remove());
+
+        // Tạo input hidden cho mỗi ID được chọn
+        selectedIds.forEach(id => {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'chosenTestIds'; // sẽ thành List<Long> hoặc String[] bên Controller
+            input.value = id;
+            input.classList.add('hidden-test-id');
+            form.appendChild(input);
+        });
+    });
+
+    function bindCheckboxEvents() {
+        const checkboxes = document.querySelectorAll('.test-checkbox');
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', () => {
+                const id = parseInt(checkbox.value);
+                if (checkbox.checked) {
+                    selectedIds.add(id);
+                } else {
+                    selectedIds.delete(id);
+                }
+            });
+        });
+    }
+
+    function renderTable(page) {
+        const totalPages = Math.ceil(filteredList.length / rowsPerPage);
+        const start = (page - 1) * rowsPerPage;
+        const end = Math.min(start + rowsPerPage, filteredList.length);
+        const sliced = filteredList.slice(start, end);
+
+        tbody.innerHTML = '<thead class="table-active">\n' +
+            '                   <tr>\n' +
+            '                       <th colspan="4" class="text-center">\n' +
+            '                            <p class="text-danger">Chọn các xét nghiệm</p>\n' +
+            '                       </th>\n' +
+            '                    </tr>\n' +
+            '                   <tr>\n' +
+            '                      <th></th>\n' +
+            '                       <th>Tên xét nghiệm</th>\n' +
+            '                        <th>Mô tả</th>\n' +
+            '                      <th>Giá</th>\n' +
+            '                   </tr>\n' +
+            '                </thead>';
+        sliced.forEach(item => {
+            const isChecked = selectedIds.has(item.id) ? 'checked' : '';
+            tbody.innerHTML += `
+                <tr>
+                    <td><input type="checkbox" value="${item.id}" ${isChecked} class="test-checkbox" name="chosenTest"></td>
+                    <td><p>${item.name}</p></td>
+                    <td><p>${item.description}</p></td>
+                    <td><p>${item.price}</p></td>
+                </tr>
+            `;
+        });
+
+        // Gắn lại sự kiện sau khi gán HTML mới
+        bindCheckboxEvents();
+
+        // Cập nhật phân trang
+        currentPageEl.textContent = page;
+        totalPagesEl.textContent = totalPages || 1;
+        startIndexEl.textContent = filteredList.length === 0 ? 0 : start + 1;
+        endIndexEl.textContent = end;
+        totalItemsEl.textContent = filteredList.length;
+
+        // Nút
+        prevBtn.disabled = page === 1;
+        nextBtn.disabled = page >= totalPages;
+    }
+
+    function applyFilter() {
+        const keyword = searchInput.value.trim().toLowerCase();
+        if (keyword === '') {
+            filteredList = [...testList];
+        } else {
+            filteredList = testList.filter(item =>
+                item.name.toLowerCase().includes(keyword)
+            );
+        }
+        currentPage = 1;
+        renderTable(currentPage);
+    }
+
+    prevBtn.addEventListener('click', () => {
+        if (currentPage > 1) {
+            currentPage--;
+            renderTable(currentPage);
+        }
+    });
+
+    nextBtn.addEventListener('click', () => {
+        const totalPages = Math.ceil(filteredList.length / rowsPerPage);
+        if (currentPage < totalPages) {
+            currentPage++;
+            renderTable(currentPage);
+        }
+    });
+
+    searchInput.addEventListener('input', applyFilter);
+
+    document.addEventListener('DOMContentLoaded', () => {
+        filteredList = [...testList]; // ban đầu chưa lọc
+        renderTable(currentPage);
+    });
+</script>
+
+
+<!-- Bootstrap JavaScript Libraries -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+        integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

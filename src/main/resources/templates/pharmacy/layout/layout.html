@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="vi"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta charset="UTF-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Dashboard - Phòng vật tư - Codegym Hospital</title>
+    <script src="https://kit.fontawesome.com/c1df782baf.js"></script>
+    <link href="/css/admin.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<!-- Header với màu cyan #00bcd4 -->
+<header class="admin-header"
+        style="background: linear-gradient(135deg, #00bcd4 0%, #0097a7 100%); box-shadow: 0 2px 10px rgba(0, 188, 212, 0.3);">
+    <div class="header-content">
+        <div class="admin-logo">
+            <i class="fas fa-pills"></i>
+            <span>Phòng vật tư - Codegym Hospital</span>
+        </div>
+        <div class="admin-nav">
+            <!-- Dynamic User Info với avatar thật -->
+            <div class="user-info">
+                <!-- Avatar với ảnh thật hoặc fallback -->
+                <div class="user-avatar-container">
+                    <!-- Hiển thị ảnh nếu có -->
+                    <img class="user-avatar-img"
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                         th:alt="${currentUserName}"
+                         th:if="${hasAvatar}"
+                         th:src="${currentUserAvatarUrl}">
+
+                    <!-- Fallback chữ cái nếu không có ảnh hoặc ảnh lỗi -->
+                    <div th:class="'user-avatar-fallback ' + (${hasAvatar} ? 'hidden' : '')"
+                         th:text="${currentUserAvatar ?: 'V'}">V
+                    </div>
+                </div>
+
+                <div class="user-details">
+                    <span class="user-name" th:text="${currentUserName ?: 'Nhân viên vật tư'}">Nhân viên vật tư</span>
+                    <small class="user-email" style="display: block; font-size: 0.8em; opacity: 0.7;"
+                           th:text="${currentUserEmail ?: ''}"></small>
+                </div>
+                <span class="user-role">💊 Nhân viên vật tư</span>
+            </div>
+            <form id="logoutForm" method="post" style="display: inline;" th:action="@{/logout}">
+                <button class="logout-btn" id="logoutButton" type="button">
+                    <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                </button>
+            </form>
+        </div>
+    </div>
+</header>
+
+<div class="admin-container">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-menu">
+            <div class="menu-section">
+                <div class="menu-title">Tổng quan</div>
+                <a class="menu-item" href="/pharmacy"
+                   th:classappend="${activeMenu} == 'dashboard' ? 'active' : ''">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-title">Cấp phát Thuốc</div>
+                <a class="menu-item" href="/pharmacy/prescription-dispensing"
+                   th:classappend="${activeMenu} == 'prescription-dispensing' ? 'active' : ''">
+                    <i class="fas fa-prescription-bottle"></i>
+                    <span>Cấp thuốc theo đơn</span>
+                </a>
+                <a class="menu-item" href="/pharmacy/prescription-verification"
+                   th:classappend="${activeMenu} == 'prescription-verification' ? 'active' : ''">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Xác minh đơn thuốc</span>
+                </a>
+                <a class="menu-item" href="/pharmacy/dosage-check"
+                   th:classappend="${activeMenu} == 'dosage-check' ? 'active' : ''">
+                    <i class="fas fa-weight"></i>
+                    <span>Kiểm tra liều lượng</span>
+                </a>
+                <a class="menu-item" href="/pharmacy/drug-interaction"
+                   th:classappend="${activeMenu} == 'drug-interaction' ? 'active' : ''">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>Kiểm tra tương tác thuốc</span>
+                </a>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-title">Quản lý Kho thuốc</div>
+                <a class="menu-item" href="/pharmacy/inventory-management"
+                   th:classappend="${activeMenu} == 'inventory-management' ? 'active' : ''">
+                    <i class="fas fa-warehouse"></i>
+                    <span>Quản lý tồn kho</span>
+                </a>
+                <a class="menu-item" href="/pharmacy/stock-levels"
+                   th:classappend="${activeMenu} == 'stock-levels' ? 'active' : ''">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Mức tồn kho</span>
+                </a>
+                <a class="menu-item" href="/pharmacy/expiry-tracking"
+                   th:classappend="${activeMenu} == 'expiry-tracking' ? 'active' : ''">
+                    <i class="fas fa-calendar-times"></i>
+                    <span>Theo dõi hạn sử dụng</span>
+                </a>
+                <a class="menu-item" href="/pharmacy/reorder-alerts"
+                   th:classappend="${activeMenu} == 'reorder-alerts' ? 'active' : ''">
+                    <i class="fas fa-bell"></i>
+                    <span>Cảnh báo đặt hàng</span>
+                </a>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-title">Nhập thuốc</div>
+                <a class="menu-item" href="/pharmacy/drug-receiving"
+                   th:classappend="${activeMenu} == 'drug-receiving' ? 'active' : ''">
+                    <i class="fas fa-truck"></i>
+                    <span>Nhận thuốc</span>
+                </a>
+                <a class="menu-item" href="/pharmacy/quality-check"
+                   th:classappend="${activeMenu} == 'quality-check' ? 'active' : ''">
+                    <i class="fas fa-search"></i>
+                    <span>Kiểm tra chất lượng</span>
+                </a>
+                <a class="menu-item" href="/pharmacy/batch-recording"
+                   th:classappend="${activeMenu} == 'batch-recording' ? 'active' : ''">
+                    <i class="fas fa-barcode"></i>
+                    <span>Ghi nhận lô hàng</span>
+                </a>
+                <a class="menu-item" href="/pharmacy/supplier-management"
+                   th:classappend="${activeMenu} == 'supplier-management' ? 'active' : ''">
+                    <i class="fas fa-building"></i>
+                    <span>Quản lý nhà cung cấp</span>
+                </a>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-title">Tư vấn Bệnh nhân</div>
+                <a class="menu-item" href="/pharmacy/medication-counseling"
+                   th:classappend="${activeMenu} == 'medication-counseling' ? 'active' : ''">
+                    <i class="fas fa-comments"></i>
+                    <span>Tư vấn sử dụng thuốc</span>
+                </a>
+                <a class="menu-item" href="/pharmacy/usage-instructions"
+                   th:classappend="${activeMenu} == 'usage-instructions' ? 'active' : ''">
+                    <i class="fas fa-clipboard-list"></i>
+                    <span>Hướng dẫn sử dụng</span>
+                </a>
+                <a class="menu-item" href="/pharmacy/side-effects"
+                   th:classappend="${activeMenu} == 'side-effects' ? 'active' : ''">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span>Tác dụng phụ</span>
+                </a>
+                <a class="menu-item" href="/pharmacy/patient-education"
+                   th:classappend="${activeMenu} == 'patient-education' ? 'active' : ''">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>Giáo dục bệnh nhân</span>
+                </a>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-title">An toàn Dược phẩm</div>
+                <a class="menu-item" href="/pharmacy/adverse-events"
+                   th:classappend="${activeMenu} == 'adverse-events' ? 'active' : ''">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Theo dõi tác dụng phụ</span>
+                </a>
+                <a class="menu-item" href="/pharmacy/drug-recalls"
+                   th:classappend="${activeMenu} == 'drug-recalls' ? 'active' : ''">
+                    <i class="fas fa-ban"></i>
+                    <span>Thuốc thu hồi</span>
+                </a>
+                <a class="menu-item" href="/pharmacy/safety-alerts"
+                   th:classappend="${activeMenu} == 'safety-alerts' ? 'active' : ''">
+                    <i class="fas fa-bell-slash"></i>
+                    <span>Cảnh báo an toàn</span>
+                </a>
+                <a class="menu-item" href="/pharmacy/regulatory-compliance"
+                   th:classappend="${activeMenu} == 'regulatory-compliance' ? 'active' : ''">
+                    <i class="fas fa-gavel"></i>
+                    <span>Tuân thủ quy định</span>
+                </a>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-title">Báo cáo Dược</div>
+                <a class="menu-item" href="/pharmacy/dispensing-report"
+                   th:classappend="${activeMenu} == 'dispensing-report' ? 'active' : ''">
+                    <i class="fas fa-chart-pie"></i>
+                    <span>Báo cáo cấp phát</span>
+                </a>
+                <a class="menu-item" href="/pharmacy/inventory-report"
+                   th:classappend="${activeMenu} == 'inventory-report' ? 'active' : ''">
+                    <i class="fas fa-clipboard-check"></i>
+                    <span>Báo cáo tồn kho</span>
+                </a>
+                <a class="menu-item" href="/pharmacy/usage-statistics"
+                   th:classappend="${activeMenu} == 'usage-statistics' ? 'active' : ''">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Thống kê sử dụng</span>
+                </a>
+                <a class="menu-item" href="/pharmacy/cost-analysis"
+                   th:classappend="${activeMenu} == 'cost-analysis' ? 'active' : ''">
+                    <i class="fas fa-calculator"></i>
+                    <span>Phân tích chi phí</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div layout:fragment="main-content"></div>
+    </main>
+</div>
+
+<!-- Base JavaScript -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const logoutButton = document.getElementById("logoutButton");
+        const logoutForm = document.getElementById("logoutForm");
+
+        if (logoutButton && logoutForm) {
+            logoutButton.addEventListener("click", function (e) {
+                e.preventDefault();
+                if (confirm("Bạn có chắc chắn muốn đăng xuất?")) {
+                    logoutForm.submit();
+                }
+            });
+        }
+
+        // Sidebar menu interactions
+        const menuItems = document.querySelectorAll(".menu-item");
+        menuItems.forEach((item) => {
+            item.addEventListener("click", function (e) {
+                this.style.opacity = "0.7";
+            });
+        });
+    });
+</script>
+
+<!-- CSS với theme màu #00bcd4 -->
+<style>
+    /* Pharmacy Theme với màu #00bcd4 */
+    .pharmacy-theme {
+        --primary-color: #00bcd4;
+        --primary-dark: #0097a7;
+        --primary-light: #4dd0e1;
+        --primary-alpha: rgba(0, 188, 212, 0.1);
+    }
+
+    .user-role {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 0.3rem 0.8rem;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        margin-left: 10px;
+        white-space: nowrap;
+    }
+
+    .admin-nav {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    /* Avatar styles */
+    .user-avatar-container {
+        position: relative;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 188, 212, 0.3);
+        flex-shrink: 0;
+    }
+
+    .user-avatar-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+        display: block;
+        transition: opacity 0.3s ease;
+    }
+
+    .user-avatar-fallback {
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #00bcd4 0%, #0097a7 100%);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 16px;
+        text-transform: uppercase;
+    }
+
+    .user-avatar-fallback.hidden {
+        display: none;
+    }
+
+    /* Menu active state với màu #00bcd4 */
+    .menu-item.active {
+        background: linear-gradient(135deg, #00bcd4 0%, #0097a7 100%);
+        color: white;
+        border-radius: 8px;
+    }
+
+    .menu-item:hover {
+        background: rgba(0, 188, 212, 0.1);
+        border-radius: 8px;
+    }
+
+    /* Logout button hover */
+    .logout-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-1px);
+    }
+
+    /* User info hover effect */
+    .user-info:hover {
+        background: rgba(255, 255, 255, 0.15);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .user-avatar-container {
+            width: 35px;
+            height: 35px;
+        }
+
+        .user-avatar-fallback {
+            font-size: 14px;
+        }
+
+        .user-details {
+            display: none;
+        }
+
+        .user-info {
+            padding: 8px;
+        }
+    }
+</style>
+
+<script src="https://kit.fontawesome.com/c1df782baf.js"></script>
+<div layout:fragment="page-scripts"></div>
+</body>
+</html>

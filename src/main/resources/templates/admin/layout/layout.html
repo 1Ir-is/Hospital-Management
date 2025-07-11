@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="vi"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta charset="UTF-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Dashboard - Quản lý Bệnh viện Codegym</title>
+    <script src="https://kit.fontawesome.com/c1df782baf.js"></script>
+    <link href="/css/admin.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Thêm vào file admin.css */
+
+        /* Avatar container styles */
+        .user-avatar-container {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            flex-shrink: 0;
+        }
+
+        /* Avatar image styles */
+        .user-avatar-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            display: block;
+            transition: opacity 0.3s ease;
+        }
+
+        /* Avatar fallback styles */
+        .user-avatar-fallback {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+            text-transform: uppercase;
+        }
+
+        .user-avatar-fallback.hidden {
+            display: none;
+        }
+
+        /* User info container */
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            transition: background 0.3s ease;
+        }
+
+        .user-info:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .user-avatar-container {
+                width: 35px;
+                height: 35px;
+            }
+
+            .user-avatar-fallback {
+                font-size: 14px;
+            }
+
+            .user-details {
+                display: none;
+            }
+
+            .user-info {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Header -->
+<header class="admin-header">
+    <div class="header-content">
+        <div class="admin-logo">
+            <i class="fas fa-hospital"></i>
+            <span>Admin Panel - Codegym Hospital</span>
+        </div>
+        <div class="admin-nav">
+            <div class="user-info">
+                <!-- Avatar với ảnh thật hoặc fallback -->
+                <div class="user-avatar-container">
+                    <!-- Hiển thị ảnh nếu có -->
+                    <img class="user-avatar-img"
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                         th:alt="${currentUserName}"
+                         th:if="${hasAvatar}"
+                         th:src="${currentUserAvatarUrl}">
+
+                    <!-- Fallback chữ cái nếu không có ảnh hoặc ảnh lỗi -->
+                    <div th:class="'user-avatar-fallback ' + (${hasAvatar} ? 'hidden' : '')"
+                         th:text="${currentUserAvatar ?: 'A'}">A
+                    </div>
+                </div>
+
+                <div class="user-details">
+                    <span class="user-name" th:text="${currentUserName ?: 'User'}">User</span>
+                    <small class="user-email" style="display: block; font-size: 0.8em; opacity: 0.7;"
+                           th:text="${currentUserEmail ?: ''}"></small>
+                </div>
+                <span class="user-role">👨‍💼 Quản trị viên</span>
+            </div>
+            <form id="logoutForm" method="post" style="display: inline;" th:action="@{/logout}">
+                <button class="logout-btn" id="logoutButton" type="button">
+                    <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                </button>
+            </form>
+        </div>
+    </div>
+</header>
+
+<div class="admin-container">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-menu">
+            <div class="menu-section">
+                <div class="menu-title">Tổng quan</div>
+                <a class="menu-item" href="/admin" th:classappend="${activeMenu} == 'dashboard' ? 'active' : ''">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-title">Quản lý Nhân viên</div>
+                <a class="menu-item" href="/admin/employees"
+                   th:classappend="${activeMenu} == 'employees' ? 'active' : ''">
+                    <i class="fas fa-user-tie"></i>
+                    <span>Danh sách nhân viên</span>
+                </a>
+                <a class="menu-item" href="/admin/employees/create"
+                   th:classappend="${activeMenu} == 'employees-create' ? 'active' : ''">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Thêm nhân viên mới</span>
+                </a>
+                <a class="menu-item" href="/admin/employees/transfer"
+                   th:classappend="${activeMenu} == 'employees-transfer' ? 'active' : ''">
+                    <i class="fas fa-exchange-alt"></i>
+                    <span>Điều chuyển nhân viên</span>
+                </a>
+                <a class="menu-item" href="/admin/positions"
+                   th:classappend="${activeMenu} == 'positions' ? 'active' : ''">
+                    <i class="fas fa-briefcase"></i>
+                    <span>Quản lý chức vụ</span>
+                </a>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-title">Quản lý Khoa & Phòng</div>
+                <a class="menu-item" href="/admin/departments"
+                   th:classappend="${activeMenu} == 'departments' ? 'active' : ''">
+                    <i class="fas fa-building"></i>
+                    <span>Danh sách khoa</span>
+                </a>
+                <a class="menu-item" href="/admin/departments/create"
+                   th:classappend="${activeMenu} == 'departments-create' ? 'active' : ''">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Thêm khoa mới</span>
+                </a>
+                <a class="menu-item" href="/admin/rooms"
+                   th:classappend="${activeMenu} == 'rooms' ? 'active' : ''">
+                    <i class="fas fa-door-open"></i>
+                    <span>Danh sách phòng khám</span>
+                </a>
+                <a class="menu-item" href="/admin/rooms/create"
+                   th:classappend="${activeMenu} == 'rooms-create' ? 'active' : ''">
+                    <i class="fas fa-plus-square"></i>
+                    <span>Thêm phòng mới</span>
+                </a>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-title">Quản lý Lịch làm việc</div>
+                <a class="menu-item" href="/admin/schedules"
+                   th:classappend="${activeMenu} == 'schedules' ? 'active' : ''">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Lịch làm việc</span>
+                </a>
+                <a class="menu-item" href="/admin/doctor-assignments"
+                   th:classappend="${activeMenu} == 'doctor-assignments' ? 'active' : ''">
+                    <i class="fas fa-user-md"></i>
+                    <span>Phân công bác sĩ</span>
+                </a>
+                <a class="menu-item" href="/admin/current-sessions"
+                   th:classappend="${activeMenu} == 'current-sessions' ? 'active' : ''">
+                    <i class="fas fa-clipboard-list"></i>
+                    <span>Ca khám hiện tại</span>
+                </a>
+                <a class="menu-item" href="/admin/shifts"
+                   th:classappend="${activeMenu} == 'shifts' ? 'active' : ''">
+                    <i class="fas fa-clock"></i>
+                    <span>Quản lý ca làm</span>
+                </a>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-title">Phân quyền & Vai trò</div>
+                <a class="menu-item" href="/admin/roles"
+                   th:classappend="${activeMenu} == 'roles' ? 'active' : ''">
+                    <i class="fas fa-user-shield"></i>
+                    <span>Quản lý vai trò</span>
+                </a>
+                <a class="menu-item" href="/admin/permissions"
+                   th:classappend="${activeMenu} == 'permissions' ? 'active' : ''">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Phân quyền hệ thống</span>
+                </a>
+                <a class="menu-item" href="/admin/role-assignments"
+                   th:classappend="${activeMenu} == 'role-assignments' ? 'active' : ''">
+                    <i class="fas fa-users-cog"></i>
+                    <span>Gán quyền người dùng</span>
+                </a>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-title">Quản lý y tế</div>
+                <a class="menu-item" href="/admin/appointments"
+                   th:classappend="${activeMenu} == 'appointments' ? 'active' : ''">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Lịch hẹn</span>
+                </a>
+                <a class="menu-item" href="/admin/patients"
+                   th:classappend="${activeMenu} == 'patients' ? 'active' : ''">
+                    <i class="fas fa-user-injured"></i>
+                    <span>Quản lý bệnh nhân</span>
+                </a>
+                <a class="menu-item" href="/admin/medical-records"
+                   th:classappend="${activeMenu} == 'medical-records' ? 'active' : ''">
+                    <i class="fas fa-file-medical"></i>
+                    <span>Hồ sơ bệnh án</span>
+                </a>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-title">Báo cáo & Thống kê</div>
+                <a class="menu-item" href="/admin/reports"
+                   th:classappend="${activeMenu} == 'reports' ? 'active' : ''">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Báo cáo tổng hợp</span>
+                </a>
+                <a class="menu-item" href="/admin/analytics"
+                   th:classappend="${activeMenu} == 'analytics' ? 'active' : ''">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Phân tích dữ liệu</span>
+                </a>
+                <a class="menu-item" href="/admin/financial-reports"
+                   th:classappend="${activeMenu} == 'financial-reports' ? 'active' : ''">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                    <span>Báo cáo tài chính</span>
+                </a>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-title">Hệ thống & Bảo mật</div>
+                <a class="menu-item" href="/admin/settings"
+                   th:classappend="${activeMenu} == 'settings' ? 'active' : ''">
+                    <i class="fas fa-cog"></i>
+                    <span>Cài đặt hệ thống</span>
+                </a>
+                <a class="menu-item" href="/admin/security"
+                   th:classappend="${activeMenu} == 'security' ? 'active' : ''">
+                    <i class="fas fa-lock"></i>
+                    <span>Bảo mật</span>
+                </a>
+                <a class="menu-item" href="/admin/audit"
+                   th:classappend="${activeMenu} == 'audit' ? 'active' : ''">
+                    <i class="fas fa-history"></i>
+                    <span>Nhật ký hoạt động</span>
+                </a>
+                <a class="menu-item" href="/admin/backup"
+                   th:classappend="${activeMenu} == 'backup' ? 'active' : ''">
+                    <i class="fas fa-database"></i>
+                    <span>Sao lưu dữ liệu</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div layout:fragment="main-content"></div>
+    </main>
+</div>
+
+<!-- Base JavaScript -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Sidebar menu interactions
+        const menuItems = document.querySelectorAll(".menu-item");
+        const currentPath = window.location.pathname;
+
+        menuItems.forEach((item) => {
+            item.addEventListener("click", function (e) {
+                this.style.opacity = "0.7";
+            });
+        });
+
+        // Mobile menu toggle (if needed)
+        const toggleSidebar = document.querySelector(".sidebar-toggle");
+        const sidebar = document.querySelector(".sidebar");
+
+        if (toggleSidebar) {
+            toggleSidebar.addEventListener("click", function () {
+                sidebar.classList.toggle("collapsed");
+            });
+        }
+
+        // Logout confirmation
+        const logoutButton = document.getElementById("logoutButton");
+        const logoutForm = document.getElementById("logoutForm");
+
+        if (logoutButton && logoutForm) {
+            logoutButton.addEventListener("click", function (e) {
+                e.preventDefault();
+                if (confirm("Bạn có chắc chắn muốn đăng xuất?")) {
+                    // Submit the form to Spring Security logout endpoint
+                    logoutForm.submit();
+                }
+            });
+        }
+
+        // Auto-close mobile menu when clicking outside
+        document.addEventListener("click", function (e) {
+            if (window.innerWidth <= 768) {
+                const sidebar = document.querySelector(".sidebar");
+                const sidebarToggle = document.querySelector(".sidebar-toggle");
+
+                if (sidebar && !sidebar.contains(e.target) && !sidebarToggle?.contains(e.target)) {
+                    sidebar.classList.remove("active");
+                }
+            }
+        });
+
+        // Responsive sidebar handling
+        function handleResize() {
+            const sidebar = document.querySelector(".sidebar");
+            if (window.innerWidth > 768) {
+                sidebar?.classList.remove("active");
+            }
+        }
+
+        window.addEventListener("resize", handleResize);
+        handleResize(); // Call on initial load
+    });
+</script>
+
+<!-- CSS cho user role badge -->
+<style>
+    .user-role {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 0.3rem 0.8rem;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        margin-left: 10px;
+        white-space: nowrap;
+    }
+
+    .admin-nav {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+</style>
+
+<!-- Các JS library -->
+<script src="https://kit.fontawesome.com/c1df782baf.js"></script>
+<!-- Placeholder cho script riêng của từng page -->
+<div layout:fragment="page-scripts"></div>
+</body>
+</html>
