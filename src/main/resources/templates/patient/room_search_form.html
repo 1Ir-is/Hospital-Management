@@ -6,10 +6,11 @@
 </head>
 <body>
 <h2>Tìm phòng theo mã hồ sơ khám</h2>
-<form action="#" th:action="@{/patient/room-by-code}" method="get">
+<form action="#" th:action="@{/patient/showroom}" method="post">
   <label for="code">Nhập mã hồ sơ:</label>
   <input type="text" id="code" name="code" required>
   <button type="submit">Tìm phòng</button>
 </form>
+<p th:if="${error}" th:text="${error}" style="color: red"></p>
 </body>
 </html>
