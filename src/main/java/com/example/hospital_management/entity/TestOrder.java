@@ -20,6 +20,10 @@ public class TestOrder { // Chỉ địng xét nghiệm
     private Long id;
     private LocalTime date;
     private String note;
+    private boolean status;
+    private boolean payStatus;
+    @Column(name = "image_path")
+    private String imagePath;
 
     //Foreign Key
     //Impatient Record - hồ sơ nhập viện (nội trú)
@@ -36,4 +40,8 @@ public class TestOrder { // Chỉ địng xét nghiệm
     @ManyToOne
     @JoinColumn(name = "test_id")
     private Test test;
+
+    @ManyToOne
+    @JoinColumn(name = "test_status_id")
+    private TestStatus testStatus;
 }

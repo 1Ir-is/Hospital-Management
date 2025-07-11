@@ -14,6 +14,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Entity
 @Table(name = "medical_records")
+
 public class MedicalRecord { // Hồ sơ khám
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,6 +26,9 @@ public class MedicalRecord { // Hồ sơ khám
     private Boolean status;
     private Long fee;
     private LocalDate followupDate;
+
+    @Column(name = "payment_status")
+    private Boolean paymentStatus = false;
 
     //Foreign Key
     //Patient - Bệnh nhân

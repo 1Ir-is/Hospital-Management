@@ -37,7 +37,6 @@ public class ImpatientRecord { // Hồ sơ nhập viện
 
     //Patient - bênh nhân
     @ManyToOne
-    @JoinColumn(name = "patient_id")
-    private Patient patient;
-
+    @JoinColumn(name = "ho_so_kham_id")
+    private MedicalRecord medicalRecord;
 }

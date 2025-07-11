@@ -20,6 +20,10 @@ public class Prescription { // Toa thuốc
     private Long id;
     private LocalDate createdDate;
     private String note;
+    private String status;
+
+    @Column(name = "pay_status")
+    private Boolean payStatus = false;
 
     //Foreign Key
     //Medical Record - Hồ sơ khám
