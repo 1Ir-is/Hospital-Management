@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form th:action="@{/receptionist/admissions/{id}/create(id=${id})}" method="post" th:object="${impatientRecordDto}">
+    <fieldset>
+        <legend>Tạo đơn nhập viện</legend>
+        <label>Ngày nhập viện</label>
+        <input type="date" placeholder="Ngày nhập viện" th:field="*{admissionDate}">
+        <small style="color:red" th:if="${#fields.hasErrors('admissionDate')}" th:errors="*{admissionDate}"></small>
+        <br>
+        <input type="hidden" placeholder="Ngày xuất viện" th:field="*{dischargeDate}">
+        <small style="color:red" th:if="${#fields.hasErrors('dischargeDate')}" th:errors="*{dischargeDate}"></small>
+        <br>
+        <label>Ghi chú</label>
+        <input type="text" placeholder="Ghi chú" th:field="*{note}">
+        <small style="color:red" th:if="${#fields.hasErrors('note')}" th:errors="*{note}"></small>
+        <br>
+        <label>Chọn phòng:</label>
+        <select id="roomSelect" name="roomId" class="form-select">
+            <option value="">-- Chọn phòng --</option>
+            <option th:each="room : ${roomList}" th:value="${room.id}" th:text="${room.name}"></option>
+        </select>
+        <br>
+        <label>Chọn giường:</label>
+        <select id="bedSelect" name="bed.id" class="form-select">
+            <option value="">-- Chọn giường --</option>
+        </select>
+        <small style="color:red" th:if="${#fields.hasErrors('bed')}" th:errors="*{bed}"></small>
+        <p id="bedMessage" style="color: red;"></p>
+        <br>
+        <label>Lý do nhập viện</label>
+        <input type="hidden" th:field="*{reason}"/>
+        <p th:text="*{reason}"></p>
+        <br>
+        <input type="hidden" th:field="*{medicalRecord.id}"/>
+        <label>Mã hồ sơ khám</label>
+        <p th:text="*{medicalRecord.code}"></p>
+        <br>
+        <label>Tên bác sĩ</label>
+        <p th:text="*{medicalRecord.examinationShift.employee.name}"></p>
+        <br>
+        <label>Tên bệnh nhân</label>
+        <p th:text="*{medicalRecord.patient.name}"></p>
+        <br>
+        <button>Tạo đơn</button>
+        <button><a href="/receptionist" style="text-decoration: none">Quay lại trang chủ</a></button>
+    </fieldset>
+</form>
+</body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#roomSelect').on('change', function () {
+            const roomId = $(this).val();
+
+            // Reset danh sách giường và thông báo
+            $('#bedSelect').empty().append('<option value="">-- Chọn giường --</option>');
+            $('#bedMessage').text(''); // reset thông báo
+
+            if (roomId) {
+                $.ajax({
+                    url: '/receptionist/admission/getBed',
+                    type: 'GET',
+                    data: {roomId: roomId},
+                    success: function (data) {
+                        if (data.length === 0) {
+                            $('#bedMessage').text('Phòng không còn giường trống.');
+                        } else {
+                            data.forEach(function (bed) {
+                                $('#bedSelect').append(
+                                    $('<option></option>').val(bed.id).text(bed.number)
+                                );
+                            });
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Lỗi khi lấy giường:", error);
+                        $('#bedMessage').text('Không thể tải danh sách giường.');
+                    }
+                });
+            }
+        });
+    });
+
+</script>
+</html>

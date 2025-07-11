@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>Danh sách bệnh nhân </h1>
+<form th:action="@{/nurse/advance-payments}" method="get">
+    <label>
+        <input type="text" th:value="${patientName}" name="patientName" placeholder="Tên bệnh nhân"/>
+    </label>
+    <input type="hidden" th:value="${size}" name="size">
+    <button>Tìm kiếm</button>
+</form>
+<a href="/nurse/advance-payments/create">Danh sách bệnh nhân tạm ứng tiền</a>
+<table border="3">
+    <thead>
+    <tr>
+        <th>STT</th>
+        <th>Tên bệnh nhân</th>
+        <th>Ngày ứng</th>
+        <th>Số tiền</th>
+        <th>Lý do</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="advancePayment, advancePaymentStatus : ${advancePayments}">
+        <td th:text="${advancePaymentStatus.count}"></td>
+        <td th:text="${advancePayment.impatientRecord.patient.name}"></td>
+        <td th:text="${advancePayment.date}"></td>
+        <td th:text="${advancePayment.fee}"></td>
+        <td th:text="${advancePayment.reason}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<div>
+    <a th:if="${advancePayments.hasPrevious()}"
+       th:href="@{/nurse/advance-payments(page=${advancePayments.number - 1},patientName=${patientName},size=${size})}">Trước</a>
+    <span th:text="${advancePayments.number+1}"></span>/<span th:text="${advancePayments.totalPages}"></span>
+    <a th:if="${advancePayments.hasNext()}"
+       th:href="@{/nurse/advance-payments(page=${advancePayments.number + 1},patientName=${patientName},size=${size})}">Sau</a>
+</div>
+
+<form th:action="@{/nurse/advance-payments}" method="get">
+    <input type="hidden" th:value="${patientName}" name ="patientName">
+    <label>
+        <select name="size" onchange="this.form.submit()">
+            <option th:each="item : ${sizeList}" th:value="${item}" th:text="${item}" th:selected="${item == size}"></option>
+        </select>
+    </label>
+</form>
+<span th:if="${advancePayments.totalPages == 0}">Không tìm lấy dữ liệu</span>
+</body>
+</html>

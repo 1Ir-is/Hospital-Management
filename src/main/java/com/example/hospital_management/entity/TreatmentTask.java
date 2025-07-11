@@ -1,5 +1,6 @@
 package com.example.hospital_management.entity;
 
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,21 +14,18 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "advance_payments")
-public class AdvancePayment { // Tạm ứng viện phí
+@Table(name="treatment_tasks")
+public class TreatmentTask {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long fee;
     private LocalDate date;
-    private String reason;
-
-    //Foreign Key
-    @ManyToOne
-    @JoinColumn(name = "impatient_record_id")
-    private ImpatientRecord impatientRecord;
+    private Integer morningDose;
+    private Integer eveningDose;
+    private boolean status;
 
     @ManyToOne
-    @JoinColumn(name = "employee_id")
-    private Employee employee;
+    @JoinColumn(name="inpatient_treatment_id")
+    private InpatientTreatment inpatientTreatment;
+
 }
