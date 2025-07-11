@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="vi"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta charset="UTF-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Dashboard - Điều dưỡng - Codegym Hospital</title>
+    <script src="https://kit.fontawesome.com/c1df782baf.js"></script>
+    <link href="/css/admin.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<!-- Header với màu hồng #e91e63 -->
+<header class="admin-header"
+        style="background: linear-gradient(135deg, #e91e63 0%, #ad1457 100%); box-shadow: 0 2px 10px rgba(233, 30, 99, 0.3);">
+    <div class="header-content">
+        <div class="admin-logo">
+            <i class="fas fa-user-nurse"></i>
+            <span>Điều dưỡng - Codegym Hospital</span>
+        </div>
+        <div class="admin-nav">
+            <!-- Dynamic User Info với avatar thật -->
+            <div class="user-info">
+                <!-- Avatar với ảnh thật hoặc fallback -->
+                <div class="user-avatar-container">
+                    <!-- Hiển thị ảnh nếu có -->
+                    <img class="user-avatar-img"
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                         th:alt="${currentUserName}"
+                         th:if="${hasAvatar}"
+                         th:src="${currentUserAvatarUrl}">
+
+                    <!-- Fallback chữ cái nếu không có ảnh hoặc ảnh lỗi -->
+                    <div th:class="'user-avatar-fallback ' + (${hasAvatar} ? 'hidden' : '')"
+                         th:text="${currentUserAvatar ?: 'Đ'}">Đ
+                    </div>
+                </div>
+
+                <div class="user-details">
+                    <span class="user-name" th:text="${currentUserName ?: 'Điều dưỡng'}">Điều dưỡng</span>
+                    <small class="user-email" style="display: block; font-size: 0.8em; opacity: 0.7;"
+                           th:text="${currentUserEmail ?: ''}"></small>
+                </div>
+                <span class="user-role">👩‍⚕️ Điều dưỡng</span>
+            </div>
+            <form id="logoutForm" method="post" style="display: inline;" th:action="@{/logout}">
+                <button class="logout-btn" id="logoutButton" type="button">
+                    <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                </button>
+            </form>
+        </div>
+    </div>
+</header>
+
+<div class="admin-container">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-menu">
+            <div class="menu-section">
+                <div class="menu-title">Tổng quan</div>
+                <a class="menu-item" href="/nurse"
+                   th:classappend="${activeMenu} == 'dashboard' ? 'active' : ''">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-title">Kiểm tra Sinh hiệu</div>
+                <a class="menu-item" href="/nurse/vital-signs"
+                   th:classappend="${activeMenu} == 'vital-signs' ? 'active' : ''">
+                    <i class="fas fa-heartbeat"></i>
+                    <span>Đo huyết áp, cân nặng</span>
+                </a>
+                <a class="menu-item" href="/nurse/temperature"
+                   th:classappend="${activeMenu} == 'temperature' ? 'active' : ''">
+                    <i class="fas fa-thermometer-half"></i>
+                    <span>Đo nhiệt độ</span>
+                </a>
+                <a class="menu-item" href="/nurse/pulse"
+                   th:classappend="${activeMenu} == 'pulse' ? 'active' : ''">
+                    <i class="fas fa-heartbeat"></i>
+                    <span>Đo mạch</span>
+                </a>
+                <a class="menu-item" href="/nurse/vital-history"
+                   th:classappend="${activeMenu} == 'vital-history' ? 'active' : ''">
+                    <i class="fas fa-history"></i>
+                    <span>Lịch sử sinh hiệu</span>
+                </a>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-title">Quản lý Bệnh án</div>
+                <a class="menu-item" href="/nurse/patient-records"
+                   th:classappend="${activeMenu} == 'patient-records' ? 'active' : ''">
+                    <i class="fas fa-file-medical"></i>
+                    <span>Danh sách bệnh án phụ trách</span>
+                </a>
+                <a class="menu-item" href="/nurse/admission"
+                   th:classappend="${activeMenu} == 'admission' ? 'active' : ''">
+                    <i class="fas fa-hospital-user"></i>
+                    <span>Làm hồ sơ nhập viện</span>
+                </a>
+                <a class="menu-item" href="/nurse/room-bed-assignment"
+                   th:classappend="${activeMenu} == 'room-bed-assignment' ? 'active' : ''">
+                    <i class="fas fa-bed"></i>
+                    <span>Chọn phòng và giường</span>
+                </a>
+                <a class="menu-item" href="/nurse/discharge-procedures"
+                   th:classappend="${activeMenu} == 'discharge-procedures' ? 'active' : ''">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Thủ tục xuất viện</span>
+                </a>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-title">Cấp phát Thuốc</div>
+                <a class="menu-item" href="/nurse/medication-orders"
+                   th:classappend="${activeMenu} == 'medication-orders' ? 'active' : ''">
+                    <i class="fas fa-prescription-bottle-alt"></i>
+                    <span>Y lệnh thuốc từ bác sĩ</span>
+                </a>
+                <a class="menu-item" href="/nurse/medication-distribution"
+                   th:classappend="${activeMenu} == 'medication-distribution' ? 'active' : ''">
+                    <i class="fas fa-pills"></i>
+                    <span>Cấp phát thuốc</span>
+                </a>
+                <a class="menu-item" href="/nurse/medication-schedule"
+                   th:classappend="${activeMenu} == 'medication-schedule' ? 'active' : ''">
+                    <i class="fas fa-clock"></i>
+                    <span>Lịch uống thuốc</span>
+                </a>
+                <a class="menu-item" href="/nurse/medication-tracking"
+                   th:classappend="${activeMenu} == 'medication-tracking' ? 'active' : ''">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Theo dõi thuốc đã uống</span>
+                </a>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-title">Tài chính & Thủ tục</div>
+                <a class="menu-item" href="/nurse/advance-payment"
+                   th:classappend="${activeMenu} == 'advance-payment' ? 'active' : ''">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <span>Yêu cầu tạm ứng viện phí</span>
+                </a>
+                <a class="menu-item" href="/nurse/payment-status"
+                   th:classappend="${activeMenu} == 'payment-status' ? 'active' : ''">
+                    <i class="fas fa-credit-card"></i>
+                    <span>Trạng thái thanh toán</span>
+                </a>
+                <a class="menu-item" href="/nurse/insurance-verification"
+                   th:classappend="${activeMenu} == 'insurance-verification' ? 'active' : ''">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Xác minh bảo hiểm</span>
+                </a>
+                <a class="menu-item" href="/nurse/financial-summary"
+                   th:classappend="${activeMenu} == 'financial-summary' ? 'active' : ''">
+                    <i class="fas fa-calculator"></i>
+                    <span>Tổng kết chi phí</span>
+                </a>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-title">Công việc Hàng ngày</div>
+                <a class="menu-item" href="/nurse/daily-tasks"
+                   th:classappend="${activeMenu} == 'daily-tasks' ? 'active' : ''">
+                    <i class="fas fa-tasks"></i>
+                    <span>Nhiệm vụ hàng ngày</span>
+                </a>
+                <a class="menu-item" href="/nurse/doctor-orders"
+                   th:classappend="${activeMenu} == 'doctor-orders' ? 'active' : ''">
+                    <i class="fas fa-clipboard-list"></i>
+                    <span>Y lệnh từ bác sĩ</span>
+                </a>
+                <a class="menu-item" href="/nurse/care-plan"
+                   th:classappend="${activeMenu} == 'care-plan' ? 'active' : ''">
+                    <i class="fas fa-hands-helping"></i>
+                    <span>Kế hoạch chăm sóc</span>
+                </a>
+                <a class="menu-item" href="/nurse/progress-notes"
+                   th:classappend="${activeMenu} == 'progress-notes' ? 'active' : ''">
+                    <i class="fas fa-edit"></i>
+                    <span>Ghi chú tiến triển</span>
+                </a>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-title">Báo cáo Chăm sóc</div>
+                <a class="menu-item" href="/nurse/care-reports"
+                   th:classappend="${activeMenu} == 'care-reports' ? 'active' : ''">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Báo cáo chăm sóc</span>
+                </a>
+                <a class="menu-item" href="/nurse/patient-progress"
+                   th:classappend="${activeMenu} == 'patient-progress' ? 'active' : ''">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Tiến triển bệnh nhân</span>
+                </a>
+                <a class="menu-item" href="/nurse/shift-handover"
+                   th:classappend="${activeMenu} == 'shift-handover' ? 'active' : ''">
+                    <i class="fas fa-exchange-alt"></i>
+                    <span>Bàn giao ca</span>
+                </a>
+                <a class="menu-item" href="/nurse/nursing-summary"
+                   th:classappend="${activeMenu} == 'nursing-summary' ? 'active' : ''">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Tổng kết điều dưỡng</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div layout:fragment="main-content"></div>
+    </main>
+</div>
+
+<!-- Base JavaScript -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const logoutButton = document.getElementById("logoutButton");
+        const logoutForm = document.getElementById("logoutForm");
+
+        if (logoutButton && logoutForm) {
+            logoutButton.addEventListener("click", function (e) {
+                e.preventDefault();
+                if (confirm("Bạn có chắc chắn muốn đăng xuất?")) {
+                    logoutForm.submit();
+                }
+            });
+        }
+
+        // Sidebar menu interactions
+        const menuItems = document.querySelectorAll(".menu-item");
+        menuItems.forEach((item) => {
+            item.addEventListener("click", function (e) {
+                this.style.opacity = "0.7";
+            });
+        });
+    });
+</script>
+
+<!-- CSS với theme màu #e91e63 -->
+<style>
+    /* Nurse Theme với màu #e91e63 */
+    .nurse-theme {
+        --primary-color: #e91e63;
+        --primary-dark: #ad1457;
+        --primary-light: #f06292;
+        --primary-alpha: rgba(233, 30, 99, 0.1);
+    }
+
+    .user-role {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 0.3rem 0.8rem;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        margin-left: 10px;
+        white-space: nowrap;
+    }
+
+    .admin-nav {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    /* Avatar styles */
+    .user-avatar-container {
+        position: relative;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(233, 30, 99, 0.3);
+        flex-shrink: 0;
+    }
+
+    .user-avatar-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+        display: block;
+        transition: opacity 0.3s ease;
+    }
+
+    .user-avatar-fallback {
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #e91e63 0%, #ad1457 100%);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 16px;
+        text-transform: uppercase;
+    }
+
+    .user-avatar-fallback.hidden {
+        display: none;
+    }
+
+    /* Menu active state với màu #e91e63 */
+    .menu-item.active {
+        background: linear-gradient(135deg, #e91e63 0%, #ad1457 100%);
+        color: white;
+        border-radius: 8px;
+    }
+
+    .menu-item:hover {
+        background: rgba(233, 30, 99, 0.1);
+        border-radius: 8px;
+    }
+
+    /* Logout button hover */
+    .logout-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-1px);
+    }
+
+    /* User info hover effect */
+    .user-info:hover {
+        background: rgba(255, 255, 255, 0.15);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .user-avatar-container {
+            width: 35px;
+            height: 35px;
+        }
+
+        .user-avatar-fallback {
+            font-size: 14px;
+        }
+
+        .user-details {
+            display: none;
+        }
+
+        .user-info {
+            padding: 8px;
+        }
+    }
+</style>
+
+<script src="https://kit.fontawesome.com/c1df782baf.js"></script>
+<div layout:fragment="page-scripts"></div>
+</body>
+</html>

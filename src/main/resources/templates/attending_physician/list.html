@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<h1>Danh sách tất cả bệnh nhân </h1>
+<form th:action="@{/attending-physician}" method="get">
+  <label>
+    <input type="text" th:value="${patientName}" name="patientName" placeholder="Tên bệnh nhân"/>
+  </label>
+  <input type="hidden" th:value="${size}" name="size">
+  <button>Tìm kiếm</button>
+</form>
+<a href="/nurse/advance-payments">Danh sách bệnh nhân tạm ứng tiền</a>
+<table border="3">
+  <thead>
+  <tr>
+    <th>STT</th>
+    <th>Ngày nhập viện</th>
+    <th>Ngày xuất viện</th>
+    <th>Số giường</th>
+    <th>Tên bệnh nhân</th>
+    <th>Thao tác</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="impatientRecord, impatientRecordStatus : ${impatientRecords}">
+    <td th:text="${impatientRecordStatus.count}"></td>
+    <td th:text="${impatientRecord.admissionDate}"></td>
+    <td th:if="${impatientRecord.dischargeDate!=null}" th:text="${impatientRecord.dischargeDate}"></td>
+    <td th:if="${impatientRecord.dischargeDate==null}">Đang điều trị</td>
+    <td th:text="${impatientRecord.bed.number}"></td>
+    <td th:text="${impatientRecord.medicalRecord.patient.name}"></td>
+    <td><a th:href="@{/attending-physician/{id}/create(id=${impatientRecord.id})}">Kê thuốc</a></td>
+    <td><a href="#">Tiến trình điều trị</a></td>
+  </tr>
+  </tbody>
+</table>
+
+<div>
+  <a th:if="${impatientRecords.hasPrevious()}"
+     th:href="@{/nurse(page=${impatientRecords.number - 1},patientName=${patientName},size=${size})}">Trước</a>
+  <span th:text="${impatientRecords.number+1}"></span>/<span th:text="${impatientRecords.totalPages}"></span>
+  <a th:if="${impatientRecords.hasNext()}"
+     th:href="@{/nurse(page=${impatientRecords.number + 1},patientName=${patientName},size=${size})}">Sau</a>
+</div>
+
+<form th:action="@{/nurse}" method="get">
+  <input type="hidden" th:value="${patientName}" name ="patientName">
+  <label>
+    <select name="size" onchange="this.form.submit()">
+      <option th:each="item : ${sizeList}" th:value="${item}" th:text="${item}" th:selected="${item == size}"></option>
+    </select>
+  </label>
+</form>
+<span th:if="${impatientRecords.totalPages == 0}">Không tìm lấy dữ liệu</span>
+</body>
+</html>

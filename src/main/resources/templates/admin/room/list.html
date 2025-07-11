@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="vi"
+      layout:decorate="~{admin/layout/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Danh sách Phòng khám - Admin</title>
+    <style>
+        /* Page Header */
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .page-title-section {
+            flex: 1;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .page-subtitle {
+            color: #6b7280;
+            font-size: 1.1rem;
+            margin-bottom: 0;
+        }
+
+        .page-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        /* Statistics Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .stat-icon.active {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        .stat-icon.inactive {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        .stat-icon.beds {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        }
+
+        .stat-info h3 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin: 0 0 0.25rem 0;
+        }
+
+        .stat-info p {
+            color: #6b7280;
+            margin: 0 0 0.5rem 0;
+            font-weight: 500;
+        }
+
+        .stat-trend {
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .stat-trend.positive {
+            color: #059669;
+        }
+
+        .stat-trend.negative {
+            color: #dc2626;
+        }
+
+        .stat-trend.neutral {
+            color: #6b7280;
+        }
+
+        /* Search Form Styling - Thêm padding */
+        .search-form {
+            padding: 2rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-input,
+        .form-select {
+            padding: 0.75rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            background: white;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+
+        .form-input:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e5e7eb;
+            justify-content: flex-start;
+            align-items: center;
+        }
+
+        .btn-primary,
+        .btn-secondary {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6b7280, #4b5563);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
+        }
+
+        /* Table Styling */
+        .table-responsive {
+            overflow-x: auto;
+            margin-bottom: 1.5rem;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .data-table thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .data-table th {
+            padding: 1rem 0.75rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border-bottom: none;
+        }
+
+        .sortable-link {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: opacity 0.2s ease;
+        }
+
+        .sortable-link:hover {
+            opacity: 0.8;
+        }
+
+        .table-row {
+            border-bottom: 1px solid #f1f5f9;
+            transition: background-color 0.2s ease;
+        }
+
+        .table-row td {
+            padding: 1rem 0.75rem;
+            vertical-align: middle;
+        }
+
+        /* Room Number */
+        .room-number {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: bold;
+            text-align: center;
+            display: inline-block;
+            min-width: 3rem;
+        }
+
+        /* Room Info */
+        .room-info {
+            min-width: 200px;
+        }
+
+        .room-name {
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 0.25rem;
+            font-size: 0.95rem;
+        }
+
+        .room-capacity {
+            font-size: 0.8rem;
+            color: #6b7280;
+            font-style: italic;
+        }
+
+        /* Badges */
+        .badge {
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-align: center;
+            display: inline-block;
+        }
+
+        .badge-department {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .badge-success {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .badge-danger {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        /* Room Type */
+        .room-type {
+            color: #4b5563;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* Bed Count */
+        .bed-count {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .bed-badge {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .bed-badge.has-beds {
+            background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+            color: #065f46;
+            border: 2px solid #10b981;
+        }
+
+        .bed-badge.no-beds {
+            background: linear-gradient(135deg, #fee2e2, #fecaca);
+            color: #991b1b;
+            border: 2px solid #ef4444;
+        }
+
+        .bed-info {
+            font-size: 0.75rem;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        /* Description */
+        .description {
+            color: #6b7280;
+            font-size: 0.9rem;
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 0.375rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-sm {
+            padding: 0.5rem 0.6rem;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, #06b6d4, #0891b2);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+        }
+
+        .btn-sm.btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        .btn-sm:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Pagination */
+        .pagination-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e5e7eb;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .pagination {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            gap: 0.5rem;
+        }
+
+        .page-item {
+            display: block;
+        }
+
+        .page-link {
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #d1d5db;
+            background: white;
+            color: #374151;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .page-link:hover {
+            background: #f3f4f6;
+            border-color: #9ca3af;
+        }
+
+        .page-item.active .page-link {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-color: #667eea;
+        }
+
+        .page-item.disabled .page-link {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .page-size-selector {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+
+        .page-size-selector select {
+            padding: 0.25rem 0.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            background: white;
+        }
+
+        /* Success Notification */
+        .success-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            z-index: 1000;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .success-notification.show {
+            transform: translateX(0);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .page-header-content {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .page-actions {
+                justify-content: stretch;
+            }
+
+            .search-form {
+                padding: 1.5rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .form-actions {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.75rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                gap: 0.25rem;
+            }
+
+            .btn-sm {
+                padding: 0.375rem 0.5rem;
+                font-size: 0.8rem;
+            }
+
+            .pagination-wrapper {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .pagination {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .search-form {
+                padding: 1rem;
+            }
+
+            .data-table {
+                font-size: 0.8rem;
+            }
+
+            .data-table th,
+            .data-table td {
+                padding: 0.5rem 0.375rem;
+            }
+
+            .room-number {
+                padding: 0.375rem 0.6rem;
+                font-size: 0.8rem;
+            }
+
+            .bed-badge {
+                width: 2rem;
+                height: 2rem;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+
+<div layout:fragment="main-content">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="page-header-content">
+            <div class="page-title-section">
+                <h1 class="page-title">
+                    <i class="fas fa-door-open"></i>
+                    Danh sách Phòng khám
+                </h1>
+                <p class="page-subtitle">Quản lý và theo dõi tất cả phòng khám và giường bệnh trong bệnh viện</p>
+            </div>
+            <div class="page-actions">
+                <a class="btn-primary" href="/admin/rooms/create">
+                    <i class="fas fa-plus"></i>
+                    Thêm phòng mới
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-door-open"></i>
+            </div>
+            <div class="stat-info">
+                <h3 th:text="${totalRooms}">54</h3>
+                <p>Tổng số phòng</p>
+                <div class="stat-trend neutral">
+                    <span>Tất cả phòng trong hệ thống</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon active">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="stat-info">
+                <h3 th:text="${activeRooms}">52</h3>
+                <p>Phòng hoạt động</p>
+                <div class="stat-trend positive">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>Đang sử dụng</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon inactive">
+                <i class="fas fa-times-circle"></i>
+            </div>
+            <div class="stat-info">
+                <h3 th:text="${inactiveRooms}">2</h3>
+                <p>Phòng không hoạt động</p>
+                <div class="stat-trend negative">
+                    <i class="fas fa-arrow-down"></i>
+                    <span>Tạm ngừng hoặc bảo trì</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon" style="background: #fff3e0;">
+                <i class="fas fa-building" style="color: #ff9800;"></i>
+            </div>
+            <div class="stat-content">
+                <h3 th:text="${#lists.size(departments)}">12</h3>
+                <p>Khoa có phòng</p>
+                <span class="stat-change neutral">Trải rộng khắp bệnh viện</span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Search and Filter Card -->
+    <div class="form-card">
+        <div class="form-header">
+            <h2>
+                <i class="fas fa-search"></i>
+                Tìm kiếm và lọc
+            </h2>
+            <p>Sử dụng các bộ lọc để tìm phòng khám phù hợp</p>
+        </div>
+
+        <form action="/admin/rooms" class="search-form" method="get">
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label" for="name">
+                        <i class="fas fa-door-open"></i>
+                        Tên phòng
+                    </label>
+                    <input
+                            class="form-input"
+                            id="name"
+                            name="name"
+                            placeholder="Nhập tên phòng..."
+                            th:value="${currentName}"
+                            type="text"
+                    />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="number">
+                        <i class="fas fa-hashtag"></i>
+                        Số phòng
+                    </label>
+                    <input
+                            class="form-input"
+                            id="number"
+                            name="number"
+                            placeholder="Nhập số phòng..."
+                            th:value="${currentNumber}"
+                            type="number"
+                    />
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label" for="departmentId">
+                        <i class="fas fa-building"></i>
+                        Khoa
+                    </label>
+                    <select class="form-select" id="departmentId" name="departmentId">
+                        <option value="">-- Tất cả khoa --</option>
+                        <option th:each="dept : ${departments}"
+                                th:selected="${dept.id == currentDepartmentId}"
+                                th:text="${dept.name}"
+                                th:value="${dept.id}">
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="roomTypeId">
+                        <i class="fas fa-list"></i>
+                        Loại phòng
+                    </label>
+                    <select class="form-select" id="roomTypeId" name="roomTypeId">
+                        <option value="">-- Tất cả loại --</option>
+                        <option th:each="type : ${roomTypes}"
+                                th:selected="${type.id == currentRoomTypeId}"
+                                th:text="${type.name}"
+                                th:value="${type.id}">
+                        </option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label" for="status">
+                        <i class="fas fa-toggle-on"></i>
+                        Trạng thái
+                    </label>
+                    <select class="form-select" id="status" name="status">
+                        <option value="">-- Tất cả --</option>
+                        <option th:selected="${currentStatus == true}" value="true">Hoạt động</option>
+                        <option th:selected="${currentStatus == false}" value="false">Không hoạt động</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button class="btn-primary" type="submit">
+                    <i class="fas fa-search"></i>
+                    Tìm kiếm
+                </button>
+                <a class="btn-secondary" href="/admin/rooms">
+                    <i class="fas fa-times"></i>
+                    Xóa bộ lọc
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Rooms Table -->
+    <div class="form-card">
+        <div class="form-header">
+            <h3><i class="fas fa-list"></i> Danh sách phòng khám</h3>
+            <div class="card-actions">
+                <span th:text="'Hiển thị ' + ${rooms.numberOfElements} + ' / ' + ${rooms.totalElements} + ' phòng'"></span>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                <tr>
+                    <th>
+                        <a class="sortable-link"
+                           th:href="@{/admin/rooms(page=${rooms.number}, size=${currentSize}, sortBy='number', sortDir=${currentSortBy == 'number' and currentSortDir == 'asc' ? 'desc' : 'asc'}, name=${currentName}, departmentId=${currentDepartmentId}, roomTypeId=${currentRoomTypeId}, status=${currentStatus})}">
+                            Số phòng
+                            <i th:class="${currentSortBy == 'number' ? (currentSortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down') : 'fas fa-sort'}"></i>
+                        </a>
+                    </th>
+                    <th>
+                        <a class="sortable-link"
+                           th:href="@{/admin/rooms(page=${rooms.number}, size=${currentSize}, sortBy='name', sortDir=${currentSortBy == 'name' and currentSortDir == 'asc' ? 'desc' : 'asc'}, name=${currentName}, departmentId=${currentDepartmentId}, roomTypeId=${currentRoomTypeId}, status=${currentStatus})}">
+                            Tên phòng
+                            <i th:class="${currentSortBy == 'name' ? (currentSortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down') : 'fas fa-sort'}"></i>
+                        </a>
+                    </th>
+                    <th>
+                        <a class="sortable-link"
+                           th:href="@{/admin/rooms(page=${rooms.number}, size=${currentSize}, sortBy='department.name', sortDir=${currentSortBy == 'department.name' and currentSortDir == 'asc' ? 'desc' : 'asc'}, name=${currentName}, departmentId=${currentDepartmentId}, roomTypeId=${currentRoomTypeId}, status=${currentStatus})}">
+                            Khoa
+                            <i th:class="${currentSortBy == 'department.name' ? (currentSortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down') : 'fas fa-sort'}"></i>
+                        </a>
+                    </th>
+                    <th>Loại phòng</th>
+                    <th>Mô tả</th>
+                    <th>
+                        <a class="sortable-link"
+                           th:href="@{/admin/rooms(page=${rooms.number}, size=${currentSize}, sortBy='status', sortDir=${currentSortBy == 'status' and currentSortDir == 'asc' ? 'desc' : 'asc'}, name=${currentName}, departmentId=${currentDepartmentId}, roomTypeId=${currentRoomTypeId}, status=${currentStatus})}">
+                            Trạng thái
+                            <i th:class="${currentSortBy == 'status' ? (currentSortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down') : 'fas fa-sort'}"></i>
+                        </a>
+                    </th>
+                    <th>Thao tác</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class="table-row" th:each="room : ${rooms.content}">
+                    <td>
+                        <span class="room-number" th:text="${room.number}"></span>
+                    </td>
+                    <td>
+                        <div class="room-info">
+                            <strong th:text="${room.name}">Phòng khám Nội tổng quát</strong>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="badge badge-department" th:text="${room.departmentName}">Khoa Nội</span>
+                    </td>
+                    <td>
+                        <span class="room-type" th:text="${room.roomTypeName}">Phòng khám</span>
+                    </td>
+                    <td>
+                        <span class="description" th:text="${room.description ?: 'Không có mô tả'}">Phòng khám chuyên khoa</span>
+                    </td>
+                    <td>
+                            <span th:class="'status-badge ' + (${room.status} ? 'status-active' : 'status-inactive')"
+                                  th:text="${room.statusText}">
+                                Hoạt động
+                            </span>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <a class="btn btn-sm btn-info"
+                               th:href="@{/admin/rooms/{id}(id=${room.id})}" title="Xem chi tiết">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <a class="btn btn-sm btn-warning"
+                               th:href="@{/admin/rooms/{id}/edit(id=${room.id})}" title="Chỉnh sửa">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <button class="btn btn-sm btn-danger" onclick="confirmDelete()"
+                                    title="Xóa">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- Pagination -->
+    <div class="pagination-wrapper" th:if="${rooms.totalPages > 1}">
+        <nav class="pagination-nav">
+            <ul class="pagination">
+                <!-- Previous -->
+                <li th:class="'page-item ' + (${rooms.first} ? 'disabled' : '')">
+                    <a class="page-link"
+                       th:href="@{/admin/rooms(page=${rooms.number - 1}, size=${currentSize}, sortBy=${currentSortBy}, sortDir=${currentSortDir}, name=${currentName}, departmentId=${currentDepartmentId}, roomTypeId=${currentRoomTypeId}, status=${currentStatus})}">
+                        <i class="fas fa-chevron-left"></i> Trước
+                    </a>
+                </li>
+
+                <!-- Page numbers -->
+                <li th:class="'page-item ' + (${pageNum == rooms.number} ? 'active' : '')"
+                    th:each="pageNum : ${#numbers.sequence(0, rooms.totalPages - 1)}"
+                    th:if="${pageNum >= rooms.number - 2 and pageNum <= rooms.number + 2}">
+                    <a class="page-link"
+                       th:href="@{/admin/rooms(page=${pageNum}, size=${currentSize}, sortBy=${currentSortBy}, sortDir=${currentSortDir}, name=${currentName}, departmentId=${currentDepartmentId}, roomTypeId=${currentRoomTypeId}, status=${currentStatus})}"
+                       th:text="${pageNum + 1}">1</a>
+                </li>
+
+                <!-- Next -->
+                <li th:class="'page-item ' + (${rooms.last} ? 'disabled' : '')">
+                    <a class="page-link"
+                       th:href="@{/admin/rooms(page=${rooms.number + 1}, size=${currentSize}, sortBy=${currentSortBy}, sortDir=${currentSortDir}, name=${currentName}, departmentId=${currentDepartmentId}, roomTypeId=${currentRoomTypeId}, status=${currentStatus})}">
+                        Sau <i class="fas fa-chevron-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Page size selector -->
+        <div class="page-size-selector">
+            <label for="pageSize">Hiển thị:</label>
+            <select class="form-select" id="pageSize" onchange="changePageSize(this.value)">
+                <option th:selected="${currentSize == 10}" value="10">10</option>
+                <option th:selected="${currentSize == 25}" value="25">25</option>
+                <option th:selected="${currentSize == 50}" value="50">50</option>
+                <option th:selected="${currentSize == 100}" value="100">100</option>
+            </select>
+            <span>phòng/trang</span>
+        </div>
+    </div>
+
+    <div layout:fragment="page-scripts">
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                calculateTotalBeds();
+                initializeTableEffects();
+            });
+
+            function calculateTotalBeds() {
+                const bedCounts = document.querySelectorAll('.bed-number');
+                let total = 0;
+                bedCounts.forEach(bedCount => {
+                    const count = parseInt(bedCount.textContent) || 0;
+                    total += count;
+                });
+                document.getElementById('totalBeds').textContent = total.toLocaleString();
+            }
+
+            function initializeTableEffects() {
+                const rows = document.querySelectorAll('.table-row');
+                rows.forEach(row => {
+                    row.addEventListener('mouseenter', function () {
+                        this.style.backgroundColor = '#f8f9fa';
+                    });
+
+                    row.addEventListener('mouseleave', function () {
+                        this.style.backgroundColor = '';
+                    });
+                });
+            }
+
+            function changePageSize(size) {
+                const url = new URL(window.location);
+                url.searchParams.set('size', size);
+                url.searchParams.set('page', '0');
+                window.location.href = url.toString();
+            }
+
+            function confirmDelete(roomId, roomName) {
+                if (confirm(`Bạn có chắc chắn muốn xóa phòng "${roomName}"?\nHành động này không thể hoàn tác và sẽ xóa tất cả giường trong phòng.`)) {
+                    const button = event.target.closest('button');
+                    const originalContent = button.innerHTML;
+                    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                    button.disabled = true;
+
+                    fetch(`/admin/rooms/${roomId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                        .then(response => {
+                            if (response.ok) {
+                                showSuccessMessage('Xóa phòng thành công!');
+                                setTimeout(() => window.location.reload(), 1500);
+                            } else {
+                                showErrorMessage('Có lỗi xảy ra khi xóa phòng!');
+                                button.innerHTML = originalContent;
+                                button.disabled = false;
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            showErrorMessage('Có lỗi xảy ra khi xóa phòng!');
+                            button.innerHTML = originalContent;
+                            button.disabled = false;
+                        });
+                }
+            }
+
+            function showSuccessMessage(message) {
+                const notification = document.createElement("div");
+                notification.className = "success-notification";
+                notification.innerHTML = `
+                <i class="fas fa-check-circle"></i>
+                <span>${message}</span>
+            `;
+                document.body.appendChild(notification);
+
+                setTimeout(() => {
+                    notification.classList.add("show");
+                }, 100);
+
+                setTimeout(() => {
+                    notification.classList.remove("show");
+                    setTimeout(() => {
+                        document.body.removeChild(notification);
+                    }, 300);
+                }, 3000);
+            }
+
+            function showErrorMessage(message) {
+                alert(message);
+            }
+        </script>
+    </div>
+</div>
+
+</html>

@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="vi"
+      layout:decorate="~{receptionist/layout/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+>
+
+<div layout:fragment="main-content">
+
+    <!-- Welcome Card với màu #ff9800 -->
+    <div class="welcome-card"
+         style="background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%); color: white; border-radius: 15px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 4px 20px rgba(255, 152, 0, 0.3);">
+        <h2>🏪 Bảng điều khiển Lễ tân</h2>
+        <div style="margin-top: 1rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem;">
+            <div style="background: rgba(255,255,255,0.15); padding: 1rem; border-radius: 10px; backdrop-filter: blur(10px);">
+                <i class="fas fa-user-edit" style="font-size: 1.5rem; margin-bottom: 0.5rem;"></i>
+                <p>📝 Nhập thông tin của bệnh nhân (có bảo hiểm y tế hoặc không có)</p>
+            </div>
+            <div style="background: rgba(255,255,255,0.15); padding: 1rem; border-radius: 10px; backdrop-filter: blur(10px);">
+                <i class="fas fa-door-open" style="font-size: 1.5rem; margin-bottom: 0.5rem;"></i>
+                <p>🏥 Chỉ định phòng khám cho từng bệnh nhân</p>
+            </div>
+            <div style="background: rgba(255,255,255,0.15); padding: 1rem; border-radius: 10px; backdrop-filter: blur(10px);">
+                <i class="fas fa-chart-line" style="font-size: 1.5rem; margin-bottom: 0.5rem;"></i>
+                <p>📊 Biết được tiến trình khám của bệnh nhân (đang chờ, đang khám, đã khám xong)</p>
+            </div>
+            <div style="background: rgba(255,255,255,0.15); padding: 1rem; border-radius: 10px; backdrop-filter: blur(10px);">
+                <i class="fas fa-vial" style="font-size: 1.5rem; margin-bottom: 0.5rem;"></i>
+                <p>🔬 Xem chi tiết các xét nghiệm của một bệnh nhân</p>
+            </div>
+            <div style="background: rgba(255,255,255,0.15); padding: 1rem; border-radius: 10px; backdrop-filter: blur(10px);">
+                <i class="fas fa-tv" style="font-size: 1.5rem; margin-bottom: 0.5rem;"></i>
+                <p>📺 Hiển thị số thứ tự khám lên màn hình của khu chờ khám bệnh</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="stats-grid"
+         style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+        <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(255, 152, 0, 0.1);">
+                <i class="fas fa-users" style="color: #ff9800;"></i>
+            </div>
+            <div class="stat-content">
+                <h3>45</h3>
+                <p>Bệnh nhân hôm nay</p>
+                <span class="stat-change positive">+8 so với hôm qua</span>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon" style="background: #e8f5e8;">
+                <i class="fas fa-clock" style="color: #4caf50;"></i>
+            </div>
+            <div class="stat-content">
+                <h3>12</h3>
+                <p>Đang chờ khám</p>
+                <span class="stat-change neutral">Thời gian chờ trung bình: 15 phút</span>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon" style="background: #e3f2fd;">
+                <i class="fas fa-stethoscope" style="color: #2196f3;"></i>
+            </div>
+            <div class="stat-content">
+                <h3>8</h3>
+                <p>Đang khám</p>
+                <span class="stat-change positive">6 phòng đang hoạt động</span>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon" style="background: #f3e5f5;">
+                <i class="fas fa-check-circle" style="color: #9c27b0;"></i>
+            </div>
+            <div class="stat-content">
+                <h3>25</h3>
+                <p>Đã khám xong</p>
+                <span class="stat-change positive">Hiệu suất cao</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="dashboard-section">
+        <h2>Thao tác nhanh</h2>
+        <div class="quick-actions"
+             style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
+            <a class="quick-action-card" href="/receptionist/patient-registration"
+               onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 10px rgba(0,0,0,0.1)'"
+               onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 25px rgba(255, 152, 0, 0.4)'"
+               style="background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%); color: white; text-decoration: none; padding: 1.5rem; border-radius: 10px; text-align: center; transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                <i class="fas fa-user-plus" style="font-size: 2rem; margin-bottom: 0.5rem; display: block;"></i>
+                <span>Đăng ký bệnh nhân</span>
+            </a>
+            <a class="quick-action-card" href="/receptionist/room-assignment"
+               onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 10px rgba(0,0,0,0.1)'"
+               onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 25px rgba(245, 124, 0, 0.4)'"
+               style="background: linear-gradient(135deg, #f57c00 0%, #e65100 100%); color: white; text-decoration: none; padding: 1.5rem; border-radius: 10px; text-align: center; transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                <i class="fas fa-door-open" style="font-size: 2rem; margin-bottom: 0.5rem; display: block;"></i>
+                <span>Phân phòng khám</span>
+            </a>
+            <a class="quick-action-card" href="/receptionist/examination-progress"
+               onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 10px rgba(0,0,0,0.1)'"
+               onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 25px rgba(230, 81, 0, 0.4)'"
+               style="background: linear-gradient(135deg, #e65100 0%, #bf360c 100%); color: white; text-decoration: none; padding: 1.5rem; border-radius: 10px; text-align: center; transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                <i class="fas fa-chart-line" style="font-size: 2rem; margin-bottom: 0.5rem; display: block;"></i>
+                <span>Theo dõi tiến trình</span>
+            </a>
+            <a class="quick-action-card" href="/receptionist/queue-display"
+               onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 10px rgba(0,0,0,0.1)'"
+               onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 25px rgba(191, 54, 12, 0.4)'"
+               style="background: linear-gradient(135deg, #bf360c 0%, #8e0000 100%); color: white; text-decoration: none; padding: 1.5rem; border-radius: 10px; text-align: center; transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                <i class="fas fa-tv" style="font-size: 2rem; margin-bottom: 0.5rem; display: block;"></i>
+                <span>Màn hình hiển thị</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Function Overview -->
+    <div class="dashboard-section">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+            <!-- Patient Management -->
+            <div class="function-card"
+                 style="background: white; padding: 1.5rem; border-radius: 15px; box-shadow: 0 4px 20px rgba(255, 152, 0, 0.1); border-left: 4px solid #ff9800;">
+                <h3 style="color: #ff9800; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-user-plus"></i> Quản lý Bệnh nhân
+                </h3>
+                <ul class="function-list" style="list-style: none;">
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/receptionist/patient-registration" style="color: #ff9800; text-decoration: none;">📝
+                            Đăng ký bệnh nhân mới</a>
+                    </li>
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/receptionist/patient-info" style="color: #ff9800; text-decoration: none;">👤 Nhập thông
+                            tin bệnh nhân</a>
+                    </li>
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/receptionist/insurance-check" style="color: #ff9800; text-decoration: none;">🆔 Kiểm
+                            tra bảo hiểm y tế</a>
+                    </li>
+                    <li style="padding: 0.5rem 0;">
+                        <a href="/receptionist/patient-search" style="color: #ff9800; text-decoration: none;">🔍 Tìm kiếm
+                            bệnh nhân</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Room Management -->
+            <div class="function-card"
+                 style="background: white; padding: 1.5rem; border-radius: 15px; box-shadow: 0 4px 20px rgba(255, 152, 0, 0.1); border-left: 4px solid #f57c00;">
+                <h3 style="color: #f57c00; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-door-open"></i> Phân phòng Khám
+                </h3>
+                <ul class="function-list" style="list-style: none;">
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/receptionist/room-assignment" style="color: #f57c00; text-decoration: none;">🏥 Chỉ
+                            định phòng khám</a>
+                    </li>
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/receptionist/room-availability" style="color: #f57c00; text-decoration: none;">📋 Trạng
+                            thái phòng khám</a>
+                    </li>
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/receptionist/doctor-schedule" style="color: #f57c00; text-decoration: none;">👨‍⚕️ Lịch
+                            bác sĩ</a>
+                    </li>
+                    <li style="padding: 0.5rem 0;">
+                        <a href="/receptionist/queue-management" style="color: #f57c00; text-decoration: none;">📊 Quản
+                            lý hàng đợi</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Progress Tracking -->
+            <div class="function-card"
+                 style="background: white; padding: 1.5rem; border-radius: 15px; box-shadow: 0 4px 20px rgba(255, 152, 0, 0.1); border-left: 4px solid #e65100;">
+                <h3 style="color: #e65100; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-chart-line"></i> Theo dõi Tiến trình
+                </h3>
+                <ul class="function-list" style="list-style: none;">
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/receptionist/examination-progress" style="color: #e65100; text-decoration: none;">📊
+                            Tiến trình khám bệnh</a>
+                    </li>
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/receptionist/waiting-patients" style="color: #e65100; text-decoration: none;">⏳ Bệnh
+                            nhân đang chờ</a>
+                    </li>
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/receptionist/in-progress" style="color: #e65100; text-decoration: none;">🩺 Đang
+                            khám</a>
+                    </li>
+                    <li style="padding: 0.5rem 0;">
+                        <a href="/receptionist/completed" style="color: #e65100; text-decoration: none;">✅ Đã khám
+                            xong</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Test Management -->
+            <div class="function-card"
+                 style="background: white; padding: 1.5rem; border-radius: 15px; box-shadow: 0 4px 20px rgba(255, 152, 0, 0.1); border-left: 4px solid #bf360c;">
+                <h3 style="color: #bf360c; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-vial"></i> Quản lý Xét nghiệm
+                </h3>
+                <ul class="function-list" style="list-style: none;">
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/receptionist/test-details" style="color: #bf360c; text-decoration: none;">🔬 Chi tiết
+                            xét nghiệm</a>
+                    </li>
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/receptionist/test-appointments" style="color: #bf360c; text-decoration: none;">📅 Lịch
+                            hẹn xét nghiệm</a>
+                    </li>
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/receptionist/test-results" style="color: #bf360c; text-decoration: none;">📊 Kết quả
+                            xét nghiệm</a>
+                    </li>
+                    <li style="padding: 0.5rem 0;">
+                        <a href="/receptionist/test-guidance" style="color: #bf360c; text-decoration: none;">📋 Hướng dẫn
+                            xét nghiệm</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Display Management -->
+            <div class="function-card"
+                 style="background: white; padding: 1.5rem; border-radius: 15px; box-shadow: 0 4px 20px rgba(255, 152, 0, 0.1); border-left: 4px solid #8e0000;">
+                <h3 style="color: #8e0000; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-tv"></i> Hiển thị Công khai
+                </h3>
+                <ul class="function-list" style="list-style: none;">
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/receptionist/queue-display" style="color: #8e0000; text-decoration: none;">📺 Màn hình
+                            số thứ tự</a>
+                    </li>
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/receptionist/waiting-area" style="color: #8e0000; text-decoration: none;">🪑 Khu vực
+                            chờ</a>
+                    </li>
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/receptionist/announcements" style="color: #8e0000; text-decoration: none;">📢 Thông
+                            báo</a>
+                    </li>
+                    <li style="padding: 0.5rem 0;">
+                        <a href="/receptionist/display-settings" style="color: #8e0000; text-decoration: none;">⚙️ Cài
+                            đặt hiển thị</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Reports -->
+            <div class="function-card"
+                 style="background: white; padding: 1.5rem; border-radius: 15px; box-shadow: 0 4px 20px rgba(255, 152, 0, 0.1); border-left: 4px solid #ff6f00;">
+                <h3 style="color: #ff6f00; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-file-alt"></i> Báo cáo Tiếp đón
+                </h3>
+                <ul class="function-list" style="list-style: none;">
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/receptionist/daily-report" style="color: #ff6f00; text-decoration: none;">📊 Báo cáo
+                            ngày</a>
+                    </li>
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/receptionist/patient-statistics" style="color: #ff6f00; text-decoration: none;">👥
+                            Thống kê bệnh nhân</a>
+                    </li>
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/receptionist/service-efficiency" style="color: #ff6f00; text-decoration: none;">⚡ Hiệu
+                            quả dịch vụ</a>
+                    </li>
+                    <li style="padding: 0.5rem 0;">
+                        <a href="/receptionist/feedback" style="color: #ff6f00; text-decoration: none;">💬 Phản hồi khách
+                            hàng</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Real-time Queue Display -->
+    <div class="dashboard-section">
+        <h2>Trạng thái hàng đợi thời gian thực</h2>
+        <div style="background: white; border-radius: 15px; padding: 1.5rem; margin-top: 1rem; box-shadow: 0 4px 20px rgba(255, 152, 0, 0.1);">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+                <div style="text-align: center; padding: 1rem; border-radius: 10px; background: #fff3e0;">
+                    <h4 style="color: #ff9800; margin-bottom: 0.5rem;">Phòng khám 1</h4>
+                    <p style="font-size: 1.5rem; font-weight: bold; color: #333;">Số 025</p>
+                    <p style="color: #666; font-size: 0.9rem;">BS. Nguyễn Văn A - Khoa Nội</p>
+                </div>
+                <div style="text-align: center; padding: 1rem; border-radius: 10px; background: #fff3e0;">
+                    <h4 style="color: #ff9800; margin-bottom: 0.5rem;">Phòng khám 2</h4>
+                    <p style="font-size: 1.5rem; font-weight: bold; color: #333;">Số 031</p>
+                    <p style="color: #666; font-size: 0.9rem;">BS. Trần Thị B - Khoa Ngoại</p>
+                </div>
+                <div style="text-align: center; padding: 1rem; border-radius: 10px; background: #fff3e0;">
+                    <h4 style="color: #ff9800; margin-bottom: 0.5rem;">Phòng khám 3</h4>
+                    <p style="font-size: 1.5rem; font-weight: bold; color: #333;">Số 018</p>
+                    <p style="color: #666; font-size: 0.9rem;">BS. Lê Văn C - Khoa Nhi</p>
+                </div>
+                <div style="text-align: center; padding: 1rem; border-radius: 10px; background: #fff3e0;">
+                    <h4 style="color: #ff9800; margin-bottom: 0.5rem;">Xét nghiệm</h4>
+                    <p style="font-size: 1.5rem; font-weight: bold; color: #333;">Số 012</p>
+                    <p style="color: #666; font-size: 0.9rem;">Phòng XN Tổng hợp</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</html>

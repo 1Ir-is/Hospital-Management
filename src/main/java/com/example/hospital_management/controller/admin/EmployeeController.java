@@ -105,7 +105,7 @@ public class EmployeeController {
     @GetMapping("/create")
     public String showCreateForm(Model model) {
         // ✅ Set activeMenu đúng
-        model.addAttribute("activeMenu", "employees");
+        model.addAttribute("activeMenu", "employees-create");
 
         EmployeeFormDTO employeeForm = new EmployeeFormDTO();
         model.addAttribute("employeeForm", employeeForm);
@@ -231,14 +231,20 @@ public class EmployeeController {
                 return "redirect:/admin/employees";
             }
 
-            employee.setName(employeeForm.getName());
-            employee.setPhone(employeeForm.getPhone());
-            employee.setEmail(employeeForm.getEmail());
-            employee.setPassword(employeeForm.getPassword());
-            employee.setGender(employeeForm.getGender());
-            employee.setAddress(employeeForm.getAddress());
-            employee.setStartingDate(employeeForm.getStartingDate());
-            employee.setStatus(employeeForm.getStatus());
+            // ✅ Tạo object employee mới với thông tin cập nhật
+            Employee updatedEmployee = new Employee();
+            updatedEmployee.setName(employeeForm.getName());
+            updatedEmployee.setPhone(employeeForm.getPhone());
+            updatedEmployee.setEmail(employeeForm.getEmail());
+            updatedEmployee.setGender(employeeForm.getGender());
+            updatedEmployee.setAddress(employeeForm.getAddress());
+            updatedEmployee.setStartingDate(employeeForm.getStartingDate());
+            updatedEmployee.setStatus(employeeForm.getStatus());
+
+            // ✅ Chỉ set password nếu có thay đổi
+            if (employeeForm.getPassword() != null && !employeeForm.getPassword().trim().isEmpty()) {
+                updatedEmployee.setPassword(employeeForm.getPassword());
+            }
 
             // Handle avatar upload
             if (avatarFile != null && !avatarFile.isEmpty()) {
@@ -253,7 +259,7 @@ public class EmployeeController {
 
                     // Upload new avatar
                     String newAvatarUrl = cloudinaryService.uploadFile(avatarFile);
-                    employee.setAvatar(newAvatarUrl);
+                    updatedEmployee.setAvatar(newAvatarUrl);
                 } catch (Exception e) {
                     System.err.println("Error uploading avatar: " + e.getMessage());
                     redirectAttributes.addFlashAttribute("errorMessage", "Có lỗi xảy ra khi upload ảnh: " + e.getMessage());
@@ -261,23 +267,28 @@ public class EmployeeController {
                 }
             } else if (employeeForm.getAvatar() != null && !employeeForm.getAvatar().isEmpty()) {
                 // Use URL if provided
-                employee.setAvatar(employeeForm.getAvatar());
+                updatedEmployee.setAvatar(employeeForm.getAvatar());
+            } else {
+                // Keep old avatar
+                updatedEmployee.setAvatar(employee.getAvatar());
             }
 
+            // Set department
             if (employeeForm.getDepartmentId() != null) {
                 Department department = departmentService.findDepartmentById(employeeForm.getDepartmentId());
-                employee.setDepartment(department);
+                updatedEmployee.setDepartment(department);
             }
 
+            // Set position
             if (employeeForm.getPositionId() != null) {
                 Position position = positionService.findPositionById(employeeForm.getPositionId());
-                employee.setPosition(position);
+                updatedEmployee.setPosition(position);
             }
 
-            employeeService.saveEmployee(employee);
-            employeeService.updateEmployeeRoles(id, employeeForm.getRoleIds());
+            // ✅ Sử dụng method mới để update
+            employeeService.updateEmployeeWithRoles(id, updatedEmployee, employeeForm.getRoleIds());
 
-            redirectAttributes.addFlashAttribute("successMessage", "Nhân viên " + employee.getName() + " đã được cập nhật thành công!");
+            redirectAttributes.addFlashAttribute("successMessage", "Nhân viên " + updatedEmployee.getName() + " đã được cập nhật thành công!");
 
             return "redirect:/admin/employees";
         } catch (Exception e) {

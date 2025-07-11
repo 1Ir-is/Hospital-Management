@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Phòng Khám</title>
+</head>
+<body>
+<h2>Thông tin phòng khám</h2>
+<div th:if="${room!=null}">
+<p><strong>Mã hồ sơ:</strong> <span th:text="${medicalRecord.code}"></span></p>
+<p><strong>Tên phòng:</strong> <span th:text="${room.name}"></span></p>
+<p><strong>Loại phòng:</strong> <span th:text="${room.roomType.getName()}"></span></p>
+<p><strong>Mô Tả:</strong> <span th:text="${room.description}"></span></p>
+<p><strong>Tên Khoa:</strong> <span th:text="${room.department.getName()}"></span></p>
+<p><strong>Mã số phòng:</strong> <span th:text="${room.number}"></span></p>
+<p><strong>Trạng thái:</strong> <span th:text="${room.status}"></span></p>
+</div>
+<div th:if="${error!=null}">
+    <p style="color: red;" th:text="${error}"></p>
+</div>
+<a th:href="@{/patient/records}">Quay lại</a>
+</body>
+</html>

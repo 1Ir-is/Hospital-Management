@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="vi"
+      layout:decorate="~{department-head/layout/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+>
+
+<div layout:fragment="main-content">
+
+    <!-- Welcome Card -->
+    <div class="welcome-card"
+         style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; border-radius: 15px; padding: 2rem; margin-bottom: 2rem;">
+        <h2>🏥 Bảng điều khiển Trưởng khoa</h2>
+        <p style="margin-top: 1rem; font-size: 1.1rem;"><strong>Chức năng chính:</strong></p>
+        <div style="margin-top: 1rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem;">
+            <div style="background: rgba(255,255,255,0.1); padding: 1rem; border-radius: 10px;">
+                <i class="fas fa-user-md" style="font-size: 1.5rem; margin-bottom: 0.5rem;"></i>
+                <p>👨‍⚕️ Phân công bác sĩ phụ trách điều trị cho bệnh nhân</p>
+            </div>
+            <div style="background: rgba(255,255,255,0.1); padding: 1rem; border-radius: 10px;">
+                <i class="fas fa-users" style="font-size: 1.5rem; margin-bottom: 0.5rem;"></i>
+                <p>👥 Xem danh sách nhân viên trong khoa</p>
+            </div>
+            <div style="background: rgba(255,255,255,0.1); padding: 1rem; border-radius: 10px;">
+                <i class="fas fa-user-nurse" style="font-size: 1.5rem; margin-bottom: 0.5rem;"></i>
+                <p>👩‍⚕️ Phân công các điều dưỡng phụ trách mỗi phòng của bệnh nhân</p>
+            </div>
+            <div style="background: rgba(255,255,255,0.1); padding: 1rem; border-radius: 10px;">
+                <i class="fas fa-procedures" style="font-size: 1.5rem; margin-bottom: 0.5rem;"></i>
+                <p>⚕️ Phân công bác sĩ phẫu thuật cho bệnh nhân</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="stats-grid"
+         style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+        <div class="stat-card">
+            <div class="stat-icon" style="background: #e8f5e8;">
+                <i class="fas fa-user-md" style="color: #28a745;"></i>
+            </div>
+            <div class="stat-content">
+                <h3>12</h3>
+                <p>Bác sĩ trong khoa</p>
+                <span class="stat-change positive">+2 mới tham gia</span>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon" style="background: #e3f2fd;">
+                <i class="fas fa-user-nurse" style="color: #2196f3;"></i>
+            </div>
+            <div class="stat-content">
+                <h3>25</h3>
+                <p>Điều dưỡng</p>
+                <span class="stat-change positive">Đầy đủ nhân lực</span>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon" style="background: #fff3e0;">
+                <i class="fas fa-bed" style="color: #ff9800;"></i>
+            </div>
+            <div class="stat-content">
+                <h3>48</h3>
+                <p>Bệnh nhân nội trú</p>
+                <span class="stat-change neutral">85% công suất</span>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon" style="background: #fce4ec;">
+                <i class="fas fa-procedures" style="color: #e91e63;"></i>
+            </div>
+            <div class="stat-content">
+                <h3>5</h3>
+                <p>Ca phẫu thuật hôm nay</p>
+                <span class="stat-change negative">3 đã hoàn thành</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="dashboard-section">
+        <h2>Thao tác nhanh</h2>
+        <div class="quick-actions"
+             style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
+            <a class="quick-action-card" href="/department-head/doctor-assignments">
+                <i class="fas fa-user-md"></i>
+                <span>Phân công bác sĩ</span>
+            </a>
+            <a class="quick-action-card" href="/department-head/nurse-assignments">
+                <i class="fas fa-user-nurse"></i>
+                <span>Phân công điều dưỡng</span>
+            </a>
+            <a class="quick-action-card" href="/department-head/surgery-schedule">
+                <i class="fas fa-calendar-check"></i>
+                <span>Lịch phẫu thuật</span>
+            </a>
+            <a class="quick-action-card" href="/department-head/staff">
+                <i class="fas fa-users"></i>
+                <span>Nhân viên khoa</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Department Overview -->
+    <div class="dashboard-section">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+            <!-- Staff Overview -->
+            <div class="function-card"
+                 style="background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                <h3 style="color: #28a745; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-users"></i> Nhân viên Khoa
+                </h3>
+                <ul class="function-list" style="list-style: none;">
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/department-head/staff" style="color: #28a745; text-decoration: none;">👥 Danh sách nhân
+                            viên khoa</a>
+                    </li>
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/department-head/doctor-assignments" style="color: #28a745; text-decoration: none;">👨‍⚕️
+                            Phân công bác sĩ điều trị</a>
+                    </li>
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/department-head/nurse-assignments" style="color: #28a745; text-decoration: none;">👩‍⚕️
+                            Phân công điều dưỡng</a>
+                    </li>
+                    <li style="padding: 0.5rem 0;">
+                        <a href="/department-head/schedule" style="color: #28a745; text-decoration: none;">📅 Lịch làm
+                            việc khoa</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Surgery Management -->
+            <div class="function-card"
+                 style="background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                <h3 style="color: #e91e63; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-procedures"></i> Quản lý Phẫu thuật
+                </h3>
+                <ul class="function-list" style="list-style: none;">
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/department-head/surgery-schedule" style="color: #e91e63; text-decoration: none;">📋
+                            Lịch phẫu thuật</a>
+                    </li>
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/department-head/surgeon-assignments" style="color: #e91e63; text-decoration: none;">⚕️
+                            Phân công bác sĩ phẫu thuật</a>
+                    </li>
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/department-head/surgery-rooms" style="color: #e91e63; text-decoration: none;">🏥 Phòng
+                            phẫu thuật</a>
+                    </li>
+                    <li style="padding: 0.5rem 0;">
+                        <a href="/department-head/surgery-reports" style="color: #e91e63; text-decoration: none;">📊 Báo
+                            cáo phẫu thuật</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Patient Management -->
+            <div class="function-card"
+                 style="background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                <h3 style="color: #ff9800; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-bed"></i> Bệnh nhân Nội trú
+                </h3>
+                <ul class="function-list" style="list-style: none;">
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/department-head/inpatients" style="color: #ff9800; text-decoration: none;">🛏️ Danh
+                            sách bệnh nhân</a>
+                    </li>
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/department-head/room-assignments" style="color: #ff9800; text-decoration: none;">🏠
+                            Phân phòng bệnh nhân</a>
+                    </li>
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/department-head/treatment-plans" style="color: #ff9800; text-decoration: none;">📋 Kế
+                            hoạch điều trị</a>
+                    </li>
+                    <li style="padding: 0.5rem 0;">
+                        <a href="/department-head/discharge" style="color: #ff9800; text-decoration: none;">🚪 Xuất
+                            viện</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Reports -->
+            <div class="function-card"
+                 style="background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                <h3 style="color: #2196f3; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-chart-line"></i> Báo cáo & Thống kê
+                </h3>
+                <ul class="function-list" style="list-style: none;">
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/department-head/statistics" style="color: #2196f3; text-decoration: none;">📊 Thống kê
+                            khoa</a>
+                    </li>
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/department-head/performance" style="color: #2196f3; text-decoration: none;">📈 Hiệu
+                            suất điều trị</a>
+                    </li>
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <a href="/department-head/quality" style="color: #2196f3; text-decoration: none;">⭐ Chất lượng
+                            dịch vụ</a>
+                    </li>
+                    <li style="padding: 0.5rem 0;">
+                        <a href="/department-head/monthly-report" style="color: #2196f3; text-decoration: none;">📋 Báo
+                            cáo tháng</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activities -->
+    <div class="dashboard-section">
+        <h2>Hoạt động gần đây</h2>
+        <div class="activity-list" style="background: white; border-radius: 10px; padding: 1.5rem; margin-top: 1rem;">
+            <div class="activity-item"
+                 style="display: flex; align-items: center; gap: 1rem; padding: 1rem 0; border-bottom: 1px solid #eee;">
+                <div class="activity-icon"
+                     style="background: #e8f5e8; color: #28a745; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-user-md"></i>
+                </div>
+                <div class="activity-content">
+                    <p><strong>BS. Nguyễn Văn A</strong> đã được phân công điều trị bệnh nhân phòng 205</p>
+                    <span class="activity-time" style="color: #666; font-size: 0.9rem;">2 giờ trước</span>
+                </div>
+            </div>
+            <div class="activity-item"
+                 style="display: flex; align-items: center; gap: 1rem; padding: 1rem 0; border-bottom: 1px solid #eee;">
+                <div class="activity-icon"
+                     style="background: #fce4ec; color: #e91e63; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-procedures"></i>
+                </div>
+                <div class="activity-content">
+                    <p>Ca phẫu thuật tim mạch đã được <strong>lên lịch</strong> cho ngày mai</p>
+                    <span class="activity-time" style="color: #666; font-size: 0.9rem;">4 giờ trước</span>
+                </div>
+            </div>
+            <div class="activity-item" style="display: flex; align-items: center; gap: 1rem; padding: 1rem 0;">
+                <div class="activity-icon"
+                     style="background: #e3f2fd; color: #2196f3; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-user-nurse"></i>
+                </div>
+                <div class="activity-content">
+                    <p><strong>Điều dưỡng Trần Thị B</strong> đã được phân công chăm sóc phòng VIP</p>
+                    <span class="activity-time" style="color: #666; font-size: 0.9rem;">6 giờ trước</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</html>

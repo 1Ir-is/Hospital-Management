@@ -10,6 +10,7 @@ import com.example.hospital_management.service.IEmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +30,9 @@ public class EmployeeService implements IEmployeeService {
     @Autowired
     private IRoleRepository roleRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Override
     public List<Employee> findAllEmployees() {
         return employeeRepository.findAll();
@@ -41,6 +45,15 @@ public class EmployeeService implements IEmployeeService {
 
     @Override
     public Employee saveEmployee(Employee employee) {
+        if (employee.getPassword() != null && !employee.getPassword().isEmpty()) {
+            // Kiểm tra xem password đã được mã hóa chưa (BCrypt hash bắt đầu bằng $2a$, $2b$, $2y$)
+            if (!employee.getPassword().startsWith("$2a$") &&
+                    !employee.getPassword().startsWith("$2b$") &&
+                    !employee.getPassword().startsWith("$2y$")) {
+                employee.setPassword(passwordEncoder.encode(employee.getPassword()));
+            }
+        }
+
         if (employee.getStartingDate() == null) {
             employee.setStartingDate(LocalDate.now());
         }
@@ -56,30 +69,47 @@ public class EmployeeService implements IEmployeeService {
         return employeeOptional.orElse(null);
     }
 
+//    @Override
+//    public Employee findEmployeeById(Long id) {
+//        return employeeRepository.findEmployeeById(id);
+//    }
+
+    @Override
+    public List<Employee> findAll() {
+        return employeeRepository.findAll();
+    }
+
+    @Override
+    public Optional<Employee> findById(Long id) {
+        return employeeRepository.findById(id);
+    }
+
     @Override
     public void deleteEmployeeById(Long id) {
         employeeRepository.deleteById(id);
     }
 
+
     @Override
     @Transactional
     public void saveEmployeeWithRoles(Employee employee, List<Long> roleIds) {
-        // luu employee
-        Employee saveEmployee = saveEmployee(employee);
+        // ✅ Bây giờ saveEmployee() đã có logic mã hóa password
+        Employee savedEmployee = saveEmployee(employee);
 
-        // luu role cho nhan vien
+        // Lưu roles cho employee
         if (roleIds != null && !roleIds.isEmpty()) {
             for (Long roleId : roleIds) {
                 Role role = roleRepository.findById(roleId).orElse(null);
                 if (role != null) {
                     EmployeeRole employeeRole = new EmployeeRole();
-                    employeeRole.setEmployee(saveEmployee);
+                    employeeRole.setEmployee(savedEmployee);
                     employeeRole.setRole(role);
                     employeeRoleRepository.save(employeeRole);
                 }
             }
         }
     }
+
 
     @Override
     @Transactional
@@ -102,7 +132,39 @@ public class EmployeeService implements IEmployeeService {
         }
     }
 
-    // EmployeeService.java implementation
+    @Override
+    @Transactional
+    public void updateEmployeeWithRoles(Long employeeId, Employee updatedEmployee, List<Long> roleIds) {
+        Employee existingEmployee = findEmployeeById(employeeId);
+        if (existingEmployee == null) {
+            throw new RuntimeException("Employee not found with id: " + employeeId);
+        }
+
+        // Update thông tin employee
+        existingEmployee.setName(updatedEmployee.getName());
+        existingEmployee.setPhone(updatedEmployee.getPhone());
+        existingEmployee.setEmail(updatedEmployee.getEmail());
+        existingEmployee.setGender(updatedEmployee.getGender());
+        existingEmployee.setAddress(updatedEmployee.getAddress());
+        existingEmployee.setStartingDate(updatedEmployee.getStartingDate());
+        existingEmployee.setStatus(updatedEmployee.getStatus());
+        existingEmployee.setAvatar(updatedEmployee.getAvatar());
+        existingEmployee.setDepartment(updatedEmployee.getDepartment());
+        existingEmployee.setPosition(updatedEmployee.getPosition());
+
+        if (updatedEmployee.getPassword() != null && !updatedEmployee.getPassword().trim().isEmpty()) {
+            existingEmployee.setPassword(passwordEncoder.encode(updatedEmployee.getPassword()));
+        }
+        // Nếu password trống thì giữ nguyên password cũ
+
+        // Save employee
+        employeeRepository.save(existingEmployee);
+
+        // Update roles
+        updateEmployeeRoles(employeeId, roleIds);
+    }
+
+
     @Override
     public long countTotalEmployees() {
         return employeeRepository.count();

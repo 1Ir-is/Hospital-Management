@@ -38,7 +38,7 @@ public class DepartmentController {
     public String showCreateForm(Model model) {
         Department department = new Department();
         model.addAttribute("department", department);
-        model.addAttribute("activeMenu", "departments");
+        model.addAttribute("activeMenu", "departments-create");
         return "admin/department/create-form";
     }
 
@@ -54,7 +54,7 @@ public class DepartmentController {
         if (department == null) {
             return "redirect:/admin/departments";
         }
-        model.addAttribute("activeMenu", "departments");
+        model.addAttribute("activeMenu", "departments-create");
         model.addAttribute("department", department);
         return "admin/department/edit-form";
     }

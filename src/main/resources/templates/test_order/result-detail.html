@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Kết quả xét nghiệm</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-header bg-success text-white">
+            <h4>Kết quả xét nghiệm</h4>
+        </div>
+        <div class="card-body">
+            <h5 class="mb-3">Xét nghiệm: <span th:text="${testOrder.test.name}">Tên xét nghiệm</span></h5>
+            <p class="fs-5" th:text="${testOrder.test.result}">Nội dung kết quả</p>
+            <a th:href="@{/doctor}" class="btn btn-outline-secondary">← Quay lại</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

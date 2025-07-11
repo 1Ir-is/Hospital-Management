@@ -11,7 +11,6 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDate;
 import java.util.List;
 
-// IEmployeeRepository.java
 @Repository
 public interface IEmployeeRepository extends JpaRepository<Employee, Long> {
     List<Employee> findByDepartmentId(Long departmentId);
@@ -34,6 +33,8 @@ public interface IEmployeeRepository extends JpaRepository<Employee, Long> {
 
     // ✅ New count methods for statistics
     long countByStatus(Boolean status);
+
+    Employee findEmployeeById(Long id);
 
     @Query("SELECT COUNT(e) FROM Employee e WHERE e.status = false OR e.status IS NULL")
     long countByStatusOrStatusIsNull(Boolean status);
