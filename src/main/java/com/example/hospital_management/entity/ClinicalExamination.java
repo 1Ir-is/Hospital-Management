@@ -1,5 +1,6 @@
 package com.example.hospital_management.entity;
 
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,36 +8,26 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
-@Table(name = "test_orders")
-public class TestOrder { // Chỉ địng xét nghiệm
+@Table(name = "clinical_examination")
+public class ClinicalExamination {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private LocalDate date;
     private String note;
     private Boolean status;
-    private String result;
 
-    //Foreign Key
-    //Impatient Record - hồ sơ nhập viện (nội trú)
     @ManyToOne
     @JoinColumn(name = "impatient_record_id")
     private ImpatientRecord impatientRecord;
 
-    //Employee - Nhân viên (Bác sĩ chỉ định)
     @ManyToOne
-    @JoinColumn(name = "employee_id")
-    private Employee employee;
-
-    //Test - Xét nghiệm
-    @ManyToOne
-    @JoinColumn(name = "test_id")
-    private Test test;
+    @JoinColumn(name = "vital_sign_id")
+    private VitalSign vitalSign;
 }

@@ -1,4 +1,9 @@
 package com.example.hospital_management.service;
 
+import com.example.hospital_management.entity.Bed;
+
+import java.util.List;
+
 public interface IBedService {
+    List<Bed> findAll();
 }

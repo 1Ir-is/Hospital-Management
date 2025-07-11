@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: header"></head>
+<body>
+<div class="container mt-5">
+    <div class="card-header"><h2 class="d-flex justify-content-center">Danh sách bệnh nhân cần được xét nghiệm</h2></div>
+    <hr>
+
+<!--    <div class="d-flex gap-2 mb-4">-->
+<!--        <a th:href="@{/doctor/result/view}" class="btn btn-outline-primary">Xem kết quả xét nghiệm</a>-->
+<!--        <a th:href="@{/doctor/inpatient/test-orders}" class="btn btn-outline-primary">Giao nhân viên phụ trách</a>-->
+<!--    </div>-->
+
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>STT</th>
+            <th>Tên bệnh nhân</th>
+            <th>Giới tính</th>
+            <th>Số điện thoại</th>
+            <th>Trạng thái</th>
+            <th>Hành động</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="imp, count : ${impatientRecords.content}">
+            <td th:text="${count.count}"></td>
+            <td th:text="${imp.medicalRecord?.patient?.name}"></td>
+            <td th:text="${imp.medicalRecord?.patient?.gender} == true ? 'Nam' : 'Nữ'"></td>
+            <td th:text="${imp.medicalRecord?.patient?.phone}"></td>
+            <td th:text="${imp.status} == false ? 'Đang chờ chỉ định' : 'Chờ xét nghiệm'"></td>
+            <td>
+                <a th:href="@{/doctor/{id}/edit(id=${imp.id})}" class="btn btn-sm btn-outline-primary">Chỉ định xét nghiệm </a>
+                <a th:href="@{/doctor/{id}/detail(id=${imp.id})}" class="btn btn-sm btn-outline-info">Chi tiết</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+<!--    <div class="notify mt-3">-->
+<!--        <div th:if="${success}" class="alert alert-success">-->
+<!--            <span th:text="${success}"></span>-->
+<!--        </div>-->
+<!--    </div>-->
+
+    <!-- Pagination -->
+    <nav th:if="${impatientRecords.totalPages > 1}">
+        <ul class="pagination">
+            <li class="page-item" th:classappend="${impatientRecords.first} ? 'disabled'">
+                <a class="page-link" th:href="@{/doctor(page=${impatientRecords.number - 1}, size=${impatientRecords.size})}">Trước</a>
+            </li>
+            <li class="page-item" th:each="i : ${#numbers.sequence(0, impatientRecords.totalPages - 1)}"
+                th:classappend="${i == impatientRecords.number} ? 'active'">
+                <a class="page-link" th:href="@{/doctor(page=${i}, size=${impatientRecords.size})}" th:text="${i + 1}"></a>
+            </li>
+            <li class="page-item" th:classappend="${impatientRecords.last} ? 'disabled'">
+                <a class="page-link" th:href="@{/doctor(page=${impatientRecords.number + 1}, size=${impatientRecords.size})}">Sau</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<footer th:replace="layout :: footer"></footer>
+</body>
+</html>

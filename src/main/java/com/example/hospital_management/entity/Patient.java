@@ -25,5 +25,4 @@ public class Patient { //Bệnh nhân
     private String phone;
     private String email;
 
-    // . . .
 }
