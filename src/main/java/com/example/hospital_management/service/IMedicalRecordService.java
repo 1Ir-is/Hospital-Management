@@ -11,5 +11,5 @@ public interface IMedicalRecordService {
     Long findMaxId();
     Page<MedicalRecord> findAllWithOutVitalSign(Pageable pageable);
     MedicalRecord findById(Long id);
-
+//    MedicalRecord findRoomByCode(String code);
 }

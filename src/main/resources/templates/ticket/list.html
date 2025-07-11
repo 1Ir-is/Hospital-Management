@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách phiếu hôm nay</title>
+</head>
+<body>
+<h2>Danh sách phiếu hôm nay</h2>
+
+<p th:if="${message}" th:text="${message}" style="color: green;"></p>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>Số thứ tự</th>
+        <th>Họ tên</th>
+        <th>Ưu tiên</th>
+        <th>Thời gian đặt</th>
+        <th>Trạng thái</th>
+        <th>Hành động</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="ticket : ${tickets}">
+        <td th:text="${ticket.queueNumber}"></td>
+        <td th:text="${ticket.name}"></td>
+        <td th:text="${ticket.priority ? 'Ưu tiên' : 'Thường'}"></td>
+        <td th:text="${#temporals.format(ticket.createdAt, 'dd/MM/yyyy HH:mm')}"></td>
+        <td th:text="${ticket.called ? 'Đã gọi' : 'Chờ gọi'}"
+            th:style="${ticket.called ? 'color:green;' : 'color:red;'}"></td>
+        <td>
+            <form th:if="${!ticket.called}" th:action="@{/patient/call}" method="post">
+                <input type="hidden" name="ticketId" th:value="${ticket.id}" />
+                <button type="submit">Gọi số</button>
+            </form>
+            <span th:if="${ticket.called}" style="color:gray;">✓</span>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

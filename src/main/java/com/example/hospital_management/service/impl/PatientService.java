@@ -6,6 +6,9 @@ import com.example.hospital_management.service.IPatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 public class PatientService implements IPatientService {
     private final IPatientRepository patientRepository;
@@ -18,5 +21,15 @@ public class PatientService implements IPatientService {
     @Override
     public void save(Patient patient) {
         patientRepository.save(patient);
+    }
+
+    @Override
+    public List<Patient> findALl() {
+        return patientRepository.findAll();
+    }
+
+    @Override
+    public List<Patient> findAllByIdCard(String idCard) {
+        return patientRepository.findAllByIdCard(idCard);
     }
 }
