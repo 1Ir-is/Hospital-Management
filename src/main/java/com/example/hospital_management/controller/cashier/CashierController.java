@@ -1,16 +1,23 @@
 package com.example.hospital_management.controller.cashier;
+
 import com.example.hospital_management.dto.BillingSummaryDto;
+import com.example.hospital_management.dto.ImpatientBasicDto;
 import com.example.hospital_management.dto.MedicalRecordBasicDto;
-import com.example.hospital_management.dto.ImpatientRecordDto;
-import com.example.hospital_management.service.IMedicalRecordService;
 import com.example.hospital_management.service.IImpatientRecordService;
-import com.itextpdf.text.*;
+import com.example.hospital_management.service.IMedicalRecordService;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfWriter;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -34,7 +41,7 @@ public class CashierController {
         model.addAttribute("type", type);
 
         if (type.equals("in")) {
-            List<ImpatientRecordDto> records = impatientRecordService.findAllUnpaidImpatients();
+            List<ImpatientBasicDto> records = impatientRecordService.findAllUnpaidImpatients();
             model.addAttribute("records", records);
         } else {
             List<MedicalRecordBasicDto> records = medicalRecordService.findAllBasicInfo();

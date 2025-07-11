@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class RoomService implements IRoomService {
@@ -48,8 +47,4 @@ public class RoomService implements IRoomService {
         return roomRepository.findAllExaminationRoom();
     }
 
-//    @Override
-//    public Optional<Room> findById(Long roomId) {
-//        return roomRepository.findById(roomId);
-//    }
 }

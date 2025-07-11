@@ -26,4 +26,5 @@ public class Patient { //Bệnh nhân
     private String email;
     private String idCard;
     // . . .
+
 }

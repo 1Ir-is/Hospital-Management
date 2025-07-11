@@ -5,10 +5,17 @@ import com.example.hospital_management.dto.TestRequestDto;
 import com.example.hospital_management.entity.TestOrder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import com.example.hospital_management.entity.TestReport;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import java.util.List;
 
 import java.util.List;
 
@@ -58,4 +65,13 @@ public interface ITestOrderRepository extends JpaRepository<TestOrder, Long> {
             "WHERE p.id = :patientId " +
             "ORDER BY t.id DESC", nativeQuery = true)
     List<TestRequestDto> findAllByPatientId(@Param("patientId") Long patientId);
+    @Query("SELECT tr FROM TestReport tr " +
+            "WHERE (:searchName IS NULL OR LOWER(tr.medicalRecord.patient.name) LIKE LOWER(CONCAT('%', :searchName, '%'))) " +
+            "AND (:medicalRecordId IS NULL OR tr.medicalRecord.id = :medicalRecordId)")
+    Page<TestOrder> searchByName(@Param("searchName") String searchName,
+                                  @Param("medicalRecordId") Long medicalRecordId,
+                                  Pageable pageable);
+
+    List<TestOrder> findAllByImpatientRecord_Id(Long id);
+
 }

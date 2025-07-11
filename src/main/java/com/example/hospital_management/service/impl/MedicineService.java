@@ -25,4 +25,9 @@ public class MedicineService implements IMedicineService {
     public Optional<Medicine> findById(Long medicineId) {
         return repository.findById(medicineId);
     }
+
+    @Override
+    public List<Medicine> getAll() {
+        return repository.findAll();
+    }
 }

@@ -8,7 +8,7 @@ import java.util.List;
 
 
 import com.example.hospital_management.dto.MedicalRecordDto;
-import com.example.hospital_management.dto.TestSummaryDto;
+import com.example.hospital_management.dto.TestSummaryDTO;
 import com.example.hospital_management.entity.MedicalRecord;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +23,14 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
+
+import com.example.hospital_management.entity.MedicalRecord;
+
+import java.util.List;
+
+
+import com.example.hospital_management.entity.MedicalRecord;
+
 public interface IMedicalRecordService {
 
     BillingSummaryDto getBillingSummary(Long medicalRecordId);
@@ -32,7 +40,6 @@ public interface IMedicalRecordService {
     void markAsPaid(Long medicalRecordId);
     Long findMaxId();
     Page<MedicalRecord> findAllWithOutVitalSign(Pageable pageable);
-    /////////
     MedicalRecord findById(Long id);
 
 //    MedicalRecord findRoomByCode(String code);
@@ -44,11 +51,13 @@ public interface IMedicalRecordService {
 
     void save(MedicalRecord medicalRecord);
 
-    Page<TestSummaryDto> getTestingMedicalRecordList(Pageable pageable);
+    Page<TestSummaryDTO> getTestingMedicalRecordList(Pageable pageable);
 
     MedicalRecordDto getCurrentPatient(Long roomId);
 
     Page<MedicalRecordDto> getWaitingRecords(Pageable pageable, Long roomId);
 
 
+    List<MedicalRecord> findAll();
+    MedicalRecord getMedicalRecordById(Long id);
 }

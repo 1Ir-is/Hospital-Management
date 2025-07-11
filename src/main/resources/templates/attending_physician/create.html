@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!--private Long id;-->
+<!--private int quantity;-->
+<!--private LocalDate startDate;-->
+<!--private LocalDate endDate;-->
+<!--private Integer morningDose;-->
+<!--private Integer eveningDose;-->
+<!--private boolean status;-->
+<!--private String note;-->
+<!--private String treatmentLocation;-->
+
+<!--@ManyToOne-->
+<!--@JoinColumn(name="impatient_record_id")-->
+<!--private ImpatientRecord impatientRecord;-->
+
+<!--@OneToOne-->
+<!--@JoinColumn(name="medicine_id")-->
+<!--private Medicine medicine;-->
+<form th:action="@{/attending-physician/{id}/create(id=${id})}" method="post" th:object="${inpatientTreatmentDto}">
+    <fieldset>
+        <legend>Điều trị cho bệnh nhân</legend>
+        <label>Ngày bắt đầu</label>
+        <input type="date" placeholder="Nhập ngày bắt đầu" th:field="*{startDate}">
+        <small style="color:red" th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}"></small>
+        <br>
+        <label>Chọn tên thuốc</label>
+        <select th:field="*{medicine.id}" class="form-select">
+            <option value="">----Chọn----</option>
+            <option th:each="medicine : ${medicineList}"
+                    th:value="${medicine.id}"
+                    th:text="${medicine.name}"
+            ></option>
+        </select>
+        <label>Chọn nơi điều trị</label>
+        <select th:field="*{treatmentLocation}" class="form-select">
+            <option value="">----Chọn----</option>
+            <option th:each="treatmentLocation : ${locationList}"
+                    th:value="${treatmentLocation}"
+                    th:text="treatmentLocation"></option>
+        </select>
+        <label>Số ngày dự kiến</label>
+        <input type="date" placeholder="Nhập số ngày dự kiến điều trị" th:field="*{estimateNumberOfDate}">
+        <small style="color:red" th:if="${#fields.hasErrors('estimateNumberOfDate')}"
+               th:errors="*{estimateNumberOfDate}"></small>
+        <br>
+        <label>Liều sáng</label>
+        <input type="date" placeholder="liều sáng" th:field="*{morningDose}">
+        <small style="color:red" th:if="${#fields.hasErrors('morningDose')}" th:errors="*{morningDose}"></small>
+        <label>Số lượng</label>
+        <input type="text" placeholder="liều tối" th:field="*{eveningDose}">
+        <small style="color:red" th:if="${#fields.hasErrors('eveningDose')}" th:errors="*{eveningDose}"></small>
+        <br>
+        <label>Ngày dự kiến kết thúc</label>
+        <p th:field="*{endDate}">
+            <br>
+            <label>Số lượng thuốc dự kiến</label>
+        <p th:field="*{quantity}">
+            <br>
+            <label>Tên bệnh nhân nội trú</label>
+            <input type="hidden" th:field="*{impatientRecord.id}">
+        <p th:text="${inpatientTreatmentDto.impatientRecord.medicalRecord.patient.name}">
+            <button>Tạo đơn</button>
+    </fieldset>
+</form>
+
+</body>
+</html>

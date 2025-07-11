@@ -4,6 +4,8 @@ import com.example.hospital_management.entity.Patient;
 import com.example.hospital_management.repository.IPatientRepository;
 import com.example.hospital_management.service.IPatientService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,5 +33,35 @@ public class PatientService implements IPatientService {
     @Override
     public List<Patient> findAllByIdCard(String idCard) {
         return patientRepository.findAllByIdCard(idCard);
+    }
+
+    @Override
+    public Page<Patient> findAll(Pageable pageable) {
+        return patientRepository.findAll(pageable);
+    }
+
+    @Override
+    public Optional<Patient> findById(Long id) {
+        return patientRepository.findById(id);
+    }
+
+    @Override
+    public void remove(Long id) {
+        patientRepository.deleteById(id);
+    }
+
+    @Override
+    public Page<Patient> searchByName(String searchByName, Pageable pageable) {
+        return patientRepository.searchByName(searchByName, pageable);
+    }
+
+    @Override
+    public List<Patient> findAll() {
+        return patientRepository.findAll();
+    }
+
+    @Override
+    public Patient getPatientById(Long id) {
+        return patientRepository.findPatientById(id);
     }
 }

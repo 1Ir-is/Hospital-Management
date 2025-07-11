@@ -43,7 +43,9 @@ public class MedicalRecord { // Hồ sơ khám
 //    @JoinColumn(name = "room_id")
 //    private Room room;
 
-
+    @ManyToOne
+    @JoinColumn(name = "examtination_shift_id")
+    private ExaminationShift examinationShift;
     @ManyToOne
     @JoinColumn(name = "vital_sign_id")
     private VitalSign vitalSign;

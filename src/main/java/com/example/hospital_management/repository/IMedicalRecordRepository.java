@@ -3,39 +3,25 @@ package com.example.hospital_management.repository;
 
 import com.example.hospital_management.dto.MedicalRecordBasicDto;
 import com.example.hospital_management.dto.MedicalRecordDto;
-import com.example.hospital_management.dto.TestSummaryDto;
+import com.example.hospital_management.dto.TestSummaryDTO;
 import com.example.hospital_management.entity.MedicalRecord;
+import com.example.hospital_management.entity.Patient;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import com.example.hospital_management.entity.Patient;
-import com.example.hospital_management.entity.Room;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
-import java.util.List;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-
-import java.util.List;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-
 
 import java.util.List;
 import java.util.Optional;
 
-
-import java.util.List;
-
 @Repository
 public interface IMedicalRecordRepository extends JpaRepository<MedicalRecord, Long> {
+    MedicalRecord getMedicalRecordById(Long id);
+
     @Query(value = "select * from medical_records mr where status = 0 order by queue_number asc", nativeQuery = true)
     List<MedicalRecord> getCurrentQueuePatient();
 
@@ -55,8 +41,7 @@ public interface IMedicalRecordRepository extends JpaRepository<MedicalRecord, L
             JOIN mr.vitalSign vs
             WHERE mr.status = false
             ORDER BY mr.queueNumber
-            """,
-    countQuery = """
+            """, countQuery = """
             SELECT count (*)
             FROM ExaminationShift es
             JOIN es.medicalRecord mr
@@ -87,7 +72,7 @@ public interface IMedicalRecordRepository extends JpaRepository<MedicalRecord, L
     MedicalRecordDto getCurrentRecord();
 
     @Query(value = """
-            SELECT new com.example.hospital_management.dto.TestSummaryDto(
+            SELECT new com.example.hospital_management.dto.TestSummaryDTO(
                 mr.id,
                 COUNT(tr.id),
                 SUM(CASE WHEN tr.status = true THEN 1 ELSE 0 END),
@@ -99,15 +84,14 @@ public interface IMedicalRecordRepository extends JpaRepository<MedicalRecord, L
             JOIN mr.patient p
             WHERE mr.conclusion is null 
             GROUP BY mr.id, p.id, p.name
-            """,
-    countQuery = """
-        SELECT COUNT(DISTINCT mr.id)
-            FROM TestReport tr
-            JOIN tr.medicalRecord mr
-            JOIN mr.patient p
-            WHERE mr.conclusion is null
-    """)
-    Page<TestSummaryDto> getTestingMedicalRecordList(Pageable pageable);
+            """, countQuery = """
+                SELECT COUNT(DISTINCT mr.id)
+                    FROM TestReport tr
+                    JOIN tr.medicalRecord mr
+                    JOIN mr.patient p
+                    WHERE mr.conclusion is null
+            """)
+    Page<TestSummaryDTO> getTestingMedicalRecordList(Pageable pageable);
 
     @Query(value = """
             SELECT new com.example.hospital_management.dto.MedicalRecordDto(
@@ -125,8 +109,7 @@ public interface IMedicalRecordRepository extends JpaRepository<MedicalRecord, L
             WHERE mr.status = false
             AND r.id = :roomId
             ORDER BY mr.queueNumber
-            """,
-            countQuery = """
+            """, countQuery = """
             SELECT count (*)
             FROM ExaminationShift es
             JOIN es.medicalRecord mr
@@ -138,6 +121,7 @@ public interface IMedicalRecordRepository extends JpaRepository<MedicalRecord, L
             ORDER BY mr.queueNumber
             """)
     Page<MedicalRecordDto> getWaitingRecords(Pageable pageable, @Param("roomId") Long shiftId);
+
     @Query("""
             SELECT new com.example.hospital_management.dto.MedicalRecordDto(
                 mr.id, mr.code, mr.queueNumber, mr.visitDate, mr.symptom, mr.status,
@@ -158,7 +142,7 @@ public interface IMedicalRecordRepository extends JpaRepository<MedicalRecord, L
     MedicalRecordDto getCurrentRecord(@Param("roomId") Long roomId);
 
     @Query(value = """
-            SELECT new com.example.hospital_management.dto.TestSummaryDto(
+            SELECT new com.example.hospital_management.dto.TestSummaryDTO(
                 mr.id,
                 COUNT(tr.id),
                 SUM(CASE WHEN tr.status = true THEN 1 ELSE 0 END),
@@ -172,17 +156,17 @@ public interface IMedicalRecordRepository extends JpaRepository<MedicalRecord, L
             WHERE mr.conclusion is null 
             AND es.room.id = :roomId
             GROUP BY mr.id, p.id, p.name
-            """,
-            countQuery = """
-        SELECT COUNT(DISTINCT mr.id)
-            FROM ExaminationShift es
-            JOIN es.medicalRecord mr
-            JOIN mr.patient p
-            JOIN TestReport tr on tr.medicalRecord = mr
-            WHERE mr.conclusion is null 
-            AND es.room.id = :roomId
-    """)
-    Page<TestSummaryDto> getTestingMedicalRecordList(Pageable pageable, @Param("room_id") Long room_id);
+            """, countQuery = """
+                SELECT COUNT(DISTINCT mr.id)
+                    FROM ExaminationShift es
+                    JOIN es.medicalRecord mr
+                    JOIN mr.patient p
+                    JOIN TestReport tr on tr.medicalRecord = mr
+                    WHERE mr.conclusion is null 
+                    AND es.room.id = :roomId
+            """)
+    Page<TestSummaryDTO> getTestingMedicalRecordList(Pageable pageable, @Param("room_id") Long room_id);
+
     //Để khi xóa tránh trùng hơn, nếu dùng count xóa sẽ trùng
     @Query("select COALESCE(MAX(m.id), 0) from MedicalRecord m")
     Long findMaxId();
@@ -199,6 +183,7 @@ public interface IMedicalRecordRepository extends JpaRepository<MedicalRecord, L
     List<MedicalRecord> findByPatient(Patient patient);
 
     Optional<MedicalRecord> findByCode(String code);
+
     @Query(value = """
                 SELECT SUM(m.price * pd.quantity)
                 FROM prescriptions pr

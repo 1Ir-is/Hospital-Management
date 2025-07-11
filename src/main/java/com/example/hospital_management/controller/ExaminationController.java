@@ -1,7 +1,7 @@
 package com.example.hospital_management.controller;
 
 import com.example.hospital_management.dto.MedicalRecordDto;
-import com.example.hospital_management.dto.TestSummaryDto;
+import com.example.hospital_management.dto.TestSummaryDTO;
 import com.example.hospital_management.entity.*;
 import com.example.hospital_management.service.*;
 import jakarta.servlet.http.HttpSession;
@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/examination")
@@ -26,8 +25,7 @@ public class ExaminationController {
     private final IExaminationShiftService examinationShiftService;
     private final IRoomService roomService;
 
-    public ExaminationController(IMedicalRecordService medicalRecordService, ITestService testService,
-                                 ITestReportService testReportService, IEmployeeService employeeService, IExaminationShiftService examinationShiftService, IRoomService roomService) {
+    public ExaminationController(IMedicalRecordService medicalRecordService, ITestService testService, ITestReportService testReportService, IEmployeeService employeeService, IExaminationShiftService examinationShiftService, IRoomService roomService) {
         this.medicalRecordService = medicalRecordService;
         this.testService = testService;
         this.testReportService = testReportService;
@@ -35,8 +33,9 @@ public class ExaminationController {
         this.examinationShiftService = examinationShiftService;
         this.roomService = roomService;
     }
+
     @GetMapping("/room")
-    public String roomList(Model model){
+    public String roomList(Model model) {
 //        List<ExaminationShift> examinationShifts = examinationShiftService.findAll();
         List<Room> roomList = roomService.findAllExaminationRoom();
         model.addAttribute("roomList", roomList);
@@ -44,10 +43,8 @@ public class ExaminationController {
     }
 
     @GetMapping("/room/{roomId}")
-    public String chooseRoom(Model model,
-                              @PathVariable("roomId") Long room_id,
-                              HttpSession session){
-        Employee employee = employeeService.findById(6L).get();
+    public String chooseRoom(Model model, @PathVariable("roomId") Long room_id, HttpSession session) {
+        Employee employee = employeeService.findById(20L).get();
         session.setAttribute("roomId", room_id);
         session.setAttribute("employee", employee);
         return "redirect:/examination";
@@ -57,7 +54,8 @@ public class ExaminationController {
 //    public String detail(Model model,
 //                         @PageableDefault(size = 5, page = 0) Pageable pageable) {
 //        Page<MedicalRecordDto> medicalRecords = medicalRecordService.getWaitingRecords(pageable);
-////        MedicalRecordDto medicalRecordDto = medicalRecordService.getCurrentPatient();
+
+    /// /        MedicalRecordDto medicalRecordDto = medicalRecordService.getCurrentPatient();
 //
 //        model.addAttribute("medicalRecords", medicalRecords);
 //        model.addAttribute("medicalRecord", null);
@@ -86,29 +84,24 @@ public class ExaminationController {
 //        model.addAttribute("medicalRecords", medicalRecords);
 //        return "/examination/list";
 //    }
-
     @GetMapping("")
-    public String detail(Model model,
-                         @PageableDefault(size = 5, page = 0) Pageable pageable,
-                         HttpSession session) {
+    public String detail(Model model, @PageableDefault(size = 5, page = 0) Pageable pageable, HttpSession session) {
         Long roomId = (Long) session.getAttribute("roomId");
-        if(roomId == null){
+        if (roomId == null) {
             return "redirect:/examination/room";
         }
         Page<MedicalRecordDto> medicalRecords = medicalRecordService.getWaitingRecords(pageable, roomId);
 
         model.addAttribute("medicalRecords", medicalRecords);
         model.addAttribute("medicalRecord", null);
-        model.addAttribute("doctor", employeeService.findById(6L).get());
+        model.addAttribute("doctor", employeeService.findById(20L).get());
         return "/examination/detail";
 
     }
 
     @GetMapping("/next")
-    public String nextPatient(Model model,
-                              @PageableDefault(size = 5, page = 0) Pageable pageable,
-                              HttpSession session) {
-        if(session.getAttribute("roomId") == null){
+    public String nextPatient(Model model, @PageableDefault(size = 5, page = 0) Pageable pageable, HttpSession session) {
+        if (session.getAttribute("roomId") == null) {
             return "redirect:/examination/room";
         }
         Long roomId = (Long) session.getAttribute("roomId");
@@ -118,7 +111,7 @@ public class ExaminationController {
         MedicalRecordDto medicalRecordDto = medicalRecordService.getCurrentPatient(roomId);
 
         model.addAttribute("medicalRecords", medicalRecords);
-        model.addAttribute("doctor", employeeService.findById(6L).get());
+        model.addAttribute("doctor", employeeService.findById(20L).get());
         if (medicalRecordDto != null) {
             model.addAttribute("medicalRecord", medicalRecordDto);
             return "/examination/detail";
@@ -127,11 +120,9 @@ public class ExaminationController {
     }
 
     @GetMapping("/list")
-    public String examinationList(Model model,
-                                  @PageableDefault(size = 5, page = 0) Pageable pageable,
-                                  HttpSession session) {
+    public String examinationList(Model model, @PageableDefault(size = 5, page = 0) Pageable pageable, HttpSession session) {
         Long roomId = (Long) session.getAttribute("roomId");
-        if(roomId == null){
+        if (roomId == null) {
             return "redirect:/examination/room";
         }
 //        Room room =  roomService.findById(roomId).get();
@@ -139,16 +130,15 @@ public class ExaminationController {
         Page<MedicalRecordDto> medicalRecords = medicalRecordService.getWaitingRecords(pageable, roomId);
         model.addAttribute("medicalRecords", medicalRecords);
 //        model.addAttribute("roomInfo", medicalRecords.getContent().get(0));
-        model.addAttribute("doctor", employeeService.findById(6L).get());
+        model.addAttribute("doctor", employeeService.findById(20L).get());
         model.addAttribute("medicalRecord", medicalRecordDto);
         return "/examination/list";
     }
 
     @PostMapping("/complete")
-    public String completeExamination(@RequestParam("id") Long id,
-                                      @RequestParam("note") String note) {
+    public String completeExamination(@RequestParam("id") Long id, @RequestParam("note") String note) {
         //User tạm thời
-        Employee employee = employeeService.findById(6L).get();
+        Employee employee = employeeService.findById(20L).get();
 
         MedicalRecord medicalRecord = medicalRecordService.findById(id);
         if (medicalRecord != null) {
@@ -162,8 +152,7 @@ public class ExaminationController {
     }
 
     @GetMapping("/{id}/test/list")
-    private String testOrder(@PathVariable Long id,
-                             Model model){
+    private String testOrder(@PathVariable Long id, Model model) {
         MedicalRecord medicalRecord = medicalRecordService.findById(id);
         model.addAttribute("medicalRecord", medicalRecord);
         List<Test> testList = testService.findAll();
@@ -172,15 +161,13 @@ public class ExaminationController {
     }
 
     @PostMapping("/{id}/test/save")
-    public String sendOrder(@PathVariable Long id,
-                             @RequestParam("chosenTestIds") List<Long> chosenIds,
-                             Model model){
-        if(chosenIds.isEmpty()){
+    public String sendOrder(@PathVariable Long id, @RequestParam("chosenTestIds") List<Long> chosenIds, Model model) {
+        if (chosenIds.isEmpty()) {
             return "redirect:/examination";
         }
         MedicalRecord medicalRecord = medicalRecordService.findById(id);
 
-        for (Long tId : chosenIds){
+        for (Long tId : chosenIds) {
             Test test = testService.findById(tId).get();
             TestReport testReport = new TestReport(null, null, LocalDate.now(), false, null, null, false, medicalRecord, test, null, null);
             testReportService.save(testReport);
@@ -191,16 +178,14 @@ public class ExaminationController {
     }
 
     @GetMapping("/test/queue")
-    public String testingQueue(Model model,
-                               @PageableDefault Pageable pageable){
-        Page<TestSummaryDto> testSummaryDtos = medicalRecordService.getTestingMedicalRecordList(pageable);
+    public String testingQueue(Model model, @PageableDefault Pageable pageable) {
+        Page<TestSummaryDTO> testSummaryDtos = medicalRecordService.getTestingMedicalRecordList(pageable);
         model.addAttribute("testSummaries", testSummaryDtos.getContent());
         return "/examination/test-list";
     }
 
     @GetMapping("/test/detail/{medicalRecordId}")
-    public String testDetail(@PathVariable Long medicalRecordId,
-                             Model model){
+    public String testDetail(@PathVariable Long medicalRecordId, Model model) {
         MedicalRecord medicalRecord = medicalRecordService.findById(medicalRecordId);
         List<TestReport> testReportList = testReportService.findByMedicalRecordId(medicalRecord.getId());
         model.addAttribute("medicalRecord", medicalRecord);

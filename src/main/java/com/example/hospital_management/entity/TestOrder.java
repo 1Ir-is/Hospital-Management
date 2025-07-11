@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalTime;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -18,10 +18,10 @@ public class TestOrder { // Chỉ định xét nghiệm
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private LocalTime date;
+    private LocalDate date;
     private String note;
     private String result;
-    private boolean status;
+    private Boolean status;
     private boolean payStatus;
     @Column(name = "image_path")
     private String imagePath;

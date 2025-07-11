@@ -1,13 +1,26 @@
 package com.example.hospital_management.service.impl;
 
 import com.example.hospital_management.dto.BillingSummaryDto;
+import com.example.hospital_management.dto.ImpatientBasicDto;
 import com.example.hospital_management.dto.ImpatientRecordDto;
 import com.example.hospital_management.entity.MedicalRecord;
 import com.example.hospital_management.repository.IImpatientRecordRepository;
 import com.example.hospital_management.repository.IMedicalRecordRepository;
 import com.example.hospital_management.repository.IPrescriptionRepository;
+import com.example.hospital_management.entity.ImpatientRecord;
+import com.example.hospital_management.repository.IImpatientRecordRepository;
 import com.example.hospital_management.service.IImpatientRecordService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+import java.util.List;
+import java.util.Optional;
 
 import java.util.List;
 
@@ -27,9 +40,10 @@ public class ImpatientRecordService implements IImpatientRecordService {
     }
 
     @Override
-    public List<ImpatientRecordDto> findAllUnpaidImpatients() {
+    public List<ImpatientBasicDto> findAllUnpaidImpatients() {
         return impatientRecordRepository.findAllUnpaidImpatients();
     }
+
 
     @Override
     public BillingSummaryDto getBillingSummary(Long medicalRecordId) {
@@ -67,5 +81,60 @@ public class ImpatientRecordService implements IImpatientRecordService {
         medicalRecordRepository.updatePaymentStatus(medicalRecordId);
         impatientRecordRepository.markTestsAsPaid(medicalRecordId);
         prescriptionRepository.markPrescriptionsAsPaidByMedicalRecord(medicalRecordId);
+    }
+
+    @Override
+    public Page<ImpatientRecord> findAll(Pageable pageable) {
+        return impatientRecordRepository.findAll(pageable);
+    }
+
+    @Override
+    public Optional<ImpatientRecord> findById(Long id) {
+        return impatientRecordRepository.findById(id);
+    }
+
+    @Override
+    public void remove(Long id) {
+impatientRecordRepository.deleteById(id);
+    }
+
+    @Override
+    public Page<ImpatientRecord> searchByName(String searchByName, Pageable pageable) {
+        return impatientRecordRepository.searchByName(searchByName,pageable);
+    }
+
+    @Override
+    public Page<ImpatientRecord> findAll(String patientName, Long employeeId, Pageable pageable) {
+        return impatientRecordRepository.findRecordsByPatientNameAndEmployeeId(patientName,employeeId,pageable);
+    }
+
+    @Override
+    public List<ImpatientRecord> findAll() {
+        return impatientRecordRepository.findAll();
+    }
+
+    @Override
+    public ImpatientRecord checkExistBedInRoom(Integer number) {
+        return impatientRecordRepository.checkExistBedInRoom(number);
+    }
+
+    @Override
+    public void save(ImpatientRecord impatientRecord) {
+        impatientRecordRepository.save(impatientRecord);
+    }
+
+    @Override
+    public Page<ImpatientRecord> findAllWaitingToImpatient(String patientName,String code, Pageable pageable) {
+        return impatientRecordRepository.getListImpatientRecords(patientName,code, pageable);
+    }
+
+    @Override
+    public ImpatientRecord getImpatientRecordById(Long id) {
+        return impatientRecordRepository.findImpatientRecordById(id);
+    }
+
+    @Override
+    public Page<ImpatientRecord> findAll(String patientName, Pageable pageable) {
+        return impatientRecordRepository.findAllImpatientRecords(patientName,pageable);
     }
 }

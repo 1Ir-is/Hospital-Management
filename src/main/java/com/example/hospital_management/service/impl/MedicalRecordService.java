@@ -2,34 +2,18 @@ package com.example.hospital_management.service.impl;
 
 import com.example.hospital_management.dto.BillingSummaryDto;
 import com.example.hospital_management.dto.MedicalRecordBasicDto;
+import com.example.hospital_management.dto.MedicalRecordDto;
+import com.example.hospital_management.dto.TestSummaryDTO;
 import com.example.hospital_management.entity.MedicalRecord;
 import com.example.hospital_management.repository.IMedicalRecordRepository;
 import com.example.hospital_management.repository.IPrescriptionRepository;
 import com.example.hospital_management.repository.ITestReportRepository;
-import com.example.hospital_management.entity.MedicalRecord;
-import com.example.hospital_management.repository.IMedicalRecordRepository;
-import com.example.hospital_management.dto.MedicalRecordDto;
-import com.example.hospital_management.dto.TestSummaryDto;
-import com.example.hospital_management.entity.MedicalRecord;
-import com.example.hospital_management.repository.IMedicalRecordRepository;
 import com.example.hospital_management.service.IMedicalRecordService;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
-
-
-import java.util.List;
-
-import java.util.Optional;
 
 @Service
 public class MedicalRecordService implements IMedicalRecordService {
@@ -39,9 +23,7 @@ public class MedicalRecordService implements IMedicalRecordService {
 
     private final IPrescriptionRepository prescriptionRepository;
 
-    public MedicalRecordService(IMedicalRecordRepository medicalRecordRepository,
-                                ITestReportRepository testReportRepository,
-                                IPrescriptionRepository prescriptionRepository) {
+    public MedicalRecordService(IMedicalRecordRepository medicalRecordRepository, ITestReportRepository testReportRepository, IPrescriptionRepository prescriptionRepository) {
         this.medicalRecordRepository = medicalRecordRepository;
         this.testReportRepository = testReportRepository;
         this.prescriptionRepository = prescriptionRepository;
@@ -49,8 +31,7 @@ public class MedicalRecordService implements IMedicalRecordService {
 
     @Override
     public BillingSummaryDto getBillingSummary(Long medicalRecordId) {
-        MedicalRecord mr = medicalRecordRepository.findById(medicalRecordId)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy hồ sơ khám"));
+        MedicalRecord mr = medicalRecordRepository.findById(medicalRecordId).orElseThrow(() -> new RuntimeException("Không tìm thấy hồ sơ khám"));
 
         Long medicineFee = medicalRecordRepository.getTotalMedicineFee(medicalRecordId);
         Long testFee = medicalRecordRepository.getTotalTestFee(medicalRecordId);
@@ -64,18 +45,7 @@ public class MedicalRecordService implements IMedicalRecordService {
         Long totalFee = medicalFee + testFee + medicineFee;
         Long remaining = totalFee - advance;
 
-        return new BillingSummaryDto(
-                mr.getId(),
-                mr.getPatient().getName(),
-                mr.getCode(),
-                medicalFee,
-                testFee,
-                medicineFee,
-                totalFee,
-                0L,
-                totalFee,
-                false
-        );
+        return new BillingSummaryDto(mr.getId(), mr.getPatient().getName(), mr.getCode(), medicalFee, testFee, medicineFee, totalFee, 0L, totalFee, false);
     }
 
     @Override
@@ -139,7 +109,7 @@ public class MedicalRecordService implements IMedicalRecordService {
 //    }
 
     @Override
-    public Page<TestSummaryDto> getTestingMedicalRecordList(Pageable pageable) {
+    public Page<TestSummaryDTO> getTestingMedicalRecordList(Pageable pageable) {
         return medicalRecordRepository.getTestingMedicalRecordList(pageable);
     }
 
@@ -153,4 +123,13 @@ public class MedicalRecordService implements IMedicalRecordService {
         return medicalRecordRepository.getWaitingRecords(pageable, roomId);
     }
 
+    @Override
+    public MedicalRecord getMedicalRecordById(Long id) {
+        return medicalRecordRepository.getMedicalRecordById(id);
+    }
+
+    @Override
+    public List<MedicalRecord> findAll() {
+        return medicalRecordRepository.findAll();
+    }
 }
