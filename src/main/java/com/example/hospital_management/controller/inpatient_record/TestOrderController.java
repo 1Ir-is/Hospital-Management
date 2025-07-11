@@ -53,9 +53,13 @@ public class  TestOrderController {
     @GetMapping("{id}/edit")
     public String update(@PathVariable Long id, Model model) {
         TestOrder order = testOrderService.findById(id);
-        // ⚠ Kiểm tra tránh null
+        if (order == null) {
+            System.out.println("Không tìm thấy TestOrder id = " + id);
+            return "redirect:/error";
+        }
         if (order.getImpatientRecord() == null) {
-            return "redirect:/error"; // hoặc báo lỗi rõ ràng
+            System.out.println("TestOrder không có liên kết với hồ sơ nội trú");
+            return "redirect:/error";
         }
 
         model.addAttribute("test_order", order);

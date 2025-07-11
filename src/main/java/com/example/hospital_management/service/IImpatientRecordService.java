@@ -12,8 +12,20 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Optional;
+
+import com.example.hospital_management.entity.ImpatientRecord;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 public interface IImpatientRecordService {
+    List<ImpatientRecord> findAllDangNhapVien();
+
+    Page<ImpatientRecord> searchByFields(String patientName, String roomNumber, String doctorName, String nurseName, Pageable pageable);
+
+    void updateNote(Long recordId, String note);
     List<ImpatientRecord> findAll();
     Page<ImpatientRecord> findAll(Pageable pageable);
     Optional<ImpatientRecord> findById(Long id);

@@ -27,4 +27,6 @@ public class EmployeeAssigment { // phan cong nhan vien
     @ManyToOne
     @JoinColumn(name = "impatient_record_id")
     private ImpatientRecord impatientRecord;
+
+
 }

@@ -1,6 +1,10 @@
 package com.example.hospital_management.service;
 
 import com.example.hospital_management.entity.Patient;
+
+import java.util.List;
+
+import com.example.hospital_management.entity.Patient;
 import com.example.hospital_management.entity.TestReport;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,4 +27,5 @@ public interface IPatientService {
 
     void remove(Long id);
     Page<Patient> searchByName(String searchByName ,Pageable pageable);
+
 }

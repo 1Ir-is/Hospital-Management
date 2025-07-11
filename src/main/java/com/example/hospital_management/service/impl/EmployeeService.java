@@ -7,17 +7,39 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class EmployeeService implements IEmployeeService {
+    @Autowired
     private IEmployeeRepository employeeRepository;
 
-    @Autowired
-    public EmployeeService(IEmployeeRepository employeeRepository) {
-        this.employeeRepository = employeeRepository;
+    @Override
+    public List<Employee> findByDepartment(Long departmentId) {
+        return employeeRepository.findByDepartment_Id(departmentId);
     }
 
+    @Override
+    public List<Employee> findAllDoctors() {
+        return employeeRepository.findAllDoctors();
+    }
+
+    @Override
+    public List<Employee> findAllNurses() {
+        return employeeRepository.findAllNurses();
+    }
+
+    @Override
+    public List<Employee> findDoctorsByDepartment(Long departmentId) {
+        return employeeRepository.findDoctorsByDepartment(departmentId);
+    }
+
+    @Override
+    public List<Employee> findNursesByDepartment(Long departmentId) {
+        return employeeRepository.findNursesByDepartment(departmentId);
+    }
 
     @Override
     public List<Employee> findAll() {
