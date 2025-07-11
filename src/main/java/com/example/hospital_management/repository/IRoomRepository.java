@@ -34,18 +34,8 @@ public interface IRoomRepository extends JpaRepository<Room, Long> {
     Page<Room> findByStatus(@Param("status") Boolean status, Pageable pageable);
 
     // Tìm kiếm phòng với filter tổng hợp
-    @Query("SELECT r FROM Room r WHERE " +
-            "(:name IS NULL OR r.name LIKE %:name%) AND " +
-            "(:number IS NULL OR r.number = :number) AND " +
-            "(:departmentId IS NULL OR r.department.id = :departmentId) AND " +
-            "(:roomTypeId IS NULL OR r.roomType.id = :roomTypeId) AND " +
-            "(:status IS NULL OR r.status = :status)")
-    Page<Room> findWithFilters(@Param("name") String name,
-                               @Param("number") Integer number,
-                               @Param("departmentId") Long departmentId,
-                               @Param("roomTypeId") Long roomTypeId,
-                               @Param("status") Boolean status,
-                               Pageable pageable);
+    @Query("SELECT r FROM Room r WHERE " + "(:name IS NULL OR r.name LIKE %:name%) AND " + "(:number IS NULL OR r.number = :number) AND " + "(:departmentId IS NULL OR r.department.id = :departmentId) AND " + "(:roomTypeId IS NULL OR r.roomType.id = :roomTypeId) AND " + "(:status IS NULL OR r.status = :status)")
+    Page<Room> findWithFilters(@Param("name") String name, @Param("number") Integer number, @Param("departmentId") Long departmentId, @Param("roomTypeId") Long roomTypeId, @Param("status") Boolean status, Pageable pageable);
 
     // Đếm số phòng theo khoa
     @Query("SELECT COUNT(r) FROM Room r WHERE r.department.id = :departmentId")

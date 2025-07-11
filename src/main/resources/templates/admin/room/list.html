@@ -650,17 +650,16 @@
         </div>
 
         <div class="stat-card">
-            <div class="stat-icon beds">
-                <i class="fas fa-bed"></i>
+            <div class="stat-icon" style="background: #fff3e0;">
+                <i class="fas fa-building" style="color: #ff9800;"></i>
             </div>
-            <div class="stat-info">
-                <h3 id="totalBeds">...</h3>
-                <p>Tổng số giường</p>
-                <div class="stat-trend neutral">
-                    <span>Tất cả giường trong phòng</span>
-                </div>
+            <div class="stat-content">
+                <h3 th:text="${#lists.size(departments)}">12</h3>
+                <p>Khoa có phòng</p>
+                <span class="stat-change neutral">Trải rộng khắp bệnh viện</span>
             </div>
         </div>
+
     </div>
 
     <!-- Search and Filter Card -->
@@ -765,16 +764,13 @@
         </form>
     </div>
 
-    <!-- Rooms Table Card -->
+    <!-- Rooms Table -->
     <div class="form-card">
         <div class="form-header">
-            <h2>
-                <i class="fas fa-list"></i>
-                Danh sách phòng khám
-            </h2>
-            <p th:text="'Hiển thị ' + ${rooms.numberOfElements} + ' / ' + ${rooms.totalElements} + ' phòng'">
-                Hiển thị 10 / 54 phòng
-            </p>
+            <h3><i class="fas fa-list"></i> Danh sách phòng khám</h3>
+            <div class="card-actions">
+                <span th:text="'Hiển thị ' + ${rooms.numberOfElements} + ' / ' + ${rooms.totalElements} + ' phòng'"></span>
+            </div>
         </div>
 
         <div class="table-responsive">
@@ -803,7 +799,6 @@
                         </a>
                     </th>
                     <th>Loại phòng</th>
-                    <th class="text-center">Số giường</th>
                     <th>Mô tả</th>
                     <th>
                         <a class="sortable-link"
@@ -812,18 +807,17 @@
                             <i th:class="${currentSortBy == 'status' ? (currentSortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down') : 'fas fa-sort'}"></i>
                         </a>
                     </th>
-                    <th class="text-center">Thao tác</th>
+                    <th>Thao tác</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr class="table-row" th:each="room : ${rooms.content}">
                     <td>
-                        <div class="room-number" th:text="${room.number}">101</div>
+                        <span class="room-number" th:text="${room.number}"></span>
                     </td>
                     <td>
                         <div class="room-info">
-                            <div class="room-name" th:text="${room.name}">Phòng khám Nội tổng quát</div>
-                            <div class="room-capacity" th:text="${room.capacityInfo}">Phòng 5 giường</div>
+                            <strong th:text="${room.name}">Phòng khám Nội tổng quát</strong>
                         </div>
                     </td>
                     <td>
@@ -832,42 +826,26 @@
                     <td>
                         <span class="room-type" th:text="${room.roomTypeName}">Phòng khám</span>
                     </td>
-                    <td class="text-center">
-                        <div class="bed-count">
-                            <span class="bed-number"
-                                  th:class="'bed-badge ' + (${room.bedCount > 0} ? 'has-beds' : 'no-beds')"
-                                  th:text="${room.bedCount}">5</span>
-                            <div class="bed-info" th:text="${room.bedInfo}">5 giường</div>
-                        </div>
-                    </td>
                     <td>
                         <span class="description" th:text="${room.description ?: 'Không có mô tả'}">Phòng khám chuyên khoa</span>
                     </td>
                     <td>
-                        <span th:class="'badge ' + (${room.status} ? 'badge-success' : 'badge-danger')"
-                              th:text="${room.statusText}">
-                            Hoạt động
-                        </span>
+                            <span th:class="'status-badge ' + (${room.status} ? 'status-active' : 'status-inactive')"
+                                  th:text="${room.statusText}">
+                                Hoạt động
+                            </span>
                     </td>
-                    <td class="text-center">
+                    <td>
                         <div class="action-buttons">
-                            <a class="btn-sm btn-info"
-                               th:href="@{/admin/rooms/{id}(id=${room.id})}"
-                               title="Xem chi tiết">
+                            <a class="btn btn-sm btn-info"
+                               th:href="@{/admin/rooms/{id}(id=${room.id})}" title="Xem chi tiết">
                                 <i class="fas fa-eye"></i>
                             </a>
-                            <a class="btn-sm btn-warning"
-                               th:href="@{/admin/rooms/{id}/edit(id=${room.id})}"
-                               title="Chỉnh sửa">
+                            <a class="btn btn-sm btn-warning"
+                               th:href="@{/admin/rooms/{id}/edit(id=${room.id})}" title="Chỉnh sửa">
                                 <i class="fas fa-edit"></i>
                             </a>
-                            <a class="btn-sm btn-primary"
-                               th:href="@{/admin/rooms/{id}/beds(id=${room.id})}"
-                               title="Quản lý giường">
-                                <i class="fas fa-bed"></i>
-                            </a>
-                            <button class="btn-sm btn-danger"
-                                    onclick="confirmDelete()"
+                            <button class="btn btn-sm btn-danger" onclick="confirmDelete()"
                                     title="Xóa">
                                 <i class="fas fa-trash"></i>
                             </button>
@@ -921,103 +899,103 @@
             <span>phòng/trang</span>
         </div>
     </div>
-</div>
 
-<div layout:fragment="page-scripts">
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            calculateTotalBeds();
-            initializeTableEffects();
-        });
-
-        function calculateTotalBeds() {
-            const bedCounts = document.querySelectorAll('.bed-number');
-            let total = 0;
-            bedCounts.forEach(bedCount => {
-                const count = parseInt(bedCount.textContent) || 0;
-                total += count;
+    <div layout:fragment="page-scripts">
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                calculateTotalBeds();
+                initializeTableEffects();
             });
-            document.getElementById('totalBeds').textContent = total.toLocaleString();
-        }
 
-        function initializeTableEffects() {
-            const rows = document.querySelectorAll('.table-row');
-            rows.forEach(row => {
-                row.addEventListener('mouseenter', function () {
-                    this.style.backgroundColor = '#f8f9fa';
+            function calculateTotalBeds() {
+                const bedCounts = document.querySelectorAll('.bed-number');
+                let total = 0;
+                bedCounts.forEach(bedCount => {
+                    const count = parseInt(bedCount.textContent) || 0;
+                    total += count;
                 });
+                document.getElementById('totalBeds').textContent = total.toLocaleString();
+            }
 
-                row.addEventListener('mouseleave', function () {
-                    this.style.backgroundColor = '';
+            function initializeTableEffects() {
+                const rows = document.querySelectorAll('.table-row');
+                rows.forEach(row => {
+                    row.addEventListener('mouseenter', function () {
+                        this.style.backgroundColor = '#f8f9fa';
+                    });
+
+                    row.addEventListener('mouseleave', function () {
+                        this.style.backgroundColor = '';
+                    });
                 });
-            });
-        }
+            }
 
-        function changePageSize(size) {
-            const url = new URL(window.location);
-            url.searchParams.set('size', size);
-            url.searchParams.set('page', '0');
-            window.location.href = url.toString();
-        }
+            function changePageSize(size) {
+                const url = new URL(window.location);
+                url.searchParams.set('size', size);
+                url.searchParams.set('page', '0');
+                window.location.href = url.toString();
+            }
 
-        function confirmDelete(roomId, roomName) {
-            if (confirm(`Bạn có chắc chắn muốn xóa phòng "${roomName}"?\nHành động này không thể hoàn tác và sẽ xóa tất cả giường trong phòng.`)) {
-                const button = event.target.closest('button');
-                const originalContent = button.innerHTML;
-                button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-                button.disabled = true;
+            function confirmDelete(roomId, roomName) {
+                if (confirm(`Bạn có chắc chắn muốn xóa phòng "${roomName}"?\nHành động này không thể hoàn tác và sẽ xóa tất cả giường trong phòng.`)) {
+                    const button = event.target.closest('button');
+                    const originalContent = button.innerHTML;
+                    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                    button.disabled = true;
 
-                fetch(`/admin/rooms/${roomId}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                })
-                    .then(response => {
-                        if (response.ok) {
-                            showSuccessMessage('Xóa phòng thành công!');
-                            setTimeout(() => window.location.reload(), 1500);
-                        } else {
+                    fetch(`/admin/rooms/${roomId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                        .then(response => {
+                            if (response.ok) {
+                                showSuccessMessage('Xóa phòng thành công!');
+                                setTimeout(() => window.location.reload(), 1500);
+                            } else {
+                                showErrorMessage('Có lỗi xảy ra khi xóa phòng!');
+                                button.innerHTML = originalContent;
+                                button.disabled = false;
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
                             showErrorMessage('Có lỗi xảy ra khi xóa phòng!');
                             button.innerHTML = originalContent;
                             button.disabled = false;
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        showErrorMessage('Có lỗi xảy ra khi xóa phòng!');
-                        button.innerHTML = originalContent;
-                        button.disabled = false;
-                    });
+                        });
+                }
             }
-        }
 
-        function showSuccessMessage(message) {
-            const notification = document.createElement("div");
-            notification.className = "success-notification";
-            notification.innerHTML = `
+            function showSuccessMessage(message) {
+                const notification = document.createElement("div");
+                notification.className = "success-notification";
+                notification.innerHTML = `
                 <i class="fas fa-check-circle"></i>
                 <span>${message}</span>
             `;
-            document.body.appendChild(notification);
+                document.body.appendChild(notification);
 
-            setTimeout(() => {
-                notification.classList.add("show");
-            }, 100);
-
-            setTimeout(() => {
-                notification.classList.remove("show");
                 setTimeout(() => {
-                    document.body.removeChild(notification);
-                }, 300);
-            }, 3000);
-        }
+                    notification.classList.add("show");
+                }, 100);
 
-        function showErrorMessage(message) {
-            alert(message);
-        }
-    </script>
+                setTimeout(() => {
+                    notification.classList.remove("show");
+                    setTimeout(() => {
+                        document.body.removeChild(notification);
+                    }, 300);
+                }, 3000);
+            }
+
+            function showErrorMessage(message) {
+                alert(message);
+            }
+        </script>
+    </div>
 </div>
 
 </html>

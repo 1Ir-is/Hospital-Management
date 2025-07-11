@@ -3,7 +3,6 @@ package com.example.hospital_management.controller.admin;
 import com.example.hospital_management.dto.RoomDTO;
 import com.example.hospital_management.entity.Department;
 import com.example.hospital_management.entity.RoomType;
-import com.example.hospital_management.repository.IBedRepository;
 import com.example.hospital_management.repository.IDepartmentRepository;
 import com.example.hospital_management.repository.IRoomTypeRepository;
 import com.example.hospital_management.service.IRoomService;
@@ -29,7 +28,6 @@ public class RoomController {
     private final IRoomService roomService;
     private final IDepartmentRepository departmentRepository;
     private final IRoomTypeRepository roomTypeRepository;
-    private final IBedRepository bedRepository;
 
     @GetMapping
     public String listRooms(@RequestParam(defaultValue = "0") int page,
@@ -63,11 +61,6 @@ public class RoomController {
         Long totalRooms = roomService.getTotalRoomCount();
         Long activeRooms = roomService.getActiveRoomCount();
 
-        // Tính tổng số giường từ tất cả phòng hiện tại trên trang
-        Long totalBedsOnCurrentPage = rooms.getContent().stream()
-                .mapToLong(room -> room.getBedCount() != null ? room.getBedCount() : 0L)
-                .sum();
-
         // Add to model
         model.addAttribute("activeMenu", "rooms");
         model.addAttribute("rooms", rooms);
@@ -76,7 +69,6 @@ public class RoomController {
         model.addAttribute("totalRooms", totalRooms);
         model.addAttribute("activeRooms", activeRooms);
         model.addAttribute("inactiveRooms", totalRooms - activeRooms);
-        model.addAttribute("totalBedsOnCurrentPage", totalBedsOnCurrentPage);
 
         // Keep filter values
         model.addAttribute("currentName", name);
@@ -98,20 +90,6 @@ public class RoomController {
             model.addAttribute("activeMenu", "rooms");
             model.addAttribute("room", room);
             return "admin/room/detail";
-        } catch (RuntimeException e) {
-            model.addAttribute("error", e.getMessage());
-            return "redirect:/admin/rooms";
-        }
-    }
-
-    @GetMapping("/{id}/beds")
-    public String manageBeds(@PathVariable Long id, Model model) {
-        try {
-            RoomDTO room = roomService.getRoomById(id);
-            model.addAttribute("activeMenu", "rooms");
-            model.addAttribute("room", room);
-            // Sẽ implement trang quản lý giường sau
-            return "admin/room/beds";
         } catch (RuntimeException e) {
             model.addAttribute("error", e.getMessage());
             return "redirect:/admin/rooms";

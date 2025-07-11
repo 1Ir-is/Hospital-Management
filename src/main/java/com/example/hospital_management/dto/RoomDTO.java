@@ -25,12 +25,8 @@ public class RoomDTO {
     private String roomTypeName;
     private String roomTypeDescription;
 
-    // Bed information
-    private Long bedCount;
-    private String bedInfo; // "5 giường" hoặc "Không có giường"
-
     // Additional info for display
+    private Long bedCount;
     private String statusText;
     private String fullName; // Combines department + room name
-    private String capacityInfo; // "Phòng 5 giường" hoặc "Phòng không giường"
 }
