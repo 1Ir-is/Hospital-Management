@@ -19,7 +19,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/doctor")
-public class  TestOrderController {
+public class TestOrderController {
     private ITestOrderService testOrderService;
     private IEmployeeService employeeService;
     private ITestService testService;
@@ -43,7 +43,13 @@ public class  TestOrderController {
                                Model model) {
         Sort sort = Sort.by(Sort.Direction.DESC, "id");
         Pageable pageable = PageRequest.of(page, size, sort);
-        Page<ImpatientRecord> impatientRecords = impatientRecordService.findAll(pageable);
+        Page<ImpatientRecord> impatientRecords;
+
+        if ((name != null && !name.trim().isEmpty())) {
+            impatientRecords = impatientRecordService.searchByName(name.isBlank() ? null : name, pageable);
+        } else {
+            impatientRecords = impatientRecordService.findAll(pageable);
+        }
         model.addAttribute("impatientRecords", impatientRecords);
         model.addAttribute("name", name);
         return "test_order/list";

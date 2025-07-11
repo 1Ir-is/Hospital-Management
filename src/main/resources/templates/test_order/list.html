@@ -6,10 +6,29 @@
     <div class="card-header"><h2 class="d-flex justify-content-center">Danh sách bệnh nhân cần được xét nghiệm</h2></div>
     <hr>
 
-<!--    <div class="d-flex gap-2 mb-4">-->
-<!--        <a th:href="@{/doctor/result/view}" class="btn btn-outline-primary">Xem kết quả xét nghiệm</a>-->
-<!--        <a th:href="@{/doctor/inpatient/test-orders}" class="btn btn-outline-primary">Giao nhân viên phụ trách</a>-->
-<!--    </div>-->
+    <form th:action="@{/doctor}" method="get" class="mb-4">
+        <div class="row">
+            <div class="col-md-3">
+                <label  class="form-label"></label>
+                <input type="text" name="name" th:value="${name}" placeholder="Nhập tên bệnh nhân ..." class="form-control">
+            </div>
+<!--            <div class="col-md-3">-->
+<!--                <label class=" form-label"></label>-->
+<!--                &lt;!&ndash;                </select>&ndash;&gt;-->
+<!--                <select id="medicalRecordId" name="medicalRecordId" class="form-select">-->
+<!--                    <option value="">Chọn mã bệnh án</option>-->
+<!--                    <option th:each="record : ${impatientRecords}"-->
+<!--                            th:value="${record.id}"-->
+<!--                            th:selected="${record.id} == ${medicalRecordId}"-->
+<!--                            th:text="${record.code}"></option>-->
+<!--                </select>-->
+
+<!--            </div>-->
+            <div class="col-md-2 align-self-end">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+        </div>
+    </form>
 
     <table class="table table-bordered">
         <thead>
