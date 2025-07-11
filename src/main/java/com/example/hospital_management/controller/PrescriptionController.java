@@ -48,7 +48,7 @@ public class PrescriptionController {
     public String chooseMedicine(@PathVariable("medicalRecordId") Long id,
                                  @ModelAttribute("prescription") PrescriptionDto prescriptionDto,
                                  Model model){
-        MedicalRecord medicalRecord = medicalRecordService.findById(id).get();
+        MedicalRecord medicalRecord = medicalRecordService.findById(id);
         prescriptionDto.setMedicalRecord(medicalRecord);
         prescriptionDto.setCreatedDate(LocalDate.now());
 
@@ -111,7 +111,7 @@ public class PrescriptionController {
             detail.setPrescription(savedPrescription);
             prescriptionDetailService.save(detail);
         }
-        MedicalRecord medicalRecord = medicalRecordService.findById(savedPrescription.getMedicalRecord().getId()).get();
+        MedicalRecord medicalRecord = medicalRecordService.findById(savedPrescription.getMedicalRecord().getId());
         medicalRecord.setStatus(true);
         medicalRecordService.save(medicalRecord);
         return "redirect:/examination";

@@ -43,4 +43,9 @@ public class MedicalRecord { // Hồ sơ khám
     @ManyToOne
     @JoinColumn(name = "vital_sign_id")
     private VitalSign vitalSign;
+
+//    //Ticket - Số Phiếu Khám
+//    @ManyToOne
+//    @JoinColumn(name = "ticket_id")
+//    private Ticket ticket;
 }

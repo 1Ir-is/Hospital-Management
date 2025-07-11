@@ -7,12 +7,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.example.hospital_management.entity.ExaminationShift;
+
+import javax.swing.text.html.Option;
+import java.util.List;
+import java.util.Optional;
+
 public interface IExaminationShiftService {
-    List<ExaminationShift> findAll();
 
-    Optional<ExaminationShift> findById(Long shiftId);
-
-    void save(ExaminationShift shift);
-
+//    Optional<ExaminationShift> findById(Long shiftId);
     ExaminationShift findByMedicalRecord(MedicalRecord medicalRecord);
+    List<ExaminationShift> findAll();
+    List<ExaminationShift> findAllByRoom_Id(Long id);
+    ExaminationShift findById(Long id);
+    void save(ExaminationShift examinationShift);
 }

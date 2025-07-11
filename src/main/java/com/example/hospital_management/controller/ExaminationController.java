@@ -150,13 +150,13 @@ public class ExaminationController {
         //User tạm thời
         Employee employee = employeeService.findById(6L).get();
 
-        Optional<MedicalRecord> medicalRecord = medicalRecordService.findById(id);
-        if (medicalRecord.isPresent()) {
-            ExaminationShift shift = examinationShiftService.findByMedicalRecord(medicalRecord.get());
+        MedicalRecord medicalRecord = medicalRecordService.findById(id);
+        if (medicalRecord != null) {
+            ExaminationShift shift = examinationShiftService.findByMedicalRecord(medicalRecord);
             shift.setEmployee(employee);
-            medicalRecord.get().setStatus(true);
-            medicalRecord.get().setNote(note);
-            medicalRecordService.save(medicalRecord.get());
+            medicalRecord.setStatus(true);
+            medicalRecord.setNote(note);
+            medicalRecordService.save(medicalRecord);
         }
         return "redirect:/examination";
     }
@@ -164,7 +164,7 @@ public class ExaminationController {
     @GetMapping("/{id}/test/list")
     private String testOrder(@PathVariable Long id,
                              Model model){
-        MedicalRecord medicalRecord = medicalRecordService.findById(id).get();
+        MedicalRecord medicalRecord = medicalRecordService.findById(id);
         model.addAttribute("medicalRecord", medicalRecord);
         List<Test> testList = testService.findAll();
         model.addAttribute("testList", testList);
@@ -178,7 +178,7 @@ public class ExaminationController {
         if(chosenIds.isEmpty()){
             return "redirect:/examination";
         }
-        MedicalRecord medicalRecord = medicalRecordService.findById(id).get();
+        MedicalRecord medicalRecord = medicalRecordService.findById(id);
 
         for (Long tId : chosenIds){
             Test test = testService.findById(tId).get();
@@ -201,7 +201,7 @@ public class ExaminationController {
     @GetMapping("/test/detail/{medicalRecordId}")
     public String testDetail(@PathVariable Long medicalRecordId,
                              Model model){
-        MedicalRecord medicalRecord = medicalRecordService.findById(medicalRecordId).get();
+        MedicalRecord medicalRecord = medicalRecordService.findById(medicalRecordId);
         List<TestReport> testReportList = testReportService.findByMedicalRecordId(medicalRecord.getId());
         model.addAttribute("medicalRecord", medicalRecord);
         model.addAttribute("testReportList", testReportList);
