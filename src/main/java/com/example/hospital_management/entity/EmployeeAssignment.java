@@ -11,20 +11,20 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "medicines")
-public class Medicine { // Thuốc
+@Table(name = "employee_assignments")
+public class EmployeeAssignment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
+
+    //role ???
 
     //Foreign Key
-    //Medicine Type - Loại thuốc
     @ManyToOne
-    @JoinColumn(name = "medicine_type_id")
-    private MedicineType medicineType;
+    @JoinColumn(name = "employee_id")
+    private Employee employee;
 
     @ManyToOne
-    @JoinColumn(name = "medicine_unit_id")
-    private MedicineUnit medicineUnit;
+    @JoinColumn(name = "impatient_record_id")
+    private ImpatientRecord impatientRecord;
 }

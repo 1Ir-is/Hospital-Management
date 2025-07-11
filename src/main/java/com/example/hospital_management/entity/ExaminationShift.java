@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Getter
@@ -21,6 +22,7 @@ public class ExaminationShift { // Ca khám
     private LocalTime startTime;
     private LocalTime endTime;
     private Boolean status;
+    private LocalDate date;
 
     //Foreign Key
     @ManyToOne
@@ -32,6 +34,11 @@ public class ExaminationShift { // Ca khám
     private Employee employee;
 
     @ManyToOne
-    @JoinColumn(name = "examination_shift_status_id")
-    private ExaminationShiftStatus examinationShiftStatus;
+    @JoinColumn(name = "medical_record_id")
+    private MedicalRecord medicalRecord;
+
+
+//    @ManyToOne
+//    @JoinColumn(name = "examination_shift_status_id")
+//    private ExaminationShiftStatus examinationShiftStatus;
 }
