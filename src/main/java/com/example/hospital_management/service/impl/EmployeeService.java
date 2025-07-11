@@ -1,12 +1,15 @@
 package com.example.hospital_management.service.impl;
 
 import com.example.hospital_management.entity.Employee;
+import com.example.hospital_management.repository.IEmployeeRepository;
+import com.example.hospital_management.entity.Employee;
 import com.example.hospital_management.entity.EmployeeRole;
 import com.example.hospital_management.entity.Role;
 import com.example.hospital_management.repository.IEmployeeRepository;
 import com.example.hospital_management.repository.IEmployeeRoleRepository;
 import com.example.hospital_management.repository.IRoleRepository;
 import com.example.hospital_management.service.IEmployeeService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,9 +21,10 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import java.util.List;
+
 @Service
 public class EmployeeService implements IEmployeeService {
-
     @Autowired
     private IEmployeeRepository employeeRepository;
 
@@ -32,6 +36,31 @@ public class EmployeeService implements IEmployeeService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Override
+    public List<Employee> findByDepartment(Long departmentId) {
+        return employeeRepository.findByDepartment_Id(departmentId);
+    }
+
+    @Override
+    public List<Employee> findAllDoctors() {
+        return employeeRepository.findAllDoctors();
+    }
+
+    @Override
+    public List<Employee> findAllNurses() {
+        return employeeRepository.findAllNurses();
+    }
+
+    @Override
+    public List<Employee> findDoctorsByDepartment(Long departmentId) {
+        return employeeRepository.findDoctorsByDepartment(departmentId);
+    }
+
+    @Override
+    public List<Employee> findNursesByDepartment(Long departmentId) {
+        return employeeRepository.findNursesByDepartment(departmentId);
+    }
 
     @Override
     public List<Employee> findAllEmployees() {
@@ -164,7 +193,6 @@ public class EmployeeService implements IEmployeeService {
         updateEmployeeRoles(employeeId, roleIds);
     }
 
-
     @Override
     public long countTotalEmployees() {
         return employeeRepository.count();
@@ -186,3 +214,7 @@ public class EmployeeService implements IEmployeeService {
         return employeeRepository.countByStartingDateGreaterThanEqual(startOfMonth);
     }
 }
+
+
+
+
