@@ -81,7 +81,7 @@ public class NurseController {
             @RequestParam(required = false, defaultValue = "5") int size,
             @RequestParam(required = false, defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "") String patientName,
-            @RequestParam(required = false, defaultValue = "1") Long employeeId,
+            @RequestParam(required = false, defaultValue = "4") Long employeeId,
             Model model) {
         Pageable pageable = PageRequest.of(page, size);
         Page<ImpatientRecord> impatientRecords = impatientRecordService.findAll(patientName, employeeId, pageable);

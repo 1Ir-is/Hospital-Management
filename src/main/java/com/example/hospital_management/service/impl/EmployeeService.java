@@ -194,6 +194,11 @@ public class EmployeeService implements IEmployeeService {
     }
 
     @Override
+    public List<Employee> findNurse() {
+        return employeeRepository.getListNurse();
+    }
+
+    @Override
     public long countTotalEmployees() {
         return employeeRepository.count();
     }

@@ -49,4 +49,5 @@ public interface IImpatientRecordService {
     ImpatientRecord getImpatientRecordById(Long id);
 
     Page<ImpatientRecord> findAll(String patientName, Pageable pageable);
+    Page<ImpatientRecord> findAllImpatientRecordsList(String patientName,String code, Pageable pageable);
 }

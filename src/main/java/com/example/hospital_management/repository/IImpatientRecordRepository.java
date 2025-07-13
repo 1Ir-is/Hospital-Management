@@ -182,5 +182,19 @@ WHERE (:patientName IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :patientName
                                                   @Param("code") String code,
                                                   Pageable pageable);
 
+    @Query(value = "select ir.* from impatient_records ir " +
+            "join medical_records mr on ir.medical_record_id = mr.id " +
+            "join patients p on mr.patient_id = p.id where ir.status = 1 and " +
+            "p.name like concat ('%', :patientName , '%') " +
+            "AND mr.code like concat ('%', :code, '%')",
+            countQuery = "select count(*) from impatient_records ir " +
+                    "join medical_records mr on ir.medical_record_id = mr.id " +
+                    "join patients p on mr.patient_id = p.id where ir.status = 1 and " +
+                    "p.name like concat ('%', :patientName ,'%') " +
+                    "AND mr.code like concat ('%', :code, '%')", nativeQuery = true)
+    Page<ImpatientRecord> getInpatientRecordsList(@Param("patientName") String patientName,
+                                                  @Param("code") String code,
+                                                  Pageable pageable);
+
     ImpatientRecord findImpatientRecordById(Long id);
 }

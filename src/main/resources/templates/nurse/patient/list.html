@@ -2,59 +2,91 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Danh sách bệnh nhân</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
-<h1>Danh sách bệnh nhân </h1>
-<form th:action="@{/nurse}" method="get">
-    <label>
-        <input type="text" th:value="${patientName}" name="patientName" placeholder="Tên bệnh nhân"/>
-    </label>
-    <input type="hidden" th:value="${size}" name="size">
-    <button>Tìm kiếm</button>
-</form>
-<a href="/nurse/advance-payments">Danh sách bệnh nhân tạm ứng tiền</a>
-<a href="/nurse/list-impatient-records">Danh sách tất cả bệnh nhân</a>
-<table border="3">
-    <thead>
-    <tr>
-        <th>STT</th>
-        <th>Ngày nhập viện</th>
-        <th>Ngày xuất viện</th>
-        <th>Số giường</th>
-        <th>Tên bệnh nhân</th>
-        <th>Thao tác</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="impatientRecord, impatientRecordStatus : ${impatientRecords}">
-        <td th:text="${impatientRecordStatus.count}"></td>
-        <td th:text="${impatientRecord.admissionDate}"></td>
-        <td th:if="${impatientRecord.dischargeDate!=null}" th:text="${impatientRecord.dischargeDate}"></td>
-        <td th:if="${impatientRecord.dischargeDate==null}">Đang điều trị</td>
-        <td th:text="${impatientRecord.bed.number}"></td>
-        <td th:text="${impatientRecord.medicalRecord.patient.name}"></td>
-        <td><a href="#">Điều trị</a></td>
-    </tr>
-    </tbody>
-</table>
+<body class="bg-light">
 
-<div>
-    <a th:if="${impatientRecords.hasPrevious()}"
-       th:href="@{/nurse(page=${impatientRecords.number - 1},patientName=${patientName},size=${size})}">Trước</a>
-    <span th:text="${impatientRecords.number+1}"></span>/<span th:text="${impatientRecords.totalPages}"></span>
-    <a th:if="${impatientRecords.hasNext()}"
-       th:href="@{/nurse(page=${impatientRecords.number + 1},patientName=${patientName},size=${size})}">Sau</a>
+<div class="container py-5">
+    <h2 class="mb-4">Danh sách bệnh nhân</h2>
+
+    <!-- Form tìm kiếm -->
+    <form class="row g-3 mb-4" th:action="@{/nurse}" method="get">
+        <div class="col-md-4">
+            <input type="text" class="form-control" th:value="${patientName}" name="patientName" placeholder="Tên bệnh nhân"/>
+        </div>
+        <input type="hidden" th:value="${size}" name="size">
+        <div class="col-md-auto">
+            <button class="btn btn-primary">Tìm kiếm</button>
+        </div>
+    </form>
+
+    <!-- Liên kết danh sách -->
+    <div class="btn-group mb-4">
+        <a href="/nurse/advance-payments" class="btn btn-outline-secondary">Bệnh nhân tạm ứng tiền</a>
+        <a href="/nurse/list-impatient-records" class="btn btn-outline-secondary">Tất cả bệnh nhân</a>
+    </div>
+
+    <!-- Bảng danh sách -->
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <thead class="table-dark">
+            <tr>
+                <th>STT</th>
+                <th>Ngày nhập viện</th>
+                <th>Ngày xuất viện</th>
+                <th>Số giường</th>
+                <th>Tên bệnh nhân</th>
+                <th>Thao tác</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="impatientRecord, status : ${impatientRecords}">
+                <td th:text="${status.count}"></td>
+                <td th:text="${impatientRecord.admissionDate}"></td>
+                <td th:if="${impatientRecord.dischargeDate != null}" th:text="${impatientRecord.dischargeDate}"></td>
+                <td th:if="${impatientRecord.dischargeDate == null}">Đang điều trị</td>
+                <td th:text="${impatientRecord.bed.number}"></td>
+                <td th:text="${impatientRecord.medicalRecord.patient.name}"></td>
+                <td>
+                    <a href="#" class="btn btn-sm btn-outline-primary">Điều trị</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Phân trang -->
+    <div class="d-flex justify-content-between align-items-center my-3">
+        <div>
+            <a th:if="${impatientRecords.hasPrevious()}"
+               th:href="@{/nurse(page=${impatientRecords.number - 1}, patientName=${patientName}, size=${size})}"
+               class="btn btn-outline-secondary btn-sm">← Trước</a>
+
+            <a th:if="${impatientRecords.hasNext()}"
+               th:href="@{/nurse(page=${impatientRecords.number + 1}, patientName=${patientName}, size=${size})}"
+               class="btn btn-outline-secondary btn-sm">Sau →</a>
+        </div>
+        <div>
+            Trang <span th:text="${impatientRecords.number + 1}"></span> / <span th:text="${impatientRecords.totalPages}"></span>
+        </div>
+    </div>
+
+    <!-- Chọn kích thước trang -->
+    <form th:action="@{/nurse}" method="get" class="mb-3">
+        <input type="hidden" th:value="${patientName}" name="patientName">
+        <label class="form-label">Số dòng/trang:
+            <select name="size" class="form-select d-inline w-auto" onchange="this.form.submit()">
+                <option th:each="item : ${sizeList}" th:value="${item}" th:text="${item}" th:selected="${item == size}"></option>
+            </select>
+        </label>
+    </form>
+
+    <!-- Nếu không có dữ liệu -->
+    <div class="alert alert-warning" th:if="${impatientRecords.totalPages == 0}">
+        Không tìm thấy dữ liệu phù hợp.
+    </div>
 </div>
 
-<form th:action="@{/nurse}" method="get">
-    <input type="hidden" th:value="${patientName}" name ="patientName">
-    <label>
-        <select name="size" onchange="this.form.submit()">
-            <option th:each="item : ${sizeList}" th:value="${item}" th:text="${item}" th:selected="${item == size}"></option>
-        </select>
-    </label>
-</form>
-<span th:if="${impatientRecords.totalPages == 0}">Không tìm lấy dữ liệu</span>
 </body>
 </html>

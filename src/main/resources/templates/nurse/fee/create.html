@@ -1,37 +1,53 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+  <meta charset="UTF-8">
+  <title>Tạo đơn ứng tiền</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
-<form th:action="@{/nurse/advance-payments/create}" method="post" th:object="${advancePaymentDto}">
-<fieldset>
-  <legend>Tạo đơn ứng tiền</legend>
-  <label>Số tiền</label>
-  <input type="number" placeholder="Nhập số tiền" th:field="*{fee}">
-  <small style="color:red" th:if="${#fields.hasErrors('fee')}" th:errors="*{fee}"></small>
-  <br>
-  <label>Ngày mượn tiền</label>
-  <input type="date" placeholder="Nhập ngày mượn tiền" th:field="*{date}">
-  <small style="color:red" th:if="${#fields.hasErrors('date')}" th:errors="*{date}"></small>
-  <br>
-  <label>Lý do mượn tiền</label>
-  <input type="text" placeholder="Nhập lý do mượn tiền" th:field="*{reason}">
-  <small style="color:red" th:if="${#fields.hasErrors('reason')}" th:errors="*{reason}"></small>
-  <br>
-  <label>Chọn bệnh án nội trú:</label>
-  <select th:field="*{impatientRecord.id}" class="form-select">
-    <option value="">-- Chọn --</option>
-    <option th:each="impatientRecord : ${impatientRecordList}"
-            th:value="${impatientRecord.id}"
-            th:text="${impatientRecord.patient.name}">
-    </option>
-  </select>
-  <input type="hidden"  th:field="*{employee.id}" value="1">
-  <button>Tạo đơn</button>
-</fieldset>
-</form>
+<body class="bg-light">
 
+<div class="container py-5">
+  <h2 class="mb-4">Tạo đơn ứng tiền</h2>
+
+  <form th:action="@{/nurse/advance-payments/create}" method="post" th:object="${advancePaymentDto}" class="row g-3 needs-validation">
+    <div class="col-md-6">
+      <label class="form-label">Số tiền</label>
+      <input type="number" class="form-control" th:field="*{fee}" placeholder="Nhập số tiền">
+      <div class="text-danger" th:if="${#fields.hasErrors('fee')}" th:errors="*{fee}"></div>
+    </div>
+
+    <div class="col-md-6">
+      <label class="form-label">Ngày mượn tiền</label>
+      <input type="date" class="form-control" th:field="*{date}">
+      <div class="text-danger" th:if="${#fields.hasErrors('date')}" th:errors="*{date}"></div>
+    </div>
+
+    <div class="col-md-12">
+      <label class="form-label">Lý do mượn tiền</label>
+      <input type="text" class="form-control" th:field="*{reason}" placeholder="Nhập lý do mượn tiền">
+      <div class="text-danger" th:if="${#fields.hasErrors('reason')}" th:errors="*{reason}"></div>
+    </div>
+
+    <div class="col-md-12">
+      <label class="form-label">Chọn bệnh án nội trú</label>
+      <select class="form-select" th:field="*{impatientRecord.id}">
+        <option value="">-- Chọn bệnh nhân --</option>
+        <option th:each="record : ${impatientRecordList}"
+                th:value="${record.id}"
+                th:text="${record.medicalRecord.patient.name}">
+        </option>
+      </select>
+      <div class="text-danger" th:if="${#fields.hasErrors('impatientRecord.id')}" th:errors="*{impatientRecord.id}"></div>
+    </div>
+
+    <input type="hidden" th:field="*{employee.id}" value="1"/>
+
+    <div class="col-12">
+      <button type="submit" class="btn btn-primary">Tạo đơn</button>
+      <a th:href="@{/nurse/advance-payments}" class="btn btn-outline-secondary ms-2">← Quay lại danh sách</a>
+    </div>
+  </form>
+</div>
 </body>
 </html>

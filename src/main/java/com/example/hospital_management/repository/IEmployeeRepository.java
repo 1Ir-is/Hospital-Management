@@ -53,4 +53,8 @@ public interface IEmployeeRepository extends JpaRepository<Employee, Long> {
     long countByStatusOrStatusIsNull(Boolean status);
 
     long countByStartingDateGreaterThanEqual(LocalDate startDate);
+
+    @Query(value = "select e.* from employees e join employee_roles er on e.id = er.employee_id " +
+            "join roles r on er.roles_id = r.id where r.id = 1; ",nativeQuery = true)
+    List<Employee> getListNurse();
 }

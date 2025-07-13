@@ -2,72 +2,193 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Điều trị cho bệnh nhân</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
-<body>
-<!--private Long id;-->
-<!--private int quantity;-->
-<!--private LocalDate startDate;-->
-<!--private LocalDate endDate;-->
-<!--private Integer morningDose;-->
-<!--private Integer eveningDose;-->
-<!--private boolean status;-->
-<!--private String note;-->
-<!--private String treatmentLocation;-->
+<body class="bg-light">
 
-<!--@ManyToOne-->
-<!--@JoinColumn(name="impatient_record_id")-->
-<!--private ImpatientRecord impatientRecord;-->
+<div class="container py-5">
+    <h2 class="mb-4">Thông tin điều trị</h2>
 
-<!--@OneToOne-->
-<!--@JoinColumn(name="medicine_id")-->
-<!--private Medicine medicine;-->
-<form th:action="@{/attending-physician/{id}/create(id=${id})}" method="post" th:object="${inpatientTreatmentDto}">
-    <fieldset>
-        <legend>Điều trị cho bệnh nhân</legend>
-        <label>Ngày bắt đầu</label>
-        <input type="date" placeholder="Nhập ngày bắt đầu" th:field="*{startDate}">
-        <small style="color:red" th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}"></small>
-        <br>
-        <label>Chọn tên thuốc</label>
-        <select th:field="*{medicine.id}" class="form-select">
-            <option value="">----Chọn----</option>
-            <option th:each="medicine : ${medicineList}"
-                    th:value="${medicine.id}"
-                    th:text="${medicine.name}"
-            ></option>
-        </select>
-        <label>Chọn nơi điều trị</label>
-        <select th:field="*{treatmentLocation}" class="form-select">
-            <option value="">----Chọn----</option>
-            <option th:each="treatmentLocation : ${locationList}"
-                    th:value="${treatmentLocation}"
-                    th:text="treatmentLocation"></option>
-        </select>
-        <label>Số ngày dự kiến</label>
-        <input type="date" placeholder="Nhập số ngày dự kiến điều trị" th:field="*{estimateNumberOfDate}">
-        <small style="color:red" th:if="${#fields.hasErrors('estimateNumberOfDate')}"
-               th:errors="*{estimateNumberOfDate}"></small>
-        <br>
-        <label>Liều sáng</label>
-        <input type="date" placeholder="liều sáng" th:field="*{morningDose}">
-        <small style="color:red" th:if="${#fields.hasErrors('morningDose')}" th:errors="*{morningDose}"></small>
-        <label>Số lượng</label>
-        <input type="text" placeholder="liều tối" th:field="*{eveningDose}">
-        <small style="color:red" th:if="${#fields.hasErrors('eveningDose')}" th:errors="*{eveningDose}"></small>
-        <br>
-        <label>Ngày dự kiến kết thúc</label>
-        <p th:field="*{endDate}">
-            <br>
-            <label>Số lượng thuốc dự kiến</label>
-        <p th:field="*{quantity}">
-            <br>
-            <label>Tên bệnh nhân nội trú</label>
-            <input type="hidden" th:field="*{impatientRecord.id}">
-        <p th:text="${inpatientTreatmentDto.impatientRecord.medicalRecord.patient.name}">
-            <button>Tạo đơn</button>
-    </fieldset>
-</form>
+    <div th:if="${#lists.isEmpty(employeeAssignments)}" class="alert alert-warning">
+        <strong>Chưa có y tá phụ trách</strong>
+    </div>
+    <div th:if="${!#lists.isEmpty(employeeAssignments)}" class="mb-4">
+        <h5>Y tá phụ trách:</h5>
+        <ul class="list-group">
+            <li class="list-group-item" th:each="assignment : ${employeeAssignments}"
+                th:text="${assignment.employee.name}"></li>
+        </ul>
+    </div>
 
+    <!-- Nút mở modal -->
+    <button class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#treatmentModal">
+        Tạo đơn điều trị
+    </button>
+
+
+
+    <!-- Modal tạo đơn điều trị -->
+    <div class="modal fade" id="treatmentModal" tabindex="-1" aria-labelledby="treatmentModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form th:action="@{/attending-physician/{id}/create(id=${id})}" method="post" th:object="${inpatientTreatmentDto}">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="treatmentModalLabel">Tạo đơn điều trị</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" th:field="*{impatientRecord.id}"/>
+
+                        <div class="mb-3">
+                            <label class="form-label">Tên bệnh nhân:</label>
+                            <p th:text="${inpatientTreatmentDto.impatientRecord.medicalRecord.patient.name}" class="form-control-plaintext"></p>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Ngày bắt đầu</label>
+                            <input type="date" class="form-control" th:field="*{startDate}">
+                            <div class="text-danger" th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}"></div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Tên thuốc</label>
+                            <select class="form-select" th:field="*{medicine.id}">
+                                <option value="">----Chọn----</option>
+                                <option th:each="medicine : ${medicineList}" th:value="${medicine.id}" th:text="${medicine.name}"></option>
+                            </select>
+                            <div class="text-danger" th:if="${#fields.hasErrors('medicine.id')}" th:errors="*{medicine.id}"></div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Nơi điều trị</label>
+                            <select class="form-select" th:field="*{treatmentLocation}">
+                                <option value="">----Chọn----</option>
+                                <option th:each="location : ${locationList}" th:value="${location}" th:text="${location}"></option>
+                            </select>
+                            <div class="text-danger" th:if="${#fields.hasErrors('treatmentLocation')}" th:errors="*{treatmentLocation}"></div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Số ngày dự kiến</label>
+                                <input type="number" class="form-control" th:field="*{estimateNumberOfDate}">
+                                <div class="text-danger" th:if="${#fields.hasErrors('estimateNumberOfDate')}" th:errors="*{estimateNumberOfDate}"></div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Liều sáng</label>
+                                <input type="number" class="form-control" th:field="*{morningDose}">
+                                <div class="text-danger" th:if="${#fields.hasErrors('morningDose')}" th:errors="*{morningDose}"></div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Liều tối</label>
+                                <input type="number" class="form-control" th:field="*{eveningDose}">
+                                <div class="text-danger" th:if="${#fields.hasErrors('eveningDose')}" th:errors="*{eveningDose}"></div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Ngày kết thúc (tự động tính)</label>
+                            <input type="text" class="form-control" id="endDateDisplay" disabled>
+                            <input type="hidden" th:field="*{endDate}" id="endDateHidden">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Số lượng thuốc dự kiến</label>
+                            <input type="text" class="form-control" id="quantityDisplay" disabled>
+                            <input type="hidden" th:field="*{quantity}" id="quantityHidden">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-primary">Tạo đơn</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lịch sử kê đơn -->
+    <h3 class="mt-5 mb-3">Lịch sử kê đơn thuốc</h3>
+    <div class="text-end mb-3">
+        <a th:href="@{/attending-physician}" class="btn btn-outline-secondary">
+            ← Quay lại danh sách hồ sơ
+        </a>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <thead class="table-dark">
+            <tr>
+                <th>STT</th>
+                <th>Ngày bắt đầu</th>
+                <th>Ngày kết thúc</th>
+                <th>Thuốc</th>
+                <th>Liều sáng</th>
+                <th>Liều tối</th>
+                <th>Ghi chú</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="treatment, treatmentStatus : ${treatmentHistory}">
+                <td th:text="${treatmentStatus.count}"></td>
+                <td th:text="${treatment.startDate}"></td>
+                <td th:text="${treatment.endDate}"></td>
+                <td th:text="${treatment.medicine.name}"></td>
+                <td th:text="${treatment.morningDose}"></td>
+                <td th:text="${treatment.eveningDose}"></td>
+                <td th:text="${treatment.note}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    function getTreatmentInfo() {
+        const startDateStr = document.querySelector('[name="startDate"]').value;
+        const estimateNumberOfDate = parseInt(document.querySelector('[name="estimateNumberOfDate"]').value) || 0;
+        const morningDose = parseInt(document.querySelector('[name="morningDose"]').value) || 0;
+        const eveningDose = parseInt(document.querySelector('[name="eveningDose"]').value) || 0;
+
+        if (startDateStr && estimateNumberOfDate > 0) {
+            const startDate = new Date(startDateStr);
+            const endDate = new Date(startDate);
+            endDate.setDate(startDate.getDate() + estimateNumberOfDate);
+            const endDateFormatted = endDate.toISOString().split("T")[0];
+            const quantity = (morningDose + eveningDose) * estimateNumberOfDate;
+
+            document.getElementById("endDateHidden").value = endDateFormatted;
+            document.getElementById("quantityHidden").value = quantity;
+            document.getElementById("endDateDisplay").value = endDateFormatted;
+            document.getElementById("quantityDisplay").value = quantity;
+        }
+    }
+
+    document.querySelector('[name="startDate"]').addEventListener("change", getTreatmentInfo);
+    document.querySelector('[name="estimateNumberOfDate"]').addEventListener("input", getTreatmentInfo);
+    document.querySelector('[name="morningDose"]').addEventListener("input", getTreatmentInfo);
+    document.querySelector('[name="eveningDose"]').addEventListener("input", getTreatmentInfo);
+</script>
+<script th:inline="javascript">
+    let shouldOpenModal = false;
+    if (shouldOpenModal) {
+        const myModal = new bootstrap.Modal(document.getElementById('treatmentModal'));
+        myModal.show();
+    }
+    /*<![CDATA[*/
+    let successMessage = /*[[${successMessage}]]*/ null;
+    if (successMessage) {
+        Swal.fire({
+            icon: 'success',
+            title: 'Thành công!',
+            text: successMessage,
+            timer: 3000,
+            showConfirmButton: false
+        });
+    }
+    /*]]>*/
+</script>
 </body>
 </html>

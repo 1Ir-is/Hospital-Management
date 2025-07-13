@@ -162,4 +162,9 @@ impatientRecordRepository.deleteById(id);
     public Page<ImpatientRecord> findAll(String patientName, Pageable pageable) {
         return impatientRecordRepository.findAllImpatientRecords(patientName,pageable);
     }
+
+    @Override
+    public Page<ImpatientRecord> findAllImpatientRecordsList(String patientName,String code, Pageable pageable) {
+        return impatientRecordRepository.getInpatientRecordsList(patientName,code,pageable);
+    }
 }
