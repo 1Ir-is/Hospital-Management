@@ -213,6 +213,12 @@ public class EmployeeService implements IEmployeeService {
         LocalDate startOfMonth = LocalDate.now().withDayOfMonth(1);
         return employeeRepository.countByStartingDateGreaterThanEqual(startOfMonth);
     }
+
+    @Override
+    public Employee findByEmail(String email) {
+        return employeeRepository.findByEmail(email);
+    }
+
 }
 
 

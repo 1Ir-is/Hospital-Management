@@ -21,7 +21,7 @@ public interface IImpatientRecordService {
 
     Optional<ImpatientRecord> findById(Long id);
 
-    Page<ImpatientRecord> searchByFields(String patientName, String roomNumber, String doctorName, String nurseName, Pageable pageable);
+    Page<ImpatientRecord> searchByFieldsWithDepartment( String patientName, String roomNumber, String doctorName, String nurseName,Long departmentId, Pageable pageable);
 
     void updateNote(Long recordId, String note);
     List<ImpatientBasicDto> findAllUnpaidImpatients();

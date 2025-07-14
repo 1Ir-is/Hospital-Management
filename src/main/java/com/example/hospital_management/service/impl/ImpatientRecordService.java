@@ -58,9 +58,16 @@ public class ImpatientRecordService implements IImpatientRecordService {
     }
 
     @Override
-    public Page<ImpatientRecord> searchByFields(String patientName, String roomNumber, String doctorName, String nurseName, Pageable pageable) {
-        return impatientRecordRepository.searchByFields(patientName, roomNumber, doctorName ,nurseName, pageable);
+    public Page<ImpatientRecord> searchByFieldsWithDepartment(String patientName,
+                                                              String roomNumber,
+                                                              String doctorName,
+                                                              String nurseName,
+                                                              Long departmentId,
+                                                              Pageable pageable) {
+        return impatientRecordRepository.searchByFieldsWithDepartment(
+                patientName, roomNumber, doctorName, nurseName, departmentId, pageable);
     }
+
     @Override
     public void updateNote(Long recordId, String note) {
         ImpatientRecord record = impatientRecordRepository.findById(recordId)
