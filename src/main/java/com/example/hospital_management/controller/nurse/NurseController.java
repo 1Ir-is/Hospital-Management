@@ -2,7 +2,9 @@ package com.example.hospital_management.controller.nurse;
 
 import com.example.hospital_management.dto.AdvancePaymentDto;
 import com.example.hospital_management.dto.InpatientTreatmentDto;
+import com.example.hospital_management.dto.TreatmentTaskFormDto;
 import com.example.hospital_management.entity.*;
+import com.example.hospital_management.repository.ITreatmentTaskRepository;
 import com.example.hospital_management.service.*;
 import com.example.hospital_management.service.impl.ImpatientRecordService;
 import org.springframework.beans.BeanUtils;
@@ -31,12 +33,13 @@ public class NurseController {
     private final IEmployeeService iEmployeeService;
     public final IInpatientTreatmentService iInpatientTreatmentService;
     public final IEmployeeAssignmentService employeeAssignmentService;
+    public final ITreatmentTaskService treatmentTaskService;
 
     public NurseController(ImpatientRecordService impatientRecordService,
                            IAdvancePaymentService iAdvancePaymentService,
                            IEmployeeService iEmployeeService,
                            IMedicalRecordService medicalRecordService,
-                           IVitalSignService vitalSignService, IInpatientTreatmentService iInpatientTreatmentService, IEmployeeAssignmentService employeeAssignmentService) {
+                           IVitalSignService vitalSignService, IInpatientTreatmentService iInpatientTreatmentService, IEmployeeAssignmentService employeeAssignmentService, ITreatmentTaskService treatmentTaskService) {
         this.impatientRecordService = impatientRecordService;
         this.iAdvancePaymentService = iAdvancePaymentService;
         this.iEmployeeService = iEmployeeService;
@@ -44,6 +47,7 @@ public class NurseController {
         this.vitalSignService = vitalSignService;
         this.iInpatientTreatmentService = iInpatientTreatmentService;
         this.employeeAssignmentService = employeeAssignmentService;
+        this.treatmentTaskService = treatmentTaskService;
     }
 
     @ModelAttribute("sizeList")
@@ -175,6 +179,41 @@ public class NurseController {
         model.addAttribute("employeeAssignments", employeeAssignments);
         model.addAttribute("treatmentHistory", treatmentHistory);
         return "nurse/treatment_task/detail";
+    }
+
+//    @GetMapping("/treatment/{id}/edit")
+//    public String showUpdateTreatmentTask(@PathVariable("id") Long treatmentId, Model model) {
+//        List<TreatmentTask> taskList = treatmentTaskService.getAllTreatmentTaskByTreatmentTaskById(treatmentId);
+//        model.addAttribute("taskList", taskList);
+//        return "nurse/treatment_task/update";
+//    }
+
+    @GetMapping("/treatment/{id}/edit")
+    public String showUpdateForm(@PathVariable Long id, Model model) {
+        List<TreatmentTask> tasks = treatmentTaskService.getAllTreatmentTaskByTreatmentTaskById(id);
+        TreatmentTaskFormDto form = new TreatmentTaskFormDto();
+        form.setTaskList(tasks);
+        model.addAttribute("form", form);
+        model.addAttribute("treatmentId", id);
+        return "nurse/treatment_task/update";
+    }
+
+    @PostMapping("/treatment/{id}/update")
+    public String updateTreatment(@ModelAttribute("form") TreatmentTaskFormDto form,@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        for (TreatmentTask partialUpdate : form.getTaskList()) {
+
+            TreatmentTask existingTask = treatmentTaskService.findById(partialUpdate.getId());
+
+            if (existingTask != null) {
+                existingTask.setMorningStatus(partialUpdate.isMorningStatus());
+                existingTask.setMorningNote(partialUpdate.getMorningNote());
+                existingTask.setEveningStatus(partialUpdate.isEveningStatus());
+                existingTask.setEveningNote(partialUpdate.getEveningNote());
+                treatmentTaskService.save(existingTask);
+            }
+        }
+        redirectAttributes.addFlashAttribute("success", true);
+        return "redirect:/nurse/treatment/" + id + "/edit";
     }
 
 

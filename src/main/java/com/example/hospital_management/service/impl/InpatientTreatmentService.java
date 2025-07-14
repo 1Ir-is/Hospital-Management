@@ -49,7 +49,10 @@ public class InpatientTreatmentService implements IInpatientTreatmentService {
             treatmentTask.setDate(date);
             treatmentTask.setMorningDose(inpatientTreatment.getMorningDose());
             treatmentTask.setEveningDose(inpatientTreatment.getEveningDose());
-            treatmentTask.setStatus(false);
+            treatmentTask.setMorningStatus(false);
+            treatmentTask.setEveningStatus(false);
+            treatmentTask.setMorningNote("");
+            treatmentTask.setEveningNote("");
             treatmentTask.setInpatientTreatment(inpatientTreatment);
             treatmentTasks.add(treatmentTask);
         }

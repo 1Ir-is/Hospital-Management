@@ -22,8 +22,10 @@ public class TreatmentTask {
     private LocalDate date;
     private Integer morningDose;
     private Integer eveningDose;
-    private boolean status;
-
+    private boolean morningStatus;
+    private boolean eveningStatus;
+    private String morningNote;
+    private String eveningNote;
     @ManyToOne
     @JoinColumn(name="inpatient_treatment_id")
     private InpatientTreatment inpatientTreatment;

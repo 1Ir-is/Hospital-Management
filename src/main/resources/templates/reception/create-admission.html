@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Tạo đơn nhập viện</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body class="bg-light">
 
@@ -66,7 +67,7 @@
         </div>
 
         <div class="d-flex gap-2">
-            <button class="btn btn-success" type="submit">Tạo đơn</button>
+            <button id="submitBtn" class="btn btn-success" type="button">Tạo đơn</button>
             <a href="/receptionist" class="btn btn-secondary">Quay lại trang chủ</a>
         </div>
     </form>
@@ -103,6 +104,54 @@
                     }
                 });
             }
+        });
+    });
+    $(document).ready(function () {
+        // Xử lý chọn phòng => giường (đã có)
+        $('#roomSelect').on('change', function () {
+            const roomId = $(this).val();
+            $('#bedSelect').empty().append('<option value="">-- Chọn giường --</option>');
+            $('#bedMessage').text('');
+
+            if (roomId) {
+                $.ajax({
+                    url: '/receptionist/admission/getBed',
+                    type: 'GET',
+                    data: { roomId: roomId },
+                    success: function (data) {
+                        if (data.length === 0) {
+                            $('#bedMessage').text('Phòng không còn giường trống.');
+                        } else {
+                            data.forEach(function (bed) {
+                                $('#bedSelect').append(
+                                    $('<option></option>').val(bed.id).text(bed.number)
+                                );
+                            });
+                        }
+                    },
+                    error: function () {
+                        $('#bedMessage').text('Không thể tải danh sách giường.');
+                    }
+                });
+            }
+        });
+
+        // Hiển thị SweetAlert confirm trước khi submit form
+        $('#submitBtn').on('click', function (e) {
+            Swal.fire({
+                title: 'Xác nhận tạo đơn?',
+                text: "Bạn có chắc chắn muốn tạo đơn nhập viện này?",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#28a745',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Có, tạo đơn!',
+                cancelButtonText: 'Hủy'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $('form').submit();
+                }
+            });
         });
     });
 </script>

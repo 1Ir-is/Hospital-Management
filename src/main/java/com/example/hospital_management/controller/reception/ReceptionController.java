@@ -190,6 +190,7 @@ public class ReceptionController {
         impatientRecord.setStatus(true);
         impatientRecord.setId(id);
         impatientRecordService.save(impatientRecord);
+        redirectAttributes.addFlashAttribute("successMessage", "Tạo đơn nhập viện thành công!");
         return "redirect:/receptionist";
     }
 

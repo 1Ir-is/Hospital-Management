@@ -40,7 +40,7 @@
                 <td th:text="${treatment.medicine.name}"></td>
                 <td th:text="${treatment.morningDose}"></td>
                 <td th:text="${treatment.eveningDose}"></td>
-                <td th:text="${treatment.status == 0 ? 'Chưa uống' : 'Đã uống'}"></td>
+                <td th:text="${treatment.status == 0 ? 'Hết thuốc' : 'Còn thuốc'}"></td>
                 <td th:text="${treatment.note}"></td>
                 <td>
                     <a th:href="@{/nurse/treatment/{id}/edit(id=${treatment.id})}" class="btn btn-sm btn-warning">
