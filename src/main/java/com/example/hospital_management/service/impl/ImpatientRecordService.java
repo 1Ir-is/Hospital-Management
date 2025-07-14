@@ -17,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import java.util.List;
@@ -30,18 +31,20 @@ public class ImpatientRecordService implements IImpatientRecordService {
     private final IImpatientRecordRepository impatientRecordRepository;
     private final IMedicalRecordRepository medicalRecordRepository;
     private final IPrescriptionRepository prescriptionRepository;
+    private final InsuranceService insuranceService;
 
     public ImpatientRecordService(IImpatientRecordRepository impatientRecordRepository,
                                   IMedicalRecordRepository medicalRecordRepository,
-                                  IPrescriptionRepository prescriptionRepository) {
+                                  IPrescriptionRepository prescriptionRepository, InsuranceService insuranceService) {
         this.impatientRecordRepository = impatientRecordRepository;
         this.medicalRecordRepository = medicalRecordRepository;
         this.prescriptionRepository = prescriptionRepository;
+        this.insuranceService = insuranceService;
     }
 
     @Override
-    public List<ImpatientBasicDto> findAllUnpaidImpatients() {
-        return impatientRecordRepository.findAllUnpaidImpatients();
+    public Page<ImpatientBasicDto> findAllUnpaidImpatients(Pageable pageable) {
+        return impatientRecordRepository.findAllUnpaidImpatients(pageable);
     }
 
 
@@ -58,10 +61,16 @@ public class ImpatientRecordService implements IImpatientRecordService {
         testFee = (testFee == null) ? 0 : testFee;
         advance = (advance == null) ? 0 : advance;
 
+
         Long medicalFee = (mr.getFee() == null) ? 0 : mr.getFee();
-        Long totalFee = medicalFee + testFee + medicineFee ;
+        Long totalFee = medicalFee + testFee + medicineFee;
         Long remaining = totalFee - advance;
 
+        Long insuranceAmount = 0L;
+        Long patientId = mr.getPatient().getId();
+        if (insuranceService.existsValidInsurance(patientId, LocalDate.now())) {
+            insuranceAmount = totalFee / 2; // giảm 50%
+        }
         return new BillingSummaryDto(
                 mr.getId(),
                 mr.getPatient().getName(),
@@ -70,9 +79,10 @@ public class ImpatientRecordService implements IImpatientRecordService {
                 testFee,
                 medicineFee,
                 totalFee,
+                insuranceAmount,
                 advance,
                 remaining,
-                true               // Là nội trú
+                true // ✅ là bệnh nhân nội trú        // Là nội trú
         );
     }
 
@@ -95,17 +105,17 @@ public class ImpatientRecordService implements IImpatientRecordService {
 
     @Override
     public void remove(Long id) {
-impatientRecordRepository.deleteById(id);
+        impatientRecordRepository.deleteById(id);
     }
 
     @Override
     public Page<ImpatientRecord> searchByName(String searchByName, Pageable pageable) {
-        return impatientRecordRepository.searchByName(searchByName,pageable);
+        return impatientRecordRepository.searchByName(searchByName, pageable);
     }
 
     @Override
     public Page<ImpatientRecord> findAll(String patientName, Long employeeId, Pageable pageable) {
-        return impatientRecordRepository.findRecordsByPatientNameAndEmployeeId(patientName,employeeId,pageable);
+        return impatientRecordRepository.findRecordsByPatientNameAndEmployeeId(patientName, employeeId, pageable);
     }
 
     @Override
@@ -124,8 +134,8 @@ impatientRecordRepository.deleteById(id);
     }
 
     @Override
-    public Page<ImpatientRecord> findAllWaitingToImpatient(String patientName,String code, Pageable pageable) {
-        return impatientRecordRepository.getListImpatientRecords(patientName,code, pageable);
+    public Page<ImpatientRecord> findAllWaitingToImpatient(String patientName, String code, Pageable pageable) {
+        return impatientRecordRepository.getListImpatientRecords(patientName, code, pageable);
     }
 
     @Override
@@ -135,6 +145,6 @@ impatientRecordRepository.deleteById(id);
 
     @Override
     public Page<ImpatientRecord> findAll(String patientName, Pageable pageable) {
-        return impatientRecordRepository.findAllImpatientRecords(patientName,pageable);
+        return impatientRecordRepository.findAllImpatientRecords(patientName, pageable);
     }
 }

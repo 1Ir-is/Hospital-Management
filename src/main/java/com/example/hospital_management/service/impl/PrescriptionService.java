@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -41,4 +42,13 @@ public class PrescriptionService implements IPrescriptionService {
         return prescriptionRepository.findFirstUnprocessedPrescription();
     }
 
+    @Override
+    public List<PrescriptionRequestDto> findTodayDispensedPrescriptions() {
+        return prescriptionRepository.findTodayDispensedPrescriptions();
+    }
+
+    @Override
+    public List<PrescriptionRequestDto> findAllPaidPrescriptionsByMedicalRecordCode(String code) {
+        return prescriptionRepository.findAllPaidPrescriptionsByMedicalRecordCode(code);
+    }
 }

@@ -164,6 +164,11 @@ public class EmployeeService implements IEmployeeService {
         updateEmployeeRoles(employeeId, roleIds);
     }
 
+    @Override
+    public Optional<Employee> findEmployeeByEmail(String email) {
+        return employeeRepository.findEmployeeByEmail(email);
+    }
+
 
     @Override
     public long countTotalEmployees() {

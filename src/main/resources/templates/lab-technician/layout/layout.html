@@ -69,22 +69,41 @@
 
             <div class="menu-section">
                 <div class="menu-title">Danh sách Xét nghiệm</div>
-                <a class="menu-item" href="/lab-technician/pending-tests"
-                   th:classappend="${activeMenu} == 'pending-tests' ? 'active' : ''">
-                    <i class="fas fa-clock"></i>
-                    <span>Xét nghiệm chờ thực hiện</span>
+
+                <!-- 📋 Danh sách Xét nghiệm theo phòng -->
+                <div class="menu-section">
+                    <!-- Menu động theo từng phòng -->
+                    <a th:each="room : ${roomList}"
+                       class="menu-item"
+                       th:href="@{/lab-technician/room/{id}(id=${room.id}, type=${type})}"
+                       th:classappend="${activeMenu} == 'room' and roomId == ${room.id} ? 'active' : ''">
+                        <i class="fas fa-vials"></i>
+                        <span th:text="${room.name}">Phòng A</span>
+                    </a>
+                </div>
+<!--                <a class="menu-item" href="/lab-technician/pending-tests"-->
+<!--                   th:classappend="${activeMenu} == 'pending-tests' ? 'active' : ''">-->
+<!--                    <i class="fas fa-clock"></i>-->
+<!--                    <span>Xét nghiệm chờ thực hiện</span>-->
+<!--                </a>-->
+
+                <a class="menu-item"
+                   th:href="@{/lab-technician/completed-today(roomId=${roomId}, type=${type})}"
+                   th:classappend="${activeMenu} == 'completedToday' ? 'active' : ''">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Xét nghiệm hôm nay</span>
                 </a>
-                <a class="menu-item" href="/lab-technician/specialty-tests"
-                   th:classappend="${activeMenu} == 'specialty-tests' ? 'active' : ''">
-                    <i class="fas fa-flask"></i>
-                    <span>Xét nghiệm chuyên môn</span>
-                </a>
-                <a class="menu-item" href="/lab-technician/urgent-tests"
+<!--                <a class="menu-item" href="/lab-technician/specialty-tests"-->
+<!--                   th:classappend="${activeMenu} == 'specialty-tests' ? 'active' : ''">-->
+<!--                    <i class="fas fa-flask"></i>-->
+<!--                    <span>Xét nghiệm chuyên môn</span>-->
+<!--                </a>-->
+                <a class="menu-item" href="/lab-technician"
                    th:classappend="${activeMenu} == 'urgent-tests' ? 'active' : ''">
                     <i class="fas fa-exclamation-circle"></i>
                     <span>Xét nghiệm cấp cứu</span>
                 </a>
-                <a class="menu-item" href="/lab-technician/routine-tests"
+                <a class="menu-item" href="/lab-technician"
                    th:classappend="${activeMenu} == 'routine-tests' ? 'active' : ''">
                     <i class="fas fa-calendar-check"></i>
                     <span>Xét nghiệm định kỳ</span>
@@ -93,22 +112,22 @@
 
             <div class="menu-section">
                 <div class="menu-title">Thực hiện Xét nghiệm</div>
-                <a class="menu-item" href="/lab-technician/start-test"
+                <a class="menu-item" href="/lab-technician"
                    th:classappend="${activeMenu} == 'start-test' ? 'active' : ''">
                     <i class="fas fa-play"></i>
                     <span>Bắt đầu xét nghiệm</span>
                 </a>
-                <a class="menu-item" href="/lab-technician/record-results"
+                <a class="menu-item" href="/lab-technician"
                    th:classappend="${activeMenu} == 'record-results' ? 'active' : ''">
                     <i class="fas fa-edit"></i>
                     <span>Ghi nhận kết quả</span>
                 </a>
-                <a class="menu-item" href="/lab-technician/quality-control"
+                <a class="menu-item" href="/lab-technician"
                    th:classappend="${activeMenu} == 'quality-control' ? 'active' : ''">
                     <i class="fas fa-check-double"></i>
                     <span>Kiểm soát chất lượng</span>
                 </a>
-                <a class="menu-item" href="/lab-technician/equipment-status"
+                <a class="menu-item" href="/lab-technician"
                    th:classappend="${activeMenu} == 'equipment-status' ? 'active' : ''">
                     <i class="fas fa-cogs"></i>
                     <span>Trạng thái thiết bị</span>
@@ -117,22 +136,22 @@
 
             <div class="menu-section">
                 <div class="menu-title">Quản lý Kết quả</div>
-                <a class="menu-item" href="/lab-technician/test-results"
+                <a class="menu-item" href="/lab-technician"
                    th:classappend="${activeMenu} == 'test-results' ? 'active' : ''">
                     <i class="fas fa-chart-bar"></i>
                     <span>Kết quả xét nghiệm</span>
                 </a>
-                <a class="menu-item" href="/lab-technician/result-validation"
+                <a class="menu-item" href="/lab-technician"
                    th:classappend="${activeMenu} == 'result-validation' ? 'active' : ''">
                     <i class="fas fa-shield-check"></i>
                     <span>Thẩm định kết quả</span>
                 </a>
-                <a class="menu-item" href="/lab-technician/report-generation"
+                <a class="menu-item" href="/lab-technician"
                    th:classappend="${activeMenu} == 'report-generation' ? 'active' : ''">
                     <i class="fas fa-file-medical"></i>
                     <span>Tạo báo cáo</span>
                 </a>
-                <a class="menu-item" href="/lab-technician/result-history"
+                <a class="menu-item" href="/lab-technician"
                    th:classappend="${activeMenu} == 'result-history' ? 'active' : ''">
                     <i class="fas fa-history"></i>
                     <span>Lịch sử xét nghiệm</span>
@@ -141,22 +160,22 @@
 
             <div class="menu-section">
                 <div class="menu-title">Hướng dẫn Bệnh nhân</div>
-                <a class="menu-item" href="/lab-technician/patient-guidance"
+                <a class="menu-item" href="/lab-technician"
                    th:classappend="${activeMenu} == 'patient-guidance' ? 'active' : ''">
                     <i class="fas fa-user-nurse"></i>
                     <span>Hướng dẫn chuẩn bị</span>
                 </a>
-                <a class="menu-item" href="/lab-technician/test-procedure"
+                <a class="menu-item" href="/lab-technician"
                    th:classappend="${activeMenu} == 'test-procedure' ? 'active' : ''">
                     <i class="fas fa-list-ol"></i>
                     <span>Quy trình xét nghiệm</span>
                 </a>
-                <a class="menu-item" href="/lab-technician/next-steps"
+                <a class="menu-item" href="/lab-technician"
                    th:classappend="${activeMenu} == 'next-steps' ? 'active' : ''">
                     <i class="fas fa-arrow-right"></i>
                     <span>Các bước tiếp theo</span>
                 </a>
-                <a class="menu-item" href="/lab-technician/patient-communication"
+                <a class="menu-item" href="/lab-technician"
                    th:classappend="${activeMenu} == 'patient-communication' ? 'active' : ''">
                     <i class="fas fa-comments"></i>
                     <span>Trao đổi với bệnh nhân</span>
@@ -165,22 +184,22 @@
 
             <div class="menu-section">
                 <div class="menu-title">Màn hình Hiển thị</div>
-                <a class="menu-item" href="/lab-technician/room-display"
+                <a class="menu-item" href="/lab-technician"
                    th:classappend="${activeMenu} == 'room-display' ? 'active' : ''">
                     <i class="fas fa-tv"></i>
                     <span>Màn hình phòng xét nghiệm</span>
                 </a>
-                <a class="menu-item" href="/lab-technician/queue-status"
+                <a class="menu-item" href="/lab-technician"
                    th:classappend="${activeMenu} == 'queue-status' ? 'active' : ''">
                     <i class="fas fa-list"></i>
                     <span>Trạng thái hàng đợi</span>
                 </a>
-                <a class="menu-item" href="/lab-technician/auto-update"
+                <a class="menu-item" href="/lab-technician"
                    th:classappend="${activeMenu} == 'auto-update' ? 'active' : ''">
                     <i class="fas fa-sync-alt"></i>
                     <span>Cập nhật tự động</span>
                 </a>
-                <a class="menu-item" href="/lab-technician/display-settings"
+                <a class="menu-item" href="/lab-technician"
                    th:classappend="${activeMenu} == 'display-settings' ? 'active' : ''">
                     <i class="fas fa-sliders-h"></i>
                     <span>Cài đặt hiển thị</span>
@@ -189,22 +208,22 @@
 
             <div class="menu-section">
                 <div class="menu-title">Báo cáo & Thống kê</div>
-                <a class="menu-item" href="/lab-technician/daily-statistics"
+                <a class="menu-item" href="/lab-technician"
                    th:classappend="${activeMenu} == 'daily-statistics' ? 'active' : ''">
                     <i class="fas fa-chart-pie"></i>
                     <span>Thống kê ngày</span>
                 </a>
-                <a class="menu-item" href="/lab-technician/productivity"
+                <a class="menu-item" href="/lab-technician"
                    th:classappend="${activeMenu} == 'productivity' ? 'active' : ''">
                     <i class="fas fa-chart-line"></i>
                     <span>Năng suất làm việc</span>
                 </a>
-                <a class="menu-item" href="/lab-technician/accuracy-rate"
+                <a class="menu-item" href="/lab-technician"
                    th:classappend="${activeMenu} == 'accuracy-rate' ? 'active' : ''">
                     <i class="fas fa-bullseye"></i>
                     <span>Tỷ lệ chính xác</span>
                 </a>
-                <a class="menu-item" href="/lab-technician/monthly-report"
+                <a class="menu-item" href="/lab-technician"
                    th:classappend="${activeMenu} == 'monthly-report' ? 'active' : ''">
                     <i class="fas fa-file-alt"></i>
                     <span>Báo cáo tháng</span>
@@ -220,6 +239,7 @@
 
 <!-- Base JavaScript -->
 <script>
+
     document.addEventListener("DOMContentLoaded", function () {
         const logoutButton = document.getElementById("logoutButton");
         const logoutForm = document.getElementById("logoutForm");

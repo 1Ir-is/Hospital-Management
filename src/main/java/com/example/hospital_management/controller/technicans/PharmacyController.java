@@ -1,6 +1,6 @@
 package com.example.hospital_management.controller.technicans;
 
-import com.example.hospital_management.dto.PrescriptionDetailDto;
+import com.example.hospital_management.dto.IPrescriptionDetailDto;
 import com.example.hospital_management.dto.PrescriptionRequestDto;
 import com.example.hospital_management.entity.Prescription;
 import com.example.hospital_management.service.IPrescriptionDetailService;
@@ -14,6 +14,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.security.Principal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,13 +43,23 @@ public class PharmacyController {
 //        return "pharmacy/index";
 //    }
 
+    @GetMapping("/paid-prescriptions")
+    public String showPaidPrescriptions(@RequestParam("code") String code, Model model) {
+        List<PrescriptionRequestDto> prescriptions =
+                prescriptionService.findAllPaidPrescriptionsByMedicalRecordCode(code);
+        model.addAttribute("prescriptions", prescriptions);
+        model.addAttribute("code", code);
+        return "/pharmacy/display/paid-prescriptions";
+    }
+
     @GetMapping("")
     public String showPharmacy(@RequestParam(defaultValue = "0") int page,
                                @RequestParam(defaultValue = "5") int size, Model model) {
         Pageable pageable = PageRequest.of(page, size);
         Page<PrescriptionRequestDto> prescriptions = prescriptionService.getAllPrescriptions(pageable);
+        model.addAttribute("activeMenu", "dashboard");
         model.addAttribute("prescriptions", prescriptions);
-        return "/pharmacy/dashboard";
+        return "/pharmacy/display/dashboard";
     }
 
     @GetMapping("/prescription/{id}")
@@ -56,10 +68,10 @@ public class PharmacyController {
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn thuốc"));
 
         model.addAttribute("prescription", prescription);
-        List<PrescriptionDetailDto> details = prescriptionDetailService.getDetailsByPrescriptionId(id);
+        List<IPrescriptionDetailDto> details = prescriptionDetailService.getDetailsByPrescriptionId(id);
         model.addAttribute("prescription", prescription);
         model.addAttribute("details", details);
-        return "pharmacy/detail"; // trang HTML để hiển thị
+        return "pharmacy/display/detail"; // trang HTML để hiển thị
     }
 
 
@@ -69,6 +81,7 @@ public class PharmacyController {
 
         if ("Chưa Cấp".equalsIgnoreCase(prescription.getStatus())) {
             prescription.setStatus("Đã Cấp");
+            prescription.setCreatedDate(LocalDate.now());
             prescriptionService.save(prescription);
             redirectAttributes.addFlashAttribute("success", "Đơn thuốc đã được cấp.");
         } else {
@@ -87,4 +100,14 @@ public class PharmacyController {
         redirectAttributes.addFlashAttribute("info", "Không còn đơn thuốc nào cần cấp.");
         return "redirect:/pharmacy";
     }
+
+    @GetMapping("/dispensed-today")
+    public String showTodayDispensedPrescriptions(Model model) {
+        List<PrescriptionRequestDto> prescriptions = prescriptionService.findTodayDispensedPrescriptions();
+        model.addAttribute("activeMenu", "dashboard"); // hoặc đặt khác nếu muốn menu đổi sáng
+        model.addAttribute("prescriptions", prescriptions);
+        return "pharmacy/display/dispensed_today"; // bạn tạo thêm file HTML hiển thị danh sách này
+    }
+
+
 }

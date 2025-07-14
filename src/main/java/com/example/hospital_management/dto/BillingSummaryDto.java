@@ -17,6 +17,7 @@ public class BillingSummaryDto {
     private Long testFee;
     private Long medicineFee;
     private Long totalFee;
+    private Long insuranceAmount;
 
     private Long advancePayment;
     private Long remainingAmount;

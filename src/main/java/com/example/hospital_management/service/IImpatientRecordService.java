@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface IImpatientRecordService {
-    List<ImpatientBasicDto> findAllUnpaidImpatients();
+    Page<ImpatientBasicDto> findAllUnpaidImpatients(Pageable pageable);
 
     BillingSummaryDto getBillingSummary(Long medicalRecordId);
 

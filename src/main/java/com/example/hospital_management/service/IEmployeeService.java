@@ -35,4 +35,5 @@ public interface IEmployeeService {
     void updateEmployeeRoles(Long employeeId, List<Long> roleIds);
 
     void updateEmployeeWithRoles(Long employeeId, Employee updatedEmployee, List<Long> roleIds);
+    Optional<Employee> findEmployeeByEmail(String email);
 }
