@@ -1,39 +1,39 @@
 package com.example.hospital_management.controller.patient;
 
-import com.example.hospital_management.entity.Ticket;
-import com.example.hospital_management.service.IMedicalRecordService;
-import com.example.hospital_management.service.IPatientService;
-import com.example.hospital_management.service.ITicketService;
+import com.example.hospital_management.entity.*;
+import com.example.hospital_management.service.*;
 import com.example.hospital_management.service.impl.EmailService;
 import com.example.hospital_management.web_socket.TicketWebSocketSender;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
+import java.util.*;
 
 @Controller
 @RequestMapping("/patient")
 public class PatientController {
     private ITicketService ticketService;
     private IMedicalRecordService medicalRecordService;
-    private IPatientService patientService;
+    private ITestReportService testReportService;
     private EmailService emailService;
+    private IExaminationShiftService examinationShiftService;
     private TicketWebSocketSender ticketWebSocketSender;
 
-    public PatientController(ITicketService ticketService, IMedicalRecordService medicalRecordService, IPatientService patientService, EmailService emailService, TicketWebSocketSender ticketWebSocketSender) {
+
+    public PatientController(ITicketService ticketService, IMedicalRecordService medicalRecordService,
+                             ITestReportService testReportService, EmailService emailService, TicketWebSocketSender ticketWebSocketSender,IExaminationShiftService examinationShiftService) {
         this.ticketService = ticketService;
         this.medicalRecordService = medicalRecordService;
-        this.patientService = patientService;
+        this.testReportService = testReportService;
         this.emailService = emailService;
         this.ticketWebSocketSender = ticketWebSocketSender;
+        this.examinationShiftService = examinationShiftService;
     }
 
 //    public PatientController(ITicketService ticketService, IMedicalRecordService medicalRecordService, IPatientService patientService, EmailService emailService) {
@@ -59,7 +59,7 @@ public class PatientController {
 //        model.addAttribute("ticket", ticket);
         redirect.addFlashAttribute("successMessage",
                 "Đăng ký thành công. Số thứ tự của bạn là: " + ticket.getQueueNumber());
-        return "redirect:/patient";
+        return "redirect:/";
 
     }
 
@@ -97,70 +97,105 @@ public class PatientController {
         List<Ticket> updatedWaitingList = ticketService.findWaitingTicketsToday();
         ticketWebSocketSender.sendUpdatedWaitingList(updatedWaitingList);
         ticketWebSocketSender.sendNewTicket(ticket);
+
+
         redirect.addFlashAttribute("successMessage",
                 "Bạn đã đặt lịch thành công cho ngày " + appointmentDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
-                        + ". Số thứ tự ưu tiên là: " + ticket.getQueueNumber());
-        return "redirect:/patient";
+                        + ". Số thứ tự ưu tiên là: " + ticket.getQueueNumber()
+                        + ". Mọi thông tin check Gmail để biết thêm");
+
+        return "redirect:/";
     }
 
 
     // Trang mặc định
-    @GetMapping()
-    public String homeTickets(Model model) {
-//        model.addAttribute("appointmentForm", new AppointmentFormDTO());
-        model.addAttribute("today", LocalDate.now());
-        model.addAttribute("minDate", LocalDate.now().plusDays(1));
-        model.addAttribute("maxDate", LocalDate.now().plusDays(7));
-        return "home";
-    }
-
-
-    // Xử lý tìm kiếm phòng theo mã hồ sơ
-//    @GetMapping("/showroom")
-//    public String getRoomByMedicalRecordCode(@RequestParam("recordId") String code, Model model) {
-//        try {
-//            MedicalRecord medicalRecord = medicalRecordService.findRoomByCode(code);
-//            model.addAttribute("room", medicalRecord.getRoom());
-//            model.addAttribute("medicalRecord", medicalRecord);
-//            return "patient/room_result";
-//        } catch (Exception e) {
-//            model.addAttribute("error", e.getMessage());
-//            return "patient/form_record";
-//        }
+//    @GetMapping()
+//    public String homeTickets(Model model) {
+//        model.addAttribute("today", LocalDate.now());
+//        model.addAttribute("minDate", LocalDate.now().plusDays(1));
+//        model.addAttribute("maxDate", LocalDate.now().plusDays(7));
+//        return "home";
 //    }
 
-    // xem kết quả khám
-//    @GetMapping("/exam-resut")
-//    public String viewExamResult(@RequestParam("recordId") String code, Model model) {
-//        Optional<MedicalRecord> medicalRecord = medicalRecordService.findById(code);
-//        if (medicalRecord.isPresent()) {
-//            model.addAttribute("record", medicalRecord.get());
-//            return "patient/exam_result";
-//        } else {
-//            model.addAttribute("notFount", true);
-//            return "patient/medical_record_list";
-//        }
-//    }
 
     // tìm mã hồ sơ theo căn cước công dân bệnh nhân
     @GetMapping("/records/search")
     public String showSearchForm() {
-        return "patient/form_record";
+        return "patient/record_search";
     }
 
-//    @PostMapping("/records")
-//    public String searchByIdCard(@RequestParam("idCard") String idCard, Model model) {
-//        List<Patient> patients = patientService.findAllByIdCard(idCard);
-//        if (patients.isEmpty()) {
-//            model.addAttribute("notFound", true);
-//            return "patient/form_record";
+    //     Xử lý tìm kiếm phòng theo CCCD của bệnh nhân
+    @PostMapping("/record")
+    public String listRecords(@RequestParam("idCard") String idCard, Model model, HttpSession session) {
+
+        session.setAttribute("idCard", idCard);
+        List<MedicalRecord> records = medicalRecordService.findByPatientIdCard(idCard);
+        Map<Long, Room> roomMap = new HashMap<>();
+        for (MedicalRecord record : records) {
+            ExaminationShift shift = examinationShiftService.getByMedicalRecordId(record.getId());
+            if (shift != null && shift.getRoom() != null) {
+                roomMap.put(record.getId(), shift.getRoom());
+            }
+        }
+//        if (records.isEmpty()) {
+//            model.addAttribute("error", "Không tìm thấy hồ sơ khám nào với CCCD đã nhập");
+//            return "index";
 //        }
-//        Patient patient = patients.get(0);
-//        List<MedicalRecord> medicalRecords = medicalRecordService.findByPatient(patient);
-//        model.addAttribute("medicalRecords", medicalRecords);
-//        model.addAttribute("patient", patient);
-//        return "patient/medical_record_list";
-//    }
+        model.addAttribute("records", records);
+        model.addAttribute("recordRoomMap", roomMap);
+        return "patient/record_list";
+
+    }
+
+    @GetMapping("/record")
+    public String reloadRecords(Model model, HttpSession session) {
+        String idCard = (String) session.getAttribute("idCard");
+        if (idCard == null || idCard.trim().isEmpty()) {
+            return "redirect:/patient/record";
+        }
+//        List<MedicalRecord> records = medicalRecordService.findByPatientIdCard(idCard);
+//        if (records.isEmpty()) {
+//            model.addAttribute("error", "Không tìm thấy hồ sơ khám nào");
+//            return "redirect:/patient/record/list";
+//        }
+//        model.addAttribute("records", records);
+//        "patient/record_list"
+        return listRecords(idCard, model, session);
+    }
+
+    // xem phòng khám theo mã hồ sơ cá nhân
+    @GetMapping("/record/{id}/room")
+    public String viewRoom(@PathVariable("id") Long recordId, Model model) {
+        MedicalRecord medicalRecord = medicalRecordService.findById(recordId);
+        if (medicalRecord == null || medicalRecord.getExaminationShift().getRoom() == null) {
+            model.addAttribute("error", "Không tìm thấy thông tin phòng khám");
+            return "patient/room_view";
+        }
+        Room room = medicalRecord.getExaminationShift().getRoom();
+        model.addAttribute("room", room);
+        model.addAttribute("record", medicalRecord);
+        return "patient/room_view";
+    }
+
+    // xem kết quả khám
+    @GetMapping("/record/{id}/result")
+    public String viewResult(@PathVariable("id") Long recordId, Model model) {
+        MedicalRecord record = medicalRecordService.findById(recordId);
+        if (record == null) {
+            model.addAttribute("error", "Không tìm thấy hồ sơ khám");
+            return "patient/record_result";
+        }
+        model.addAttribute("record", record);
+        return "patient/record_result";
+    }
+
+    // xem kết quả phòng xét nghiệm
+    @GetMapping("/record/{id}/test-rooms")
+    public String viewTestRooms(@PathVariable("id") Long recordId, Model model) {
+        List<TestReport> reports = testReportService.findByMedicalRecordId(recordId);
+        model.addAttribute("reports", reports);
+        return "patient/test_rooms";
+    }
 
 
     // lấy danh sách hiển thị cho lễ tân

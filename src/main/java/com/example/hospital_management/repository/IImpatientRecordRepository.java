@@ -54,17 +54,23 @@ WHERE (:patientName IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :patientName
             Pageable pageable
     );
 
-    @Query("""
-                SELECT new com.example.hospital_management.dto.ImpatientBasicDto(
-                    ir.id, mr.code, p.name
-                )
-                FROM ImpatientRecord ir
-                JOIN ir.medicalRecord mr
-                JOIN mr.patient p
-                WHERE mr.paymentStatus = false
-                ORDER BY ir.admissionDate DESC
-            """)
-    List<ImpatientBasicDto> findAllUnpaidImpatients();
+    @Query(value = """
+        SELECT ir.id, mr.code, p.name
+        FROM impatient_records ir
+        JOIN medical_records mr ON ir.medical_record_id = mr.id
+        JOIN patients p ON mr.patient_id = p.id
+        WHERE mr.payment_status = 0
+        ORDER BY ir.admission_date DESC
+        """,
+            countQuery = """
+        SELECT COUNT(*)
+        FROM impatient_records ir
+        JOIN medical_records mr ON ir.medical_record_id = mr.id
+        JOIN patients p ON mr.patient_id = p.id
+        WHERE mr.payment_status = 0
+        """,
+            nativeQuery = true)
+    Page<ImpatientBasicDto> findAllUnpaidImpatients(Pageable pageable);
 
 
     @Query(value = """
@@ -72,7 +78,7 @@ WHERE (:patientName IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :patientName
                 FROM test_orders to2
                 JOIN tests t ON to2.test_id = t.id
                 JOIN impatient_records ir ON to2.impatient_record_id = ir.id
-                WHERE ir.ho_so_kham_id = :medicalRecordId AND to2.pay_status = 1
+                WHERE ir.medical_record_id = :medicalRecordId AND to2.pay_status = 0
             """, nativeQuery = true)
     Long getTotalTestFee(@Param("medicalRecordId") Long medicalRecordId);
 
@@ -89,7 +95,7 @@ WHERE (:patientName IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :patientName
                 SELECT SUM(fee)
                 FROM advance_payments
                 WHERE impatient_record_id IN (
-                    SELECT id FROM impatient_records WHERE ho_so_kham_id = :medicalRecordId
+                    SELECT id FROM impatient_records WHERE medical_record_id = :medicalRecordId
                 )
             """, nativeQuery = true)
     Long getAdvancePayment(@Param("medicalRecordId") Long medicalRecordId);
@@ -100,7 +106,7 @@ WHERE (:patientName IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :patientName
                 UPDATE test_orders
                 SET pay_status = 1
                 WHERE impatient_record_id IN (
-                    SELECT id FROM impatient_records WHERE ho_so_kham_id = :medicalRecordId
+                    SELECT id FROM impatient_records WHERE medical_record_id = :medicalRecordId
                 )
             """, nativeQuery = true)
     void markTestsAsPaid(@Param("medicalRecordId") Long medicalRecordId);
@@ -183,4 +189,6 @@ WHERE (:patientName IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :patientName
                                                   Pageable pageable);
 
     ImpatientRecord findImpatientRecordById(Long id);
+
+
 }

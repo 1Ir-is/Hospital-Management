@@ -3,8 +3,10 @@ package com.example.hospital_management.controller.cashier;
 import com.example.hospital_management.dto.BillingSummaryDto;
 import com.example.hospital_management.dto.ImpatientBasicDto;
 import com.example.hospital_management.dto.MedicalRecordBasicDto;
+import com.example.hospital_management.dto.PrescriptionRequestDto;
 import com.example.hospital_management.service.IImpatientRecordService;
 import com.example.hospital_management.service.IMedicalRecordService;
+import com.example.hospital_management.service.IPrescriptionService;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Font;
@@ -12,6 +14,9 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfWriter;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,6 +29,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
+
 @Controller
 @RequestMapping("/cashier")
 @PreAuthorize("hasAnyRole('CASHIER', 'RECEPTIONIST', 'NURSE', 'DOCTOR', 'DEPARTMENT_HEAD', 'ADMIN')")
@@ -31,11 +37,11 @@ public class CashierController {
     private final IMedicalRecordService medicalRecordService;
     private final IImpatientRecordService impatientRecordService;
 
+
     public CashierController(IMedicalRecordService medicalRecordService, IImpatientRecordService impatientRecordService) {
         this.medicalRecordService = medicalRecordService;
         this.impatientRecordService = impatientRecordService;
     }
-
 //    @GetMapping()
 //    public String showCashierDashboard(Model model) {
 //        // CASHIER - Chức năng do Nhơn làm:
@@ -48,44 +54,67 @@ public class CashierController {
 
     // ✅ Hiển thị dashboard mặc định là ngoại trú
     @GetMapping("")
-    public String listRecords(@RequestParam(value = "type", defaultValue = "out") String type, Model model) {
+    public String listRecords(@RequestParam(defaultValue = "0") int page,
+                              @RequestParam(defaultValue = "5") int size,
+                              @RequestParam(value = "type", defaultValue = "in") String type, Model model) {
         model.addAttribute("type", type);
+        Pageable pageable = PageRequest.of(page, size);
+
 
         if (type.equals("in")) {
-            List<ImpatientBasicDto> records = impatientRecordService.findAllUnpaidImpatients();
+            Page<ImpatientBasicDto> records = impatientRecordService.findAllUnpaidImpatients(pageable);
             model.addAttribute("records", records);
         } else {
-            List<MedicalRecordBasicDto> records = medicalRecordService.findAllBasicInfo();
+            Page<MedicalRecordBasicDto> records = medicalRecordService.findAllBasicInfo(pageable);
             model.addAttribute("records", records);
         }
-        return "cashier/dashboard";
+        return "cashier/display/dashboard";
     }
+
 
     @GetMapping("/detail-fragment")
     public String getSummaryFragment(@RequestParam("id") Long id, Model model) {
         BillingSummaryDto summary = medicalRecordService.getBillingSummary(id);
         model.addAttribute("summary", summary);
-        return "cashier/summary-fragment :: summary";
+        return "cashier/display/summary-fragment :: summary";
     }
 
     @GetMapping("/inpatient/detail-fragment")
     public String getInpatientSummaryFragment(@RequestParam("id") Long id, Model model) {
         BillingSummaryDto summary = impatientRecordService.getBillingSummary(id);
         model.addAttribute("summary", summary);
-        return "cashier/summary-fragment :: summary";
+        return "cashier/display/summary-fragment :: summary";
     }
 
+    @GetMapping("/paid-today")
+    public String showPaidToday(Model model) {
+        List<BillingSummaryDto> paidToday = medicalRecordService.getBillingSummaryToday();
+        model.addAttribute("paidList", paidToday);
+        model.addAttribute("pageTitle", "Đã thanh toán hôm nay");
+        model.addAttribute("activeMenu", "paid-today");
+        return "cashier/display/paid-today";
+    }
+
+
     @PostMapping("/pay")
-    public void payAndExportPdf(@RequestParam("id") Long medicalRecordId,
+    public void payAndExportPdf(@RequestParam("id") Long recordId,
+                                @RequestParam("type") String type,
                                 HttpServletResponse response) throws IOException, DocumentException {
 
 
-        medicalRecordService.markAsPaid(medicalRecordId);
-
-        BillingSummaryDto summary = medicalRecordService.getBillingSummary(medicalRecordId);
+        BillingSummaryDto summary;
+        medicalRecordService.markAsPaid(recordId);
+        if ("in".equals(type)) {
+            impatientRecordService.markAsPaid(recordId);
+            summary = impatientRecordService.getBillingSummary(recordId);
+        } else {
+            medicalRecordService.markAsPaid(recordId);
+            summary = medicalRecordService.getBillingSummary(recordId);
+        }
+//         = impatientRecordService.getBillingSummary(medicalRecordId);
 
         response.setContentType("application/pdf");
-        response.setHeader("Content-Disposition", "attachment; filename=bill_" + medicalRecordId + ".pdf");
+        response.setHeader("Content-Disposition", "attachment; filename=bill_" + recordId + ".pdf");
 
         Document document = new Document();
         PdfWriter.getInstance(document, response.getOutputStream());

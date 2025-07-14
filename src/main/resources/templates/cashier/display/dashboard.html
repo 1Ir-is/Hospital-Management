@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{cashier/layout/layout}">
+<head>
+    <title>Quản lý thu ngân</title>
+    <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .toast-container {
+            z-index: 1080;
+        }
+    </style>
+</head>
+
+<body>
+<main layout:fragment="main-content" class="container mt-5">
+
+    <h2 class="text-center">🔍 Danh sách hồ sơ cần thanh toán</h2>
+
+    <!-- TOAST ✅ Thành công -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="successToast" class="toast align-items-center text-white bg-success border-0 fade" role="alert"
+             aria-live="assertive" aria-atomic="true" data-bs-delay="3000">
+            <div class="d-flex">
+                <div class="toast-body">
+                    ✅ Thanh toán & Xuất PDF thành công!
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                        aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <ul class="nav nav-tabs mb-3">
+        <li class="nav-item">
+            <a class="nav-link"
+               th:classappend="${type} == 'out' ? 'active' : ''"
+               th:href="@{/cashier(type='out')}">Ngoại trú</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link"
+               th:classappend="${type} == 'in' ? 'active' : ''"
+               th:href="@{/cashier(type='in')}">Nội trú</a>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <div class="tab-pane fade show active">
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Mã hồ sơ</th>
+                    <th>Tên bệnh nhân</th>
+                    <th>Hành động</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item, iter : ${records}">
+                    <td th:text="${iter.count}"></td>
+                    <td th:text="${item.code}"></td>
+                    <td th:text="${item.patientName}"></td>
+                    <td>
+                        <button class="btn btn-info btn-sm btn-view-summary"
+                                th:attr="data-id=${item.id}, data-inpatient=${type == 'in'}">
+                            Xem hóa đơn
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <nav th:if="${records.totalPages > 1}">
+                <ul class="pagination justify-content-center mt-4">
+                    <li class="page-item" th:classappend="${records.first} ? 'disabled'">
+                        <a class="page-link"
+                           th:href="@{/cashier(type=${type}, page=${records.number - 1})}">◀ Trước</a>
+                    </li>
+                    <li class="page-item"
+                        th:each="i : ${#numbers.sequence(0, records.totalPages - 1)}"
+                        th:classappend="${i == records.number} ? 'active'">
+                        <a class="page-link"
+                           th:href="@{/cashier(type=${type}, page=${i})}"
+                           th:text="${i + 1}">1</a>
+                    </li>
+                    <li class="page-item" th:classappend="${records.last} ? 'disabled'">
+                        <a class="page-link"
+                           th:href="@{/cashier(type=${type}, page=${records.number + 1})}">Tiếp ▶</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Modal hóa đơn -->
+    <div class="modal fade" id="summaryModal" tabindex="-1" aria-labelledby="summaryModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content shadow rounded-4 border-0">
+                <div class="modal-header bg-primary text-white rounded-top-4">
+                    <h5 class="modal-title">📋 Chi tiết hóa đơn</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                </div>
+
+                <div class="modal-body" id="summary-container">
+                    <div class="text-center text-muted">
+                        <div class="spinner-border text-primary" role="status"></div>
+                        <div>Đang tải nội dung...</div>
+                    </div>
+                </div>
+
+                <form id="payForm">
+                    <input type="hidden" name="id" id="recordId"/>
+                    <input type="hidden" name="type" id="recordType"/>
+                </form>
+
+                <div class="modal-footer justify-content-between border-0">
+                    <button type="button" class="btn btn-outline-secondary" onclick="cancelModal()">❌ Hủy</button>
+                    <button type="button" class="btn btn-primary" onclick="submitPayment()">💳 Thanh toán & Xuất PDF</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script xử lý -->
+    <script>
+        function loadSummary(id, inpatient) {
+            const url = inpatient
+                ? '/cashier/inpatient/detail-fragment?id=' + id
+                : '/cashier/detail-fragment?id=' + id;
+
+            $('#recordId').val(id);
+            $('#recordType').val(inpatient ? 'in' : 'out');
+
+            $('#summary-container').load(url, function (response, status) {
+                if (status === "error") {
+                    $('#summary-container').html('<div class="p-3 alert alert-danger">Không thể tải hóa đơn.</div>');
+                } else {
+                    const modal = new bootstrap.Modal(document.getElementById('summaryModal'));
+                    modal.show();
+                    formatVND();
+                }
+            });
+        }
+
+        $(document).on('click', '.btn-view-summary', function () {
+            const id = $(this).data('id');
+            const inpatient = $(this).data('inpatient');
+            loadSummary(id, inpatient);
+        });
+
+        function submitPayment() {
+            const form = document.getElementById("payForm");
+            const formData = new FormData(form);
+
+            fetch('/cashier/pay', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error("Thanh toán thất bại");
+                    return response.blob();
+                })
+                .then(blob => {
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = "hoa_don.pdf";
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('summaryModal'));
+                    modal.hide();
+
+                    const toastEl = document.getElementById("successToast");
+                    const toast = new bootstrap.Toast(toastEl);
+                    toast.show();
+
+                    setTimeout(() => location.reload(), 3000);
+                })
+                .catch(error => {
+                    alert("Lỗi khi thanh toán: " + error.message);
+                });
+        }
+
+        function cancelModal() {
+            const modal = bootstrap.Modal.getInstance(document.getElementById('summaryModal'));
+            modal.hide();
+        }
+
+        function formatVND() {
+            const formatter = new Intl.NumberFormat('vi-VN', {
+                style: 'currency',
+                currency: 'VND',
+                minimumFractionDigits: 0
+            });
+
+            document.querySelectorAll('.vnd-format').forEach(el => {
+                const value = parseInt(el.innerText);
+                if (!isNaN(value)) {
+                    el.innerText = formatter.format(value);
+                }
+            });
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</main>
+</body>
+</html>

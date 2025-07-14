@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Collection;
 
 @Controller
@@ -18,6 +19,7 @@ public class HomeController {
     public String home(Authentication authentication,
                        @RequestParam(value = "error", required = false) String error,
                        Model model,
+                       @RequestParam(value = "logout", required = false) String logout,
                        HttpServletResponse response) throws IOException {
 
         if (authentication != null && authentication.isAuthenticated()
@@ -56,11 +58,16 @@ public class HomeController {
                         return null;
                 }
             }
+            model.addAttribute("today", LocalDate.now());
+            model.addAttribute("minDate", LocalDate.now().plusDays(1));
+            model.addAttribute("maxDate", LocalDate.now().plusDays(7));
         }
 
-        // Nếu có lỗi đăng nhập, thêm vào model để hiển thị toast
         if (error != null) {
             model.addAttribute("loginError", true);
+        }
+        if (logout != null) {
+            model.addAttribute("logoutMessage", "Đăng xuất thành công!");
         }
 
         return "index"; // Hiển thị trang chủ (chứa login modal)

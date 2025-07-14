@@ -205,7 +205,6 @@ public interface IMedicalRecordRepository extends JpaRepository<MedicalRecord, L
             WHERE mr.conclusion is null 
             AND es.room.id = :roomId
             GROUP BY mr.id, p.id, p.name
-            ORDER BY es.examinationShiftStatus.id
             """, countQuery = """
                 SELECT COUNT(DISTINCT mr.id)
                     FROM ExaminationShift es
@@ -224,16 +223,6 @@ public interface IMedicalRecordRepository extends JpaRepository<MedicalRecord, L
     @Query("select m from MedicalRecord m where m.vitalSign is null ")
     Page<MedicalRecord> findAllWithOutVitalSign(Pageable pageable);
 
-    @Query(value = "SELECT mr FROM MedicalRecord mr WHERE mr.code = :code")
-    Optional<MedicalRecord> findRoomByCode(@Param("code") String code);
-
-    Optional<MedicalRecord> findDistinctByPatient_IdCard(String patientIdCard);
-
-
-    List<MedicalRecord> findByPatient(Patient patient);
-
-    Optional<MedicalRecord> findByCode(String code);
-
     @Query(value = """
                 SELECT SUM(m.price * pd.quantity)
                 FROM prescriptions pr
@@ -245,11 +234,11 @@ public interface IMedicalRecordRepository extends JpaRepository<MedicalRecord, L
 
 
     @Query(value = """
-                SELECT SUM(t.price)
-                FROM test_orders to2
-                JOIN tests t ON to2.test_id = t.id
-                JOIN impatient_records ir ON to2.impatient_record_id = ir.id
-                WHERE ir.ho_so_kham_id = :medicalRecordId AND to2.pay_status = 1
+                 SELECT sum(t.price)
+                                FROM test_reports to2
+                                JOIN tests t ON to2.test_id = t.id
+                                JOIN medical_records mr ON to2.medical_record_id = mr.id
+                                WHERE mr.id = :medicalRecordId AND to2.pay_status = 0
             """, nativeQuery = true)
     Long getTotalTestFee(@Param("medicalRecordId") Long medicalRecordId);
 
@@ -258,21 +247,37 @@ public interface IMedicalRecordRepository extends JpaRepository<MedicalRecord, L
                 SELECT SUM(fee)
                 FROM advance_payments
                 WHERE impatient_record_id IN (
-                    SELECT id FROM impatient_records WHERE ho_so_kham_id = :medicalRecordId
+                    SELECT id FROM impatient_records WHERE medical_record_id = :medicalRecordId
                 )
             """, nativeQuery = true)
     Long getAdvancePayment(@Param("medicalRecordId") Long medicalRecordId);
 
 
-    @Query("""
-                SELECT new com.example.hospital_management.dto.MedicalRecordBasicDto(
-                    mr.id, mr.code, p.name
-                )
-                FROM MedicalRecord mr
-                JOIN mr.patient p
-                WHERE mr.paymentStatus = false
-            """)
-    List<MedicalRecordBasicDto> findAllBasicInfo();
+    @Query(value = """
+            SELECT mr.id, mr.code, p.name
+            FROM medical_records mr
+            JOIN patients p ON mr.patient_id = p.id
+            WHERE mr.payment_status = 0
+              AND mr.id NOT IN (
+                SELECT ir.medical_record_id
+                FROM impatient_records ir
+                WHERE ir.medical_record_id IS NOT NULL
+              )
+            """,
+            countQuery = """
+                    SELECT COUNT(*)
+                    FROM medical_records mr
+                    JOIN patients p ON mr.patient_id = p.id
+                    WHERE mr.payment_status = 0
+                      AND mr.id NOT IN (
+                        SELECT ir.medical_record_id
+                        FROM impatient_records ir
+                        WHERE ir.medical_record_id IS NOT NULL
+                      )
+                    """,
+            nativeQuery = true)
+    Page<MedicalRecordBasicDto> findAllBasicInfo(Pageable pageable);
+
 
     @Modifying
     @Transactional
@@ -284,4 +289,108 @@ public interface IMedicalRecordRepository extends JpaRepository<MedicalRecord, L
     void updatePaymentStatus(@Param("medicalRecordId") Long medicalRecordId);
 
 
+
+    @Query(value = "select mr from  MedicalRecord mr where mr.patient.idCard = :idCard")
+    List<MedicalRecord> findByPatientIdCard(@Param("idCard") String idCard);
+
+
+
+    @Query(value = """
+    SELECT 
+        mr.id AS medicalRecordId,
+        p.name AS patientName,
+        mr.code AS medicalRecordCode,
+        mr.fee AS medicalFee,
+
+        -- Tổng tiền thuốc đã thanh toán
+        (
+            SELECT COALESCE(SUM(m.price * pd.quantity), 0)
+            FROM prescriptions pr
+            JOIN prescription_details pd ON pr.id = pd.precription_id
+            JOIN medicines m ON pd.medicine_id = m.id
+            WHERE pr.medical_record_id = mr.id
+              AND pr.pay_status = 1
+        ) AS medicineFee,
+
+        -- Tổng tiền xét nghiệm đã thanh toán
+        (
+            SELECT COALESCE(SUM(t.price), 0)
+            FROM test_orders to2
+            JOIN tests t ON to2.test_id = t.id
+            JOIN impatient_records ir ON to2.impatient_record_id = ir.id
+            WHERE ir.medical_record_id = mr.id
+              AND to2.pay_status = 1
+        ) AS testFee,
+
+        -- Tổng tạm ứng
+        (
+            SELECT COALESCE(SUM(fee), 0)
+            FROM advance_payments
+            WHERE impatient_record_id IN (
+                SELECT id FROM impatient_records WHERE medical_record_id = mr.id
+            )
+        ) AS advancePayment,
+
+        0 AS insuranceAmount,
+
+        -- Tổng cộng = tiền khám + thuốc + xét nghiệm
+        (COALESCE(mr.fee, 0) +
+         (
+             SELECT COALESCE(SUM(m.price * pd.quantity), 0)
+             FROM prescriptions pr
+             JOIN prescription_details pd ON pr.id = pd.precription_id
+             JOIN medicines m ON pd.medicine_id = m.id
+             WHERE pr.medical_record_id = mr.id
+               AND pr.pay_status = 1
+         ) +
+         (
+             SELECT COALESCE(SUM(t.price), 0)
+             FROM test_orders to2
+             JOIN tests t ON to2.test_id = t.id
+             JOIN impatient_records ir ON to2.impatient_record_id = ir.id
+             WHERE ir.medical_record_id = mr.id
+               AND to2.pay_status = 1
+         )
+        ) AS totalFee,
+
+        -- Còn lại = tổng cộng - tạm ứng
+        (
+            (COALESCE(mr.fee, 0) +
+             (
+                 SELECT COALESCE(SUM(m.price * pd.quantity), 0)
+                 FROM prescriptions pr
+                 JOIN prescription_details pd ON pr.id = pd.precription_id
+                 JOIN medicines m ON pd.medicine_id = m.id
+                 WHERE pr.medical_record_id = mr.id
+                   AND pr.pay_status = 1
+             ) +
+             (
+                 SELECT COALESCE(SUM(t.price), 0)
+                 FROM test_orders to2
+                 JOIN tests t ON to2.test_id = t.id
+                 JOIN impatient_records ir ON to2.impatient_record_id = ir.id
+                 WHERE ir.medical_record_id = mr.id
+                   AND to2.pay_status = 1
+             )
+            )
+            -
+            (
+                SELECT COALESCE(SUM(fee), 0)
+                FROM advance_payments
+                WHERE impatient_record_id IN (
+                    SELECT id FROM impatient_records WHERE medical_record_id = mr.id
+                )
+            )
+        ) AS remainingAmount,
+
+        CASE WHEN EXISTS (
+            SELECT 1 FROM impatient_records ir WHERE ir.medical_record_id = mr.id
+        ) THEN true ELSE false END AS inpatient
+
+    FROM medical_records mr
+    JOIN patients p ON mr.patient_id = p.id
+    WHERE mr.payment_status = 1
+      AND mr.visit_date = CURDATE()
+    """, nativeQuery = true)
+    List<Object[]> findAllPaidTodayNative();
 }

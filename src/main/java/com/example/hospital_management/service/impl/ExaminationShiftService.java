@@ -58,6 +58,11 @@ public class ExaminationShiftService implements IExaminationShiftService {
     }
 
     @Override
+    public ExaminationShift getByMedicalRecordId(Long recordId) {
+        return examinationShiftRepository.findByMedicalRecordIdWithRoom(recordId).orElse(null);
+    }
+
+    @Override
     public ExaminationShift findByMedicalRecord(MedicalRecord medicalRecord) {
         return examinationShiftRepository.findByMedicalRecord(medicalRecord);
     }

@@ -53,4 +53,8 @@ public interface IEmployeeRepository extends JpaRepository<Employee, Long> {
     long countByStatusOrStatusIsNull(Boolean status);
 
     long countByStartingDateGreaterThanEqual(LocalDate startDate);
+
+    Optional<Employee> findEmployeeByEmail(String email);
+
+
 }

@@ -8,6 +8,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
@@ -131,7 +132,8 @@ public class PrescriptionController {
     }
 
     @GetMapping("/confirm")
-    public String confirm(@ModelAttribute("prescription") PrescriptionDto prescriptionDto){
+    public String confirm(@ModelAttribute("prescription") PrescriptionDto prescriptionDto,
+                          SessionStatus sessionStatus){
         Prescription prescription = new Prescription();
         BeanUtils.copyProperties(prescriptionDto, prescription);
         prescription.setStatus(false);
@@ -146,6 +148,7 @@ public class PrescriptionController {
         ExaminationShift shift = examinationShiftService.findByMedicalRecordId(medicalRecordId);
         shift.setExaminationShiftStatus(examinationShiftStatusService.findById(5L));
         examinationShiftService.save(shift);
+        sessionStatus.setComplete();
         return "redirect:/examination";
     }
 
