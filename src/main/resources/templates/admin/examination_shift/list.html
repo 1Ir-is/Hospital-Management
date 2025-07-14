@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="vi"
+      layout:decorate="~{admin/layout/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Ca khám hôm nay</title>
+    <style>
+        .table-container {
+            overflow-x: auto;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .styled-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 14px;
+            background-color: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .styled-table thead {
+            background-color: #4F46E5;
+            color: white;
+        }
+
+        .styled-table th, .styled-table td {
+            padding: 12px 16px;
+            text-align: center;
+        }
+
+        .styled-table tbody tr:nth-child(even) {
+            background-color: #f9fafb;
+        }
+
+        .styled-table tbody tr:hover {
+            background-color: #eef2ff;
+        }
+
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 12px;
+            display: inline-block;
+        }
+
+        .status-waiting {
+            background-color: #fff7cd;
+            color: #b26a00;
+        }
+
+        .status-running {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-done {
+            background-color: #e0e7ff;
+            color: #3730a3;
+        }
+
+        .status-ended {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        .no-data {
+            text-align: center;
+            color: #999;
+            font-style: italic;
+            padding: 15px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-header h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<div layout:fragment="main-content">
+    <div class="page-header">
+        <h1 class="page-title">
+            <i class="fas fa-calendar-check"></i> Danh sách ca khám hiện tại
+        </h1>
+        <p class="page-subtitle">Quản lý các ca khám đang diễn ra trong ngày</p>
+        <div class="breadcrumb">
+            <a href="/admin">Dashboard</a>
+            <span>/</span>
+            <span>Ca khám hiện tại</span>
+        </div>
+    </div>
+
+    <div class="dashboard-card">
+        <div class="card-header">
+            <h3><i class="fas fa-calendar-day"></i> Ca khám hôm nay</h3>
+            <span th:text="'Tổng số: ' + ${shifts.size()}"></span>
+        </div>
+
+        <div class="table-container">
+            <table class="styled-table">
+                <thead>
+                <tr>
+                    <th>Phòng</th>
+                    <th>Khoa</th>
+                    <th>Bác sĩ phụ trách</th>
+                    <th>Bắt đầu</th>
+                    <th>Kết thúc</th>
+                    <th>Trạng thái</th>
+                    <th>Mã hồ sơ khám</th>
+                    <th>Ghi chú</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="shift : ${shifts}">
+                    <td th:text="${shift.room != null ? shift.room.name : 'Chưa phân phòng'}"></td>
+                    <td th:text="${shift.room != null && shift.room.department != null ? shift.room.department.name : '---'}"></td>
+                    <td th:text="${shift.employee != null ? shift.employee.name : 'Chưa phân công'}"></td>
+                    <td th:text="${#temporals.format(shift.startTime, 'HH:mm')}"/>
+                    <td th:text="${#temporals.format(shift.endTime, 'HH:mm')}"/>
+                    <td th:switch="${shift.examinationShiftStatus?.name}">
+                        <span class="status-badge status-waiting" th:case="'Đang chờ'">Đang chờ</span>
+                        <span class="status-badge status-running" th:case="'Đang khám'">Đang khám</span>
+                        <span class="status-badge status-done" th:case="'Đã hoàn tất'">Đã hoàn tất</span>
+                        <span th:case="*">
+        <span class="status-badge status-running" th:if="${shift.status != null and shift.status}">Đang diễn ra</span>
+        <span class="status-badge status-ended" th:if="${shift.status == null or not shift.status}">Kết thúc</span>
+    </span>
+                    </td>
+
+                    <td th:text="${shift.medicalRecord != null ? shift.medicalRecord.code : ''}"></td>
+                    <td th:text="${shift.examinationShiftStatus != null ? shift.examinationShiftStatus.description : ''}"></td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(shifts)}">
+                    <td class="no-data" colspan="8">Không có ca khám nào trong ngày hiện tại.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination" th:if="${totalPages != null and totalPages > 1}">
+        <ul>
+            <li th:if="${currentPage != null and currentPage > 0}">
+                <a th:href="@{/admin/current-sessions(page=${currentPage - 1})}">&laquo;</a>
+            </li>
+            <li th:classappend="${i == currentPage} ? 'active' : ''"
+                th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+                <a th:href="@{|/admin/current-sessions?page=${i}|}" th:text="${i + 1}"></a>
+            </li>
+            <li th:if="${currentPage != null and totalPages != null and currentPage < totalPages - 1}">
+                <a th:href="@{/admin/current-sessions(page=${currentPage + 1})}">&raquo;</a>
+            </li>
+        </ul>
+    </div>
+
+</div>
+</html>

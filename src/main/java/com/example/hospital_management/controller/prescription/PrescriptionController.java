@@ -136,6 +136,7 @@ public class PrescriptionController {
                           SessionStatus sessionStatus){
         Prescription prescription = new Prescription();
         BeanUtils.copyProperties(prescriptionDto, prescription);
+        prescription.setStatus(false);
         Prescription savedPrescription = prescriptionService.save(prescription);
         for (PrescriptionDetailDto dto : prescriptionDto.getPrescriptionDetails()){
             PrescriptionDetail detail = new PrescriptionDetail();

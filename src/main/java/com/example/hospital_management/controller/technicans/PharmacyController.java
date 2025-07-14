@@ -79,8 +79,8 @@ public class PharmacyController {
     public String confirmPrescription(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         Prescription prescription = prescriptionService.findById(id).orElseThrow();
 
-        if ("Chưa Cấp".equalsIgnoreCase(prescription.getStatus())) {
-            prescription.setStatus("Đã Cấp");
+        if (!prescription.getStatus()) {
+            prescription.setStatus(true);
             prescription.setCreatedDate(LocalDate.now());
             prescriptionService.save(prescription);
             redirectAttributes.addFlashAttribute("success", "Đơn thuốc đã được cấp.");

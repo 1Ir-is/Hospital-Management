@@ -23,6 +23,14 @@ public interface IExaminationShiftRepository extends JpaRepository<ExaminationSh
     Optional<ExaminationShift> findByMedicalRecordIdWithRoom(@Param("recordId") Long recordId);
 
 
+    @Query("""
+                SELECT es FROM ExaminationShift es
+                WHERE es.medicalRecord IS NOT NULL
+                  AND es.medicalRecord.visitDate = :today
+            """)
+    Page<ExaminationShift> findCurrentShifts(LocalDate today, Pageable pageable);
+
+
     ExaminationShift findByMedicalRecordId(Long medicalRecordId);
 
     @Query(value = """
@@ -53,6 +61,5 @@ public interface IExaminationShiftRepository extends JpaRepository<ExaminationSh
                     """
     )
     Page<ExaminationShift> findByVisitDateAndStatus(@Param("today") LocalDate today,
-                                                    @Param("statusId") Long statusId,
-                                                    Pageable pageable);
+                                                    @Param("statusId") Long statusId, Pageable pageable);
 }

@@ -1,10 +1,6 @@
 package com.example.hospital_management.service;
 
 import com.example.hospital_management.entity.Employee;
-
-import java.util.List;
-
-import com.example.hospital_management.entity.Employee;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -21,6 +17,7 @@ public interface IEmployeeService {
     List<Employee> findDoctorsByDepartment(Long departmentId);
 
     List<Employee> findNursesByDepartment(Long departmentId);
+
     List<Employee> findAllEmployees();
 
     Page<Employee> findEmployeesWithFilters(String search, String status, Pageable pageable);
@@ -43,12 +40,17 @@ public interface IEmployeeService {
 
     Optional<Employee> findById(Long id);
 
+    Employee findByEmail(String email);
+
+
     List<Employee> findAll();
 
     void updateEmployeeRoles(Long employeeId, List<Long> roleIds);
 
     void updateEmployeeWithRoles(Long employeeId, Employee updatedEmployee, List<Long> roleIds);
+
     Optional<Employee> findEmployeeByEmail(String email);
 
-    Employee findByEmail(String email);
+    List<Employee> findNurse();
+
 }

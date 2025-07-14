@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="vi"
+      layout:decorate="~{doctor/layout/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>danh sách</title>
+</head>
+<div layout:fragment="main-content">
+
+    <div class="container mt-4">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <form th:action="@{/doctor/{id}/test/save(id=${test_order.impatientRecord != null ? test_order.impatientRecord.id : 0})}"
+                      th:object="${test_order}" method="post" novalidate>
+
+                    <!-- Hidden fields for test_order properties -->
+                    <input type="hidden" th:field="*{id}"/>
+                    <input type="hidden" th:field="*{date}"/>
+                    <input type="hidden" th:field="*{note}"/>
+                    <input type="hidden" th:field="*{result}"/>
+                    <input type="hidden" th:field="*{impatientRecord}"/>
+                    <!--                <input type="hidden" th:field="*{employee}"/>-->
+
+                    <!-- Table for test selection -->
+                    <table class="table table-bordered">
+                        <tbody id="test-table-body"></tbody>
+                    </table>
+                    <!-- Đoạn hiển thị phân trang -->
+                    <div class="d-flex justify-content-center align-content-between mt-3">
+                        <button type="button" id="prevBtn" class="btn btn-secondary">Trước</button>
+                        <div class="btn">
+                            <span id="currentPage">1</span>
+                            <span>/</span>
+                            <span id="totalPages">1</span>
+                        </div>
+                        <button type="button" id="nextBtn" class="btn btn-secondary">Sau</button>
+                    </div>
+
+
+                    <!-- Hidden input to store selected test IDs -->
+                    <input type="hidden" name="chosenTestIds" id="chosenTestIds"/>
+
+                    <div class="d-flex justify-content-between mt-3">
+                        <a th:href="@{/doctor/inpatient-list}" class="btn btn-success btn-sm px-4">← Quay lại</a>
+                        <button type="submit" class="btn btn-success btn-sm px-4">Lưu thay đổi</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script th:inline="javascript">
+        const employees = /*[[${employee}]]*/ [];
+        const testList = /*[[${test}]]*/ [];
+    </script>
+
+
+    <script>
+        // Initialize selected IDs set
+        const selectedIds = new Set();
+
+        // Sample data, replace with actual data from Thymeleaf
+
+        let filteredList = testList;
+        const rowsPerPage = 5;
+        let currentPage = 1;
+        const tbody = document.getElementById('test-table-body');
+
+        function bindCheckboxEvents() {
+            const checkboxes = document.querySelectorAll('.test-checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', () => {
+                    const id = parseInt(checkbox.value);
+                    if (checkbox.checked) {
+                        selectedIds.add(id);
+                    } else {
+                        selectedIds.delete(id);
+                    }
+                    // Update hidden input with selected IDs
+                    document.getElementById('chosenTestIds').value = Array.from(selectedIds).join(',');
+                });
+            });
+        }
+
+        function renderTable(page) {
+            const totalPages = Math.ceil(filteredList.length / rowsPerPage);
+            const start = (page - 1) * rowsPerPage;
+            const end = Math.min(start + rowsPerPage, filteredList.length);
+            const sliced = filteredList.slice(start, end);
+
+            const tbody = document.getElementById('test-table-body');
+            tbody.innerHTML = `
+        <thead class="table-active">
+            <tr>
+                <th colspan="4" class="text-center text-danger"><h3>Chọn các xét nghiệm cho bệnh nhân</h3></th>
+            </tr>
+            <tr>
+                <th></th>
+                <th>Tên xét nghiệm</th>
+                 <th>Nhân viên xét nghiệm</th>
+                <th>Mô tả</th>
+            </tr>
+        </thead>`;
+
+            sliced.forEach(item => {
+                const isChecked = selectedIds.has(item.id) ? 'checked' : '';
+
+                // Tạo <select> cho nhân viên
+                let selectHtml = `<select class="form-select form-select-sm" name="employeeMap[${item.id}]" required>`;
+                selectHtml += `<option value="">-- Chọn --</option>`;
+                employees.forEach(emp => {
+                    selectHtml += `<option value="${emp.id}">${emp.name}</option>`;
+                });
+                selectHtml += `</select>`;
+
+                tbody.innerHTML += `
+            <tr>
+                <td><input type="checkbox" value="${item.id}" ${isChecked} class="test-checkbox" name="chosenTest"></td>
+                <td><p>${item.name}</p></td>
+                <td>${selectHtml}</td>
+                <td><p>${item.description}</p></td>
+            </tr>
+        `;
+            });
+
+            // Cập nhật phân trang hiển thị
+            document.getElementById('currentPage').textContent = page;
+            document.getElementById('totalPages').textContent = totalPages || 1;
+
+            // Bật/tắt nút
+            document.getElementById('prevBtn').disabled = page === 1;
+            document.getElementById('nextBtn').disabled = page >= totalPages;
+
+            bindCheckboxEvents();
+        }
+
+
+        // Bind checkbox events after rendering
+        bindCheckboxEvents();
+
+
+        // Initialize table on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            renderTable(currentPage);
+        });
+
+        // Form submission handler to ensure chosenTestIds is sent
+        document.querySelector('form').addEventListener('submit', (e) => {
+            const chosenTestIds = document.getElementById('chosenTestIds');
+            if (selectedIds.size === 0) {
+                chosenTestIds.value = '';
+            } else {
+                chosenTestIds.value = Array.from(selectedIds).join(',');
+            }
+        });
+
+
+        document.getElementById('prevBtn').addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                renderTable(currentPage);
+            }
+        });
+
+        document.getElementById('nextBtn').addEventListener('click', () => {
+            const totalPages = Math.ceil(filteredList.length / rowsPerPage);
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderTable(currentPage);
+            }
+        });
+
+
+    </script>
+
+    <footer th:replace="/layout :: footer"></footer>
+</div>
+</html>

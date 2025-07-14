@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="vi"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:th="http://www.thymeleaf.org"
->
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
@@ -10,34 +9,161 @@
     <script src="https://kit.fontawesome.com/c1df782baf.js"></script>
     <link href="/css/admin.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Cashier Theme với màu #00c2a8 */
+        .cashier-theme {
+            --primary-color: #00c2a8;
+            --primary-dark: #00897b;
+            --primary-light: #5be1d3;
+            --primary-alpha: rgba(0, 194, 168, 0.1);
+        }
+
+        .user-role {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            margin-left: 10px;
+            white-space: nowrap;
+        }
+
+        .admin-nav {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar-container {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 194, 168, 0.3);
+            flex-shrink: 0;
+        }
+
+        .user-avatar-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            display: block;
+            transition: opacity 0.3s ease;
+        }
+
+        .user-avatar-fallback {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #00c2a8 0%, #00897b 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+            text-transform: uppercase;
+        }
+
+        .user-avatar-fallback.hidden {
+            display: none;
+        }
+
+        .menu-item.active {
+            background: linear-gradient(135deg, #00c2a8 0%, #00897b 100%);
+            color: white;
+            border-radius: 8px;
+        }
+
+        .menu-item:hover {
+            background: rgba(0, 194, 168, 0.1);
+            border-radius: 8px;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .user-info:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        @media (max-width: 768px) {
+            .user-avatar-container {
+                width: 35px;
+                height: 35px;
+            }
+
+            .user-avatar-fallback {
+                font-size: 14px;
+            }
+
+            .user-details {
+                display: none;
+            }
+
+            .user-info {
+                padding: 8px;
+            }
+        }
+
+        .admin-header {
+            background: linear-gradient(135deg, #00c2a8 0%, #00897b 100%) !important;
+            box-shadow: 0 2px 10px rgba(0, 194, 168, 0.3);
+        }
+
+        .admin-logo span,
+        .admin-header .admin-logo i,
+        .menu-title,
+        .menu-item i,
+        .menu-item .fas {
+            color: #00c2a8 !important;
+        }
+
+        .menu-section .menu-title {
+            color: #00c2a8;
+        }
+
+        .menu-item.active,
+        .menu-item:hover {
+            color: #fff !important;
+        }
+
+        .menu-item.active i,
+        .menu-item.active .fas {
+            color: #fff !important;
+        }
+
+        .modal-header h2,
+        .modal-header h5,
+        .sidebar .menu-title,
+        .sidebar .menu-item {
+            color: #00c2a8 !important;
+        }
+    </style>
 </head>
 <body>
-<!-- Header với màu xanh lá #4caf50 -->
-<header class="admin-header"
-        style="background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%); box-shadow: 0 2px 10px rgba(76, 175, 80, 0.3);">
+<header class="admin-header">
     <div class="header-content">
         <div class="admin-logo">
             <i class="fas fa-cash-register"></i>
             <span>Thu ngân - Codegym Hospital</span>
         </div>
         <div class="admin-nav">
-            <!-- Dynamic User Info với avatar thật -->
             <div class="user-info">
-                <!-- Avatar với ảnh thật hoặc fallback -->
                 <div class="user-avatar-container">
-                    <!-- Hiển thị ảnh nếu có -->
                     <img class="user-avatar-img"
                          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
                          th:alt="${currentUserName}"
                          th:if="${hasAvatar}"
                          th:src="${currentUserAvatarUrl}">
-
-                    <!-- Fallback chữ cái nếu không có ảnh hoặc ảnh lỗi -->
                     <div th:class="'user-avatar-fallback ' + (${hasAvatar} ? 'hidden' : '')"
                          th:text="${currentUserAvatar ?: 'T'}">T
                     </div>
                 </div>
-
                 <div class="user-details">
                     <span class="user-name" th:text="${currentUserName ?: 'Thu ngân'}">Thu ngân</span>
                     <small class="user-email" style="display: block; font-size: 0.8em; opacity: 0.7;"
@@ -55,7 +181,6 @@
 </header>
 
 <div class="admin-container">
-    <!-- Sidebar -->
     <nav class="sidebar">
         <div class="sidebar-menu">
             <div class="menu-section">
@@ -66,7 +191,6 @@
                     <span>Dashboard</span>
                 </a>
             </div>
-
             <div class="menu-section">
                 <div class="menu-title">Thu tiền Khám bệnh</div>
 
@@ -96,7 +220,6 @@
                     <span>Thu tiền cấp cứu</span>
                 </a>
             </div>
-
             <div class="menu-section">
                 <div class="menu-title">Thu tiền Xét nghiệm</div>
                 <a class="menu-item" href="/cashier"
@@ -120,7 +243,6 @@
                     <span>Xét nghiệm cấp cứu</span>
                 </a>
             </div>
-
             <div class="menu-section">
                 <div class="menu-title">Thu tiền Thuốc</div>
                 <a class="menu-item" href="/cashier"
@@ -144,7 +266,6 @@
                     <span>Vật tư y tế</span>
                 </a>
             </div>
-
             <div class="menu-section">
                 <div class="menu-title">Phương thức Thanh toán</div>
                 <a class="menu-item" href="/cashier"
@@ -168,7 +289,6 @@
                     <span>Thanh toán trả góp</span>
                 </a>
             </div>
-
             <div class="menu-section">
                 <div class="menu-title">Quản lý Hóa đơn</div>
                 <a class="menu-item" href="/cashier"
@@ -192,7 +312,6 @@
                     <span>Tìm kiếm hóa đơn</span>
                 </a>
             </div>
-
             <div class="menu-section">
                 <div class="menu-title">Báo cáo Tài chính</div>
                 <a class="menu-item" href="/cashier"
@@ -224,12 +343,10 @@
     </main>
 </div>
 
-<!-- Base JavaScript -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const logoutButton = document.getElementById("logoutButton");
         const logoutForm = document.getElementById("logoutForm");
-
         if (logoutButton && logoutForm) {
             logoutButton.addEventListener("click", function (e) {
                 e.preventDefault();
@@ -238,7 +355,6 @@
                 }
             });
         }
-
         // Sidebar menu interactions
         const menuItems = document.querySelectorAll(".menu-item");
         menuItems.forEach((item) => {
@@ -248,116 +364,6 @@
         });
     });
 </script>
-
-<!-- CSS với theme màu #4caf50 -->
-<style>
-    /* Cashier Theme với màu #4caf50 */
-    .cashier-theme {
-        --primary-color: #4caf50;
-        --primary-dark: #388e3c;
-        --primary-light: #81c784;
-        --primary-alpha: rgba(76, 175, 80, 0.1);
-    }
-
-    .user-role {
-        background: rgba(255, 255, 255, 0.2);
-        color: white;
-        padding: 0.3rem 0.8rem;
-        border-radius: 15px;
-        font-size: 0.8rem;
-        margin-left: 10px;
-        white-space: nowrap;
-    }
-
-    .admin-nav {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-    }
-
-    /* Avatar styles */
-    .user-avatar-container {
-        position: relative;
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        overflow: hidden;
-        box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
-        flex-shrink: 0;
-    }
-
-    .user-avatar-img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        border-radius: 50%;
-        display: block;
-        transition: opacity 0.3s ease;
-    }
-
-    .user-avatar-fallback {
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
-        color: white;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-        font-size: 16px;
-        text-transform: uppercase;
-    }
-
-    .user-avatar-fallback.hidden {
-        display: none;
-    }
-
-    /* Menu active state với màu #4caf50 */
-    .menu-item.active {
-        background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
-        color: white;
-        border-radius: 8px;
-    }
-
-    .menu-item:hover {
-        background: rgba(76, 175, 80, 0.1);
-        border-radius: 8px;
-    }
-
-    /* Logout button hover */
-    .logout-btn:hover {
-        background: rgba(255, 255, 255, 0.3);
-        transform: translateY(-1px);
-    }
-
-    /* User info hover effect */
-    .user-info:hover {
-        background: rgba(255, 255, 255, 0.15);
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-        .user-avatar-container {
-            width: 35px;
-            height: 35px;
-        }
-
-        .user-avatar-fallback {
-            font-size: 14px;
-        }
-
-        .user-details {
-            display: none;
-        }
-
-        .user-info {
-            padding: 8px;
-        }
-    }
-</style>
-
-<script src="https://kit.fontawesome.com/c1df782baf.js"></script>
 <div layout:fragment="page-scripts"></div>
 </body>
 </html>

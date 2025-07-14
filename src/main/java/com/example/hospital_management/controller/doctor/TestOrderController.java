@@ -1,4 +1,4 @@
-package com.example.hospital_management.controller.inpatient_record;
+package com.example.hospital_management.controller.doctor;
 
 
 import com.example.hospital_management.entity.ImpatientRecord;
@@ -28,6 +28,7 @@ public class TestOrderController {
     private IPatientService patientService;
     private IImpatientRecordService impatientRecordService;
 
+
     @Autowired
     public TestOrderController(ITestOrderService testOrderService, IEmployeeService employeeService, ITestService testService, IPatientService patientService, IImpatientRecordService impatientRecordService) {
         this.testOrderService = testOrderService;
@@ -37,18 +38,23 @@ public class TestOrderController {
         this.impatientRecordService = impatientRecordService;
     }
 
-
     @GetMapping("")
+    public String welcome(){
+        return "doctor/index";
+    }
+
+
+    @GetMapping("inpatient-list")
     public String searchByName(@RequestParam(required = false, defaultValue = "0") int page,
                                @RequestParam(required = false, defaultValue = "5") int size,
                                @RequestParam(required = false, defaultValue = "") String name,
                                Model model) {
         Sort sort = Sort.by(Sort.Direction.DESC, "id");
         Pageable pageable = PageRequest.of(page, size, sort);
-        Page<ImpatientRecord> impatientRecords = impatientRecordService.findAll(pageable);
+        Page<ImpatientRecord> impatientRecords = impatientRecordService.findAllByStatusTrue(name,pageable);
         model.addAttribute("impatientRecords", impatientRecords);
         model.addAttribute("name", name);
-        return "test_order/list";
+        return "doctor/list";
     }
 
 
@@ -64,7 +70,7 @@ public class TestOrderController {
         model.addAttribute("test", testService.findAll());
         model.addAttribute("employee", employeeService.findAll());
         model.addAttribute("patient", patientService.findAll());
-        return "test_order/update";
+        return "doctor/update";
     }
 
 
@@ -100,13 +106,6 @@ public class TestOrderController {
         return "redirect:/doctor";
     }
 
-//    @GetMapping("{id}/delete")
-//    public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-//        testOrderService.remove(id);
-//        redirectAttributes.addFlashAttribute("success", "Đã xóa thành công!");
-//        return "redirect:/doctor";
-//    }
-
 
     @GetMapping("{id}/detail")
     public String detail(@PathVariable Long id, Model model) {
@@ -114,7 +113,7 @@ public class TestOrderController {
         List<TestOrder> testOrderOptional = testOrderService.findByImpatientRecordId(id);
         model.addAttribute("test_orders", testOrders);
         model.addAttribute("test_order", testOrderOptional);
-        return "test_order/detail";
+        return "doctor/detail";
     }
 
     @GetMapping("/test-order/{id}/result")
@@ -123,7 +122,20 @@ public class TestOrderController {
         TestOrder testOrders = testOrderService.findById(id);
         model.addAttribute("testOrder", testOrder);
         model.addAttribute("testOrders", testOrders);
-        return "test_order/result-detail"; // trỏ đến file HTML mới
+        return "doctor/result-detail"; // trỏ đến file HTML mới
+    }
+
+    //post này để thêm cái result sau khi hoàn thành xét nghiệm
+    @PostMapping("/{id}/result/update")
+    public String updateResult(@PathVariable Long id, @RequestParam String result) {
+        TestOrder order = testOrderService.findById(id);
+        if (order != null) {
+            order.setResult(result);
+            testOrderService.save(order);
+        }
+        // Quay lại trang detail theo bệnh nhân
+        assert order != null;
+        return "redirect:/doctor/" + order.getImpatientRecord().getId() + "/detail";
     }
 
 }

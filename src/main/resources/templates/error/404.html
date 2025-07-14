@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <title>404 - Không tìm thấy trang</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .error-container {
+            background: white;
+            padding: 40px 50px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(207, 222, 243, 0.16);
+            text-align: center;
+            max-width: 420px;
+        }
+
+        .error-code {
+            font-size: 80px;
+            font-weight: bold;
+            color: #0093e9;
+            margin-bottom: 10px;
+        }
+
+        .error-title {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .error-message {
+            font-size: 17px;
+            color: #666;
+            margin-bottom: 28px;
+        }
+
+        .error-actions a {
+            padding: 10px 24px;
+            background: #0093e9;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            transition: background 0.2s;
+            margin: 0 6px;
+        }
+
+        .error-actions a:hover {
+            background: #005fa3;
+        }
+
+        .error-icon {
+            font-size: 48px;
+            color: #0093e9;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="error-container">
+    <div class="error-icon">
+        <i class="fas fa-search-minus"></i>
+    </div>
+    <div class="error-code">404</div>
+    <div class="error-title">Không tìm thấy trang</div>
+    <div class="error-message">
+        Trang bạn đang tìm kiếm không tồn tại hoặc đã bị di chuyển.<br>
+        Vui lòng kiểm tra lại đường dẫn hoặc quay về trang chủ.
+    </div>
+    <div class="error-actions">
+        <a href="/">Về trang chủ</a>
+        <a href="javascript:history.back()">Quay lại</a>
+    </div>
+</div>
+<!-- Font Awesome CDN for icon -->
+<script crossorigin="anonymous" src="https://kit.fontawesome.com/c1df782baf.js"></script>
+</body>
+</html>

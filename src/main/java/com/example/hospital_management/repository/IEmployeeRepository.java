@@ -18,8 +18,10 @@ public interface IEmployeeRepository extends JpaRepository<Employee, Long> {
 
     @Query("SELECT e FROM Employee e WHERE e.position.name = 'Bác sĩ'")
     List<Employee> findAllDoctors();
+
     @Query("SELECT e FROM Employee e WHERE e.position.name = 'Điều dưỡng'")
     List<Employee> findAllNurses();
+
     @Query("SELECT e FROM Employee e WHERE e.position.name = 'Bác sĩ' AND e.department.id = :departmentId")
     List<Employee> findDoctorsByDepartment(@Param("departmentId") Long departmentId);
 
@@ -57,4 +59,7 @@ public interface IEmployeeRepository extends JpaRepository<Employee, Long> {
     Optional<Employee> findEmployeeByEmail(String email);
 
 
+    @Query(value = "select e.* from employees e join employee_roles er on e.id = er.employee_id " +
+            "join roles r on er.roles_id = r.id where r.id = 4; ", nativeQuery = true)
+    List<Employee> getListNurse();
 }
