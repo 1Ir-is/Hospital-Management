@@ -170,6 +170,13 @@
 
     <!-- Main Content -->
     <main class="main-content">
+        <!-- Hiển thị thông báo thành công -->
+        <div class="container mt-3">
+            <div th:if="${success}" class="alert alert-success alert-dismissible fade show" id="alertSuccess" role="alert">
+                <i class="fas fa-check-circle me-2"></i>
+                <span th:text="${success}">Thành công!</span>
+            </div>
+        </div>
         <div layout:fragment="main-content"></div>
     </main>
 </div>
