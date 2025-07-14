@@ -98,7 +98,8 @@
     <div class="header-content">
         <div class="admin-logo">
             <i class="fas fa-user-md"></i>
-            <span>Trưởng Khoa - Codegym Hospital</span>
+            <span th:text="'Trưởng khoa - ' + ${session.departmentName}"></span>
+
         </div>
         <div class="admin-nav">
             <!-- ✅ Dynamic User Info -->
