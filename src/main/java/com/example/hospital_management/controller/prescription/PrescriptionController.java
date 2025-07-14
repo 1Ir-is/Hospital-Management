@@ -134,6 +134,7 @@ public class PrescriptionController {
     public String confirm(@ModelAttribute("prescription") PrescriptionDto prescriptionDto){
         Prescription prescription = new Prescription();
         BeanUtils.copyProperties(prescriptionDto, prescription);
+        prescription.setStatus(false);
         Prescription savedPrescription = prescriptionService.save(prescription);
         for (PrescriptionDetailDto dto : prescriptionDto.getPrescriptionDetails()){
             PrescriptionDetail detail = new PrescriptionDetail();
