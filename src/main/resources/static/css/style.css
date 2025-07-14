@@ -9,6 +9,7 @@ body {
     line-height: 1.6;
     color: #333;
     padding-top: 80px; /* Space for fixed header */
+    overflow-x: hidden;
 }
 
 .container {
@@ -159,30 +160,25 @@ body {
     transform: rotate(-45deg) translate(7px, -6px);
 }
 
-/* Hero Section */
 .hero {
     background: url("/assets/images/image1.webp") no-repeat center center;
-    background-size: 100% 100%; /* ✅ kéo giãn ảnh để fit chính xác */
+    background-size: cover;
     background-position: center center;
-    background-attachment: fixed; /* ✅ cố định ảnh nền */
-    height: 100vh; /* ✅ chiều cao bằng toàn màn hình */
-    width: 100vw; /* ✅ chiều rộng bằng toàn màn hình */
-    position: relative;
-    margin: 0; /* ✅ bỏ hết margin */
-    padding: 0; /* ✅ bỏ hết padding */
+    background-attachment: fixed;
+    height: 100vh;
+    width: 100%; /* Sửa từ 100vw về 100% */
+    min-width: unset; /* Bỏ min-width: 100vw */
+    margin-left: 0; /* Bỏ margin-left */
+    padding: 0;
     display: flex;
     align-items: center;
     overflow: hidden;
-    margin-left: calc(-50vw + 50%); /* ✅ mở rộng ra toàn màn hình */
 }
 
 .hero-overlay {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(255, 255, 255, 0.1);
+    inset: 0;
+    background: rgba(255, 255, 255, 0.10);
     z-index: 1;
 }
 
@@ -948,10 +944,30 @@ body {
     margin-bottom: 20px;
 }
 
+.navbar .btn-appointment,
+.navbar .btn-login {
+    display: none;
+}
+
+/* Hiện nút khi navbar ở mobile */
 @media (max-width: 768px) {
-    .form-row {
-        grid-template-columns: 1fr;
-        gap: 15px;
+    .navbar .btn-appointment,
+    .navbar .btn-login {
+        display: block;
+        width: 100%;
+        margin: 10px 0;
+        font-size: 1.1rem;
+        padding: 12px 0;
+    }
+
+    .navbar {
+        /* sắp xếp dọc các phần tử */
+        flex-direction: column;
+    }
+
+    .header-actions .btn-appointment,
+    .header-actions .btn-login {
+        display: none !important;
     }
 }
 
@@ -1156,14 +1172,6 @@ body {
         border-bottom: 1px solid #eee;
     }
 
-    .hero {
-        height: 80vh;
-        background-attachment: scroll;
-    }
-
-    .hero-text h1 {
-        font-size: 2.5rem;
-    }
 
     .btn-hero-call {
         padding: 1.2rem 1.5rem;
@@ -1246,7 +1254,7 @@ body {
     }
 
     .container {
-        padding: 0 10px;
+        padding: 0 8px;
     }
 
     .btn-hero-call {
@@ -1967,3 +1975,68 @@ body {
 }
 
 /* Fix Radio Button Styling */
+
+
+/* Thêm/sửa vào cuối file style.css hoặc trong thẻ <style> ở <head> */
+
+/* --- HERO SECTION IMAGE RESPONSIVE FIX --- */
+.hero {
+    background: url("/assets/images/image1.webp") no-repeat center center;
+    background-size: cover; /* Sửa lại từ 100% 100% thành cover để giữ tỷ lệ ảnh */
+    background-position: center center;
+    background-attachment: fixed;
+    height: 100vh;
+    width: 100vw;
+    position: relative;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    margin-left: calc(-50vw + 50%);
+}
+
+/* Mobile & Tablet: ảnh nền phải fit đúng tỉ lệ và không bị kéo giãn */
+@media (max-width: 1024px) {
+    .hero {
+        background-attachment: scroll;
+        background-size: cover;
+        height: 60vh; /* Giảm chiều cao ảnh ở mobile để không bị dài quá */
+        min-height: 350px;
+        max-height: 500px;
+    }
+
+    .hero-text h1 {
+        font-size: 2rem;
+        word-break: break-word;
+        line-height: 1.2;
+    }
+}
+
+/* Nếu bạn có ảnh trong HTML (img tag) trong .hero, dùng: */
+.hero img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    display: block;
+}
+
+/* Đảm bảo hero-content không bị dính sát lề, để text đọc dễ hơn */
+@media (max-width: 600px) {
+    .hero-content {
+        display: none !important;
+    }
+
+    .hero-text h1 {
+        font-size: 1.5rem;
+    }
+
+    .hero-actions {
+        display: none !important;
+    }
+
+    .hero {
+        height: 220px;
+        min-height: 220px;
+    }
+}

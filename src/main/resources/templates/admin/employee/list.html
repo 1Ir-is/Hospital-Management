@@ -794,7 +794,6 @@
 </head>
 <body>
 <div layout:fragment="main-content">
-    <!-- Success/Error Messages -->
     <div class="notification success-notification show" id="successNotification" th:if="${successMessage}">
         <i class="fas fa-check-circle"></i>
         <span th:text="${successMessage}"></span>
@@ -802,7 +801,6 @@
             <i class="fas fa-times"></i>
         </button>
     </div>
-
     <div class="notification error-notification show" id="errorNotification" th:if="${errorMessage}">
         <i class="fas fa-exclamation-circle"></i>
         <span th:text="${errorMessage}"></span>
@@ -1111,67 +1109,67 @@
 </div>
 
 <script>
-    let currentEmployeeId = null;
-    let currentEmployeeName = null;
-
+    // Notification: auto-hide after 4s, and close when clicking "x"
     document.addEventListener('DOMContentLoaded', function () {
-
-        // Notification handling
-        document.addEventListener('DOMContentLoaded', function () {
-            // Auto-hide notifications after 5 seconds
-            const notifications = document.querySelectorAll('.notification');
-            notifications.forEach(notification => {
-                if (notification.classList.contains('show')) {
-                    setTimeout(() => {
-                        closeNotification(notification.id);
-                    }, 5000);
-                }
-            });
-
-            // Show loading when form submitted
-            const filterForm = document.querySelector('.filters-container');
-            if (filterForm) {
-                filterForm.addEventListener('submit', function () {
-                    document.getElementById('loadingState').style.display = 'block';
-                    document.querySelector('.table-container')?.style.setProperty('display', 'none');
-                });
-            }
-
-            // Auto-submit form when page size changes
-            const pageSizeSelect = document.querySelector('select[name="size"]');
-            if (pageSizeSelect) {
-                pageSizeSelect.addEventListener('change', function () {
-                    this.form.submit();
-                });
+        // Auto-hide notifications after 4 seconds
+        ['successNotification', 'errorNotification'].forEach(function (id) {
+            const notification = document.getElementById(id);
+            if (notification && notification.classList.contains('show')) {
+                setTimeout(function () {
+                    notification.classList.remove('show');
+                    notification.classList.add('slide-out');
+                    setTimeout(function () {
+                        notification.style.display = 'none';
+                    }, 300);
+                }, 4000);
             }
         });
 
-        function closeNotification(notificationId) {
-            const notification = document.getElementById(notificationId);
-            if (notification) {
-                notification.classList.remove('show');
-                notification.classList.add('slide-out');
+        // Attach click event to "x" button
+        document.querySelectorAll('.notification-close').forEach(function (btn) {
+            btn.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                const notification = btn.closest('.notification');
+                if (notification) {
+                    notification.classList.remove('show');
+                    notification.classList.add('slide-out');
+                    setTimeout(function () {
+                        notification.style.display = 'none';
+                    }, 300);
+                }
+            });
+        });
 
-                setTimeout(() => {
-                    notification.remove();
-                }, 300);
-            }
+        // Show loading when form submitted
+        const filterForm = document.querySelector('.filters-container');
+        if (filterForm) {
+            filterForm.addEventListener('submit', function () {
+                document.getElementById('loadingState').style.display = 'block';
+                document.querySelector('.table-container')?.style.setProperty('display', 'none');
+            });
         }
 
-        // Search functionality
+        // Auto-submit form when page size changes
+        const pageSizeSelect = document.querySelector('select[name="size"]');
+        if (pageSizeSelect) {
+            pageSizeSelect.addEventListener('change', function () {
+                this.form.submit();
+            });
+        }
+
+        // Search filter and status filter functionality
         const searchInput = document.getElementById('searchInput');
         const statusFilter = document.getElementById('statusFilter');
         const tableRows = document.querySelectorAll('.admin-table tbody tr');
 
-        // Search filter
         if (searchInput) {
             searchInput.addEventListener('input', function () {
                 const searchTerm = this.value.toLowerCase();
-                filterTable(searchTerm, statusFilter.value);
+                filterTable(searchTerm, statusFilter ? statusFilter.value : "");
             });
         }
 
-        // Status filter
         if (statusFilter) {
             statusFilter.addEventListener('change', function () {
                 const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
@@ -1209,7 +1207,7 @@
             });
         }
 
-        // Initialize delete button event
+        // Delete button logic
         initializeDeleteButtons();
 
         // Handle delete confirmation
@@ -1246,26 +1244,10 @@
             }
         });
 
+        // Show success notification from URL param
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.get('success') === 'true') {
             showSuccessMessage();
-        }
-
-        function showSuccessMessage() {
-            const notification = document.createElement('div');
-            notification.className = 'success-notification show';
-            notification.innerHTML = `
-                <i class="fas fa-check-circle"></i>
-                <span>Nhân viên đã được tạo thành công!</span>
-            `;
-            document.body.appendChild(notification);
-
-            setTimeout(() => {
-                notification.classList.remove('show');
-                setTimeout(() => {
-                    notification.remove();
-                }, 300);
-            }, 3000);
         }
     });
 
@@ -1279,6 +1261,9 @@
             });
         });
     }
+
+    let currentEmployeeId = null;
+    let currentEmployeeName = null;
 
     function showDeleteModal(button) {
         try {
@@ -1329,6 +1314,38 @@
                 currentEmployeeName = null;
             }, 300);
         }
+    }
+
+    function showSuccessMessage() {
+        const notification = document.createElement('div');
+        notification.className = 'success-notification show';
+        notification.innerHTML = `
+        <i class="fas fa-check-circle"></i>
+        <span>Nhân viên đã được tạo thành công!</span>
+        <button class="notification-close" type="button">
+            <i class="fas fa-times"></i>
+        </button>
+    `;
+        document.body.appendChild(notification);
+
+        // Attach event to new close button
+        notification.querySelector('.notification-close').addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            notification.classList.remove('show');
+            notification.classList.add('slide-out');
+            setTimeout(function () {
+                notification.style.display = 'none';
+            }, 300);
+        });
+
+        setTimeout(() => {
+            notification.classList.remove('show');
+            notification.classList.add('slide-out');
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 300);
+        }, 3000);
     }
 </script>
 
