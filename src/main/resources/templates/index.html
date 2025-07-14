@@ -22,6 +22,7 @@
             href="https://cdn-uicons.flaticon.com/2.1.0/uicons-regular-rounded/css/uicons-regular-rounded.css"
             rel="stylesheet"
     />
+
     <!-- Flatpickr CSS & JS -->
     <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -487,6 +488,18 @@
     </div>
 </div>
 
+<div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 9999;">
+    <div class="toast align-items-center text-white bg-danger border-0 show" role="alert" th:if="${loginError}">
+        <div class="d-flex">
+            <div class="toast-body">
+                Đăng nhập thất bại! Vui lòng kiểm tra email hoặc mật khẩu.
+            </div>
+            <button class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" type="button"></button>
+        </div>
+    </div>
+</div>
+
+
 <!-- Đặt lịch khám -->
 <div class="modal" id="appointmentModal">
     <div class="modal-content">
@@ -662,6 +675,27 @@
     <i class="fas fa-chevron-up"></i>
 </button>
 
+<script th:if="${loginError}">
+    window.onload = function () {
+        // Hiển thị SweetAlert2 trước
+        Swal.fire({
+            icon: 'error',
+            title: 'Đăng nhập thất bại',
+            text: 'Vui lòng kiểm tra lại email hoặc mật khẩu!',
+            confirmButtonText: 'Thử lại',
+            confirmButtonColor: '#d33'
+        }).then(() => {
+            const loginModal = document.getElementById('loginModal');
+            if (loginModal) {
+                loginModal.classList.add('show');
+                document.body.style.overflow = 'hidden'; // chặn cuộn nền
+            }
+        });
+
+    }
+</script>
+
+
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         // Cài đặt ngôn ngữ tiếng Việt
@@ -680,6 +714,8 @@
         });
     });
 </script>
+<!-- SweetAlert2 CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script src="/js/script.js"></script>
 </body>
