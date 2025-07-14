@@ -3,22 +3,18 @@ package com.example.hospital_management.service.impl;
 import com.example.hospital_management.entity.ClinicalExamination;
 import com.example.hospital_management.repository.IClinicalExaminationRepository;
 import com.example.hospital_management.service.IClinicalExaminationService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
-
 @Service
-public class ClinicalExaminationService implements IClinicalExaminationService {
+public class ClinicalExaminationServiceImpl implements IClinicalExaminationService {
+    @Autowired
     private IClinicalExaminationRepository clinicalExaminationRepository;
-
-    public ClinicalExaminationService(IClinicalExaminationRepository clinicalExaminationRepository) {
-        this.clinicalExaminationRepository = clinicalExaminationRepository;
-    }
-
     @Override
     public List<ClinicalExamination> getByImpatientRecordId(Long recordId) {
-        return clinicalExaminationRepository.findAllByImpatientRecordId(recordId);
+
+        return clinicalExaminationRepository.findByImpatientRecordIdOrderByDateDesc(recordId);
     }
 
     @Override
@@ -27,8 +23,8 @@ public class ClinicalExaminationService implements IClinicalExaminationService {
     }
 
     @Override
-    public void save(ClinicalExamination clinicalExamination) {
-        clinicalExaminationRepository.save(clinicalExamination);
+    public void save(ClinicalExamination impatientRecord) {
+        clinicalExaminationRepository.save(impatientRecord);
     }
 
     @Override

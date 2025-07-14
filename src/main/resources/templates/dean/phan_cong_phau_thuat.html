@@ -1,0 +1,74 @@
+<!-- templates/department-head/phan_cong_phau_thuat.html -->
+<!DOCTYPE html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{department-head/layout/layout}">
+<head>
+  <title>Phân công bác sĩ phẫu thuật</title>
+</head>
+<body>
+<div layout:fragment="main-content">
+  <h3 class="mb-4">🛠️ Phân công bác sĩ phẫu thuật</h3>
+
+  <div class="card shadow-sm mb-3">
+    <div class="card-body">
+      <p><strong>Bệnh nhân:</strong> <span th:text="${record.medicalRecord.patient.name}">Tên</span></p>
+      <p><strong>Phòng:</strong> <span th:text="${record.bed.room.number}">Phòng</span></p>
+      <p><strong>Ngày nhập viện:</strong> <span th:text="${#temporals.format(record.admissionDate, 'dd-MM-yyyy')}">Ngày</span></p>
+    </div>
+  </div>
+
+  <form th:action="@{/department-head/surgeries/save}" method="post" class="row g-3">
+    <input type="hidden" name="recordId" th:value="${record.id}"/>
+    <input type="hidden" name="departmentId" th:value="${departmentId}"/>
+
+    <div class="col-md-6">
+      <label class="form-label">👨‍⚕️ Chọn bác sĩ</label>
+      <select name="employeeId" class="form-select" required>
+        <option value="" disabled selected>-- Chọn bác sĩ --</option>
+        <option th:each="d : ${doctorList}" th:value="${d.id}" th:text="${d.name}"
+                th:selected="${surgery.employee?.id == d.id}"></option>
+      </select>
+    </div>
+
+    <div class="col-md-6">
+      <label class="form-label">🛠️ Loại phẫu thuật</label>
+      <select name="surgeryTypeId" class="form-select" required>
+        <option value="" disabled selected>-- Chọn loại --</option>
+        <option th:each="t : ${surgeryTypeList}" th:value="${t.id}" th:text="${t.name}"
+                th:selected="${surgery.surgeryType?.id == t.id}"></option>
+      </select>
+    </div>
+
+    <div class="col-md-6">
+      <label class="form-label">📅 Ngày phẫu thuật</label>
+      <input type="date" name="date" class="form-control"
+             th:value="${surgery.date != null ? surgery.date : ''}" required>
+    </div>
+
+    <div class="col-md-6">
+      <label class="form-label">📝 Ghi chú</label>
+      <input type="text" name="note" class="form-control"
+             th:value="${surgery.note != null ? surgery.note : ''}">
+    </div>
+
+    <div class="col-12 d-flex gap-2">
+      <button class="btn btn-success" type="submit">💾 Lưu phân công</button>
+      <a th:href="@{/department-head/list-inpatient}" class="btn btn-secondary">← Quay lại</a>
+    </div>
+  </form>
+</div>
+
+<div layout:fragment="page-scripts">
+  <script>
+    setTimeout(function () {
+      const alert = document.getElementById('alertSuccess');
+      if (alert) {
+        alert.classList.add('d-none');
+      }
+    }, 3000);
+  </script>
+</div>
+</body>
+</html>

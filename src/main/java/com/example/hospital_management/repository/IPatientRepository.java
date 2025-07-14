@@ -20,7 +20,8 @@ public interface IPatientRepository extends JpaRepository<Patient, Long> {
     SELECT DISTINCT p FROM Patient p
     JOIN MedicalRecord mr ON mr.patient = p
     JOIN ImpatientRecord ir ON ir.medicalRecord = mr
-    JOIN Room r ON mr.room = r
+    JOIN Bed b ON b = ir.bed
+    JOIN Room r ON r = b.room
     LEFT JOIN EmployeeAssignment ea ON ea.impatientRecord = ir
     LEFT JOIN Employee e ON ea.employee = e
     WHERE (:name IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :name, '%')))
@@ -32,6 +33,7 @@ public interface IPatientRepository extends JpaRepository<Patient, Long> {
             @Param("roomName") String roomName,
             @Param("doctorName") String doctorName
     );
+
 
     List<Patient> findAllByIdCard(String idCard);
     Patient findPatientById(Long id);

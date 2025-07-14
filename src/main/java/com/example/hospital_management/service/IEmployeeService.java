@@ -43,6 +43,9 @@ public interface IEmployeeService {
 
     Optional<Employee> findById(Long id);
 
+    Employee findByEmail(String email);
+
+
     List<Employee> findAll();
 
     void updateEmployeeRoles(Long employeeId, List<Long> roleIds);
@@ -51,5 +54,4 @@ public interface IEmployeeService {
 
     List<Employee> findNurse();
 
-    Employee findByEmail(String email);
 }

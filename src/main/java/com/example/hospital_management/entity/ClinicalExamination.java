@@ -20,7 +20,7 @@ public class ClinicalExamination {
     private Long id;
     private LocalDate date;
     private String note;
-    private String statusMedicine;
+    private String status;
 
     @ManyToOne
     @JoinColumn(name = "impatient_record_id")

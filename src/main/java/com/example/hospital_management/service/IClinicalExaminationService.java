@@ -7,6 +7,7 @@ import java.util.List;
 
 
 public interface IClinicalExaminationService {
+    List<ClinicalExamination> getByImpatientRecordId(Long recordId);
     List<ClinicalExamination> findAll();
     void save(ClinicalExamination impatientRecord);
     List<ClinicalExamination> findByImpatientRecordId(Long id);
