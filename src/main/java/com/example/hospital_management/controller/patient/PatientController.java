@@ -166,23 +166,23 @@ public class PatientController {
 
 
     // lấy danh sách hiển thị cho lễ tân
-    @GetMapping("/list")
-    public String getAllListTicket(Model model) {
-        List<Ticket> tickets = ticketService.getAllTodayTicketsOrdered();
-        model.addAttribute("tickets", tickets);
-        return "ticket/list";
-    }
-
-    @PostMapping("/call")
-    public String callTicket(@RequestParam("ticketId") Long id, RedirectAttributes redirect) {
-        Ticket ticket = ticketService.callTickets(id);
-        if (ticket != null) {
-            redirect.addFlashAttribute("message", "Đã gọi số " + ticket.getQueueNumber() + " (" + ticket.getName() + ") " + "thành công,");
-        } else {
-            redirect.addFlashAttribute("message", "Không tìm thấy phiếu");
-        }
-        return "redirect:/patient/list";
-    }
+//    @GetMapping("/list")
+//    public String getAllListTicket(Model model) {
+//        List<Ticket> tickets = ticketService.getAllTodayTicketsOrdered();
+//        model.addAttribute("tickets", tickets);
+//        return "ticket/list";
+//    }
+//
+//    @PostMapping("/call")
+//    public String callTicket(@RequestParam("ticketId") Long id, RedirectAttributes redirect) {
+//        Ticket ticket = ticketService.callTickets(id);
+//        if (ticket != null) {
+//            redirect.addFlashAttribute("message", "Đã gọi số " + ticket.getQueueNumber() + " (" + ticket.getName() + ") " + "thành công,");
+//        } else {
+//            redirect.addFlashAttribute("message", "Không tìm thấy phiếu");
+//        }
+//        return "redirect:/patient/list";
+//    }
 
     @GetMapping("/waiting-room")
     public String showWaitingRoom(Model model) {

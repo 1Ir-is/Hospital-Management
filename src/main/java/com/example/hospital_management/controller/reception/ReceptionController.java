@@ -231,9 +231,15 @@ public class ReceptionController {
 
     // lấy danh sách hiển thị cho lễ tân
     @GetMapping("/list")
-    public String getAllListTicket(Model model) {
-        List<Ticket> tickets = ticketService.getAllTodayTicketsOrdered();
+    public String getAllListTicket(@RequestParam(defaultValue = "0") int page,
+                                   @RequestParam(defaultValue = "5") int size,
+                                   Model model) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<Ticket> tickets = ticketService.getAllTodayTicketsOrdered(pageable);
         model.addAttribute("tickets", tickets);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", tickets.getTotalPages());
         return "ticket/list";
     }
 
