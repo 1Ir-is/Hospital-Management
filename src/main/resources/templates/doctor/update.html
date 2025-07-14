@@ -51,8 +51,9 @@
         </div>
     </div>
     <script th:inline="javascript">
-        const employees = /*[[${employee}]]*/ [];
-        const testList = /*[[${test}]]*/ [];
+        const employees = /*[[${employee}]]*/ {}; // Nhân viên đăng nhập
+        const testList = /*[[${test}]]*/ []; // Danh sách xét nghiệm
+        const employeeName = /*[[${employeeName}]]*/ ''; // Tên nhân viên
     </script>
 
 
@@ -93,12 +94,11 @@
             tbody.innerHTML = `
         <thead class="table-active">
             <tr>
-                <th colspan="4" class="text-center text-danger"><h3>Chọn các xét nghiệm cho bệnh nhân</h3></th>
+                <th colspan="4" class="text-center "><h3>Chọn các xét nghiệm cho bệnh nhân</h3></th>
             </tr>
             <tr>
                 <th></th>
                 <th>Tên xét nghiệm</th>
-                 <th>Nhân viên xét nghiệm</th>
                 <th>Mô tả</th>
             </tr>
         </thead>`;
@@ -107,18 +107,19 @@
                 const isChecked = selectedIds.has(item.id) ? 'checked' : '';
 
                 // Tạo <select> cho nhân viên
-                let selectHtml = `<select class="form-select form-select-sm" name="employeeMap[${item.id}]">`;
-                selectHtml += `<option value="">-- Chọn --</option>`;
-                employees.forEach(emp => {
-                    selectHtml += `<option value="${emp.id}">${emp.name}</option>`;
-                });
-                selectHtml += `</select>`;
+                let selectHtml = `<span class="text-muted fst-italic text-success">${employeeName}</span>`;
+                //  let selectHtml = `<select class="form-select form-select-sm" name="employeeMap[${item.id}]">`;
+                //   selectHtml += `<option value="">-- Chọn --</option>`;
+                //employees.forEach(emp => {
+                //        selectHtml += `<option value="${emp.id}">${emp.name}</option>`;
+                //     });
+                //   selectHtml += `</select>`;
+
 
                 tbody.innerHTML += `
             <tr>
                 <td><input type="checkbox" value="${item.id}" ${isChecked} class="test-checkbox" name="chosenTest"></td>
                 <td><p>${item.name}</p></td>
-                <td>${selectHtml}</td>
                 <td><p>${item.description}</p></td>
             </tr>
         `;
@@ -177,3 +178,5 @@
     <footer th:replace="/layout :: footer"></footer>
 </div>
 </html>
+<!--<td>${selectHtml}</td>-->
+<!--<th>Nhân viên xét nghiệm</th>-->

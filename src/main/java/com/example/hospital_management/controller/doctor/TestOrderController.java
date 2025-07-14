@@ -1,6 +1,7 @@
 package com.example.hospital_management.controller.doctor;
 
 
+import com.example.hospital_management.entity.Employee;
 import com.example.hospital_management.entity.ImpatientRecord;
 import com.example.hospital_management.entity.Test;
 import com.example.hospital_management.entity.TestOrder;
@@ -11,12 +12,16 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/doctor")
@@ -58,53 +63,131 @@ public class TestOrderController {
     }
 
 
+//    @GetMapping("{id}/edit")
+//    public String update(@PathVariable Long id, Model model) {
+//        TestOrder order = testOrderService.findById(id);
+//        // ⚠ Kiểm tra tránh null
+//        if (order.getImpatientRecord() == null) {
+//            return "redirect:/error"; // hoặc báo lỗi rõ ràng
+//        }
+//
+//        model.addAttribute("test_order", order);
+//        model.addAttribute("test", testService.findAll());
+//        model.addAttribute("employee", employeeService.findAll());
+//        model.addAttribute("patient", patientService.findAll());
+//        return "doctor/update";
+//    }
+
+
+//    @PostMapping("/{id}/test/save")
+//    public String sendOrder(@PathVariable Long id,
+//                            @RequestParam("chosenTestIds") List<Long> chosenIds,
+//                            Model model) {
+//        if (chosenIds.isEmpty()) {
+//            return "redirect:/doctor";
+//        }
+//        ImpatientRecord impatientRecord = impatientRecordService.findById(id).get();
+//        impatientRecord.setStatus(true); // chuyển trạng thái khi chọn sang đang chờ xét nghiệm
+//        for (Long tId : chosenIds) {
+//            Test test = testService.findById(tId).get();
+//            TestOrder testOrder = new TestOrder(
+//                    null,                    // id
+//                    LocalDate.now(),         // date
+//                    null,                    // note
+//                    null,                    // result
+//                    false,                   // status
+//                    false,                   // payStatus
+//                    null,                    // imagePath
+//                    impatientRecord,         // impatientRecord
+//                    null,                    // employee
+//                    test,                    // test
+//                    null                     // testStatus
+//            );
+//
+//            testOrderService.save(testOrder);
+//
+//        }
+//        impatientRecordService.save(impatientRecord);
+//        return "redirect:/doctor";
+//    }
+
+
     @GetMapping("{id}/edit")
-    public String update(@PathVariable Long id, Model model) {
+    public String update(@PathVariable Long id,
+                         @AuthenticationPrincipal UserDetails userDetails,
+                         Model model) {
         TestOrder order = testOrderService.findById(id);
-        // ⚠ Kiểm tra tránh null
-        if (order.getImpatientRecord() == null) {
-            return "redirect:/error"; // hoặc báo lỗi rõ ràng
+        // Kiểm tra tránh null
+        if (order == null || order.getImpatientRecord() == null) {
+            return "redirect:/error"; // Hoặc báo lỗi rõ ràng
         }
 
+        // Lấy nhân viên từ email đăng nhập
+        String email = userDetails.getUsername();
+        Employee employee = employeeService.findByEmail(email);
+
+        // Thêm thông tin vào model
         model.addAttribute("test_order", order);
         model.addAttribute("test", testService.findAll());
-        model.addAttribute("employee", employeeService.findAll());
+        model.addAttribute("employee", employee); // Nhân viên đăng nhập
+        model.addAttribute("employeeName", employee != null ? employee.getName() : "Không xác định");
         model.addAttribute("patient", patientService.findAll());
+
         return "doctor/update";
     }
 
 
     @PostMapping("/{id}/test/save")
-    public String sendOrder(@PathVariable Long id,
-                            @RequestParam("chosenTestIds") List<Long> chosenIds,
-                            Model model) {
-        if (chosenIds.isEmpty()) {
-            return "redirect:/doctor";
-        }
-        ImpatientRecord impatientRecord = impatientRecordService.findById(id).get();
-        impatientRecord.setStatus(true); // chuyển trạng thái khi chọn sang đang chờ xét nghiệm
-        for (Long tId : chosenIds) {
-            Test test = testService.findById(tId).get();
-            TestOrder testOrder = new TestOrder(
-                    null,                    // id
-                    LocalDate.now(),         // date
-                    null,                    // note
-                    null,                    // result
-                    false,                   // status
-                    false,                   // payStatus
-                    null,                    // imagePath
-                    impatientRecord,         // impatientRecord
-                    null,                    // employee
-                    test,                    // test
-                    null                     // testStatus
-            );
+    public String sendOrder(@PathVariable("id") Long impatientRecordId,
+                            @RequestParam("chosenTestIds") String chosenTestIds,
+                            @AuthenticationPrincipal UserDetails userDetails) {
 
-            testOrderService.save(testOrder);
-
+        if (chosenTestIds == null || chosenTestIds.trim().isEmpty()) {
+            return "redirect:/doctor/inpatient-list";
         }
+
+        // Lấy thông tin hồ sơ nội trú
+        ImpatientRecord impatientRecord = impatientRecordService.findById(impatientRecordId).orElse(null);
+        if (impatientRecord == null) {
+            return "redirect:/doctor/inpatient-list";
+        }
+
+        // Lấy nhân viên từ tài khoản đăng nhập (qua email)
+        String email = userDetails.getUsername();
+        Employee employee = employeeService.findByEmail(email);
+
+        // Đánh dấu hồ sơ đang chờ xét nghiệm
+        impatientRecord.setStatus(true);
+
+        // Chuyển testId thành danh sách Long
+        List<Long> testIds = Arrays.stream(chosenTestIds.split(","))
+                .map(Long::parseLong)
+                .collect(Collectors.toList());
+
+        for (Long testId : testIds) {
+            Test test = testService.findById(testId).orElse(null);
+            if (test != null) {
+                TestOrder testOrder = new TestOrder(
+                        null,                     // id
+                        LocalDate.now(),          // date
+                        null,                     // note
+                        null,                     // result
+                        false,                    // status
+                        false,                    // payStatus
+                        null,                     // imagePath
+                        impatientRecord,          // impatientRecord
+                        employee,                 // employee (người tạo)
+                        test,                     // test
+                        null                      // testStatus
+                );
+                testOrderService.save(testOrder);
+            }
+        }
+
         impatientRecordService.save(impatientRecord);
-        return "redirect:/doctor";
+        return "redirect:/doctor/inpatient-list";
     }
+
 
 
     @GetMapping("{id}/detail")

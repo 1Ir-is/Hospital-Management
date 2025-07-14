@@ -39,6 +39,12 @@ public class EmployeeService implements IEmployeeService {
     }
 
     @Override
+    public Employee findByEmail(String email) {
+        return employeeRepository.findByEmail(email);
+    }
+
+
+    @Override
     public Page<Employee> findEmployeesWithFilters(String search, String status, Pageable pageable) {
         return employeeRepository.findEmployeesWithFilters(search, status, pageable);
     }

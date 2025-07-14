@@ -92,7 +92,6 @@
                 </div>
             </main>
 
-
             <!-- Modal cập nhật kết luận -->
             <div class="modal fade" id="conclusionModal" tabindex="-1" aria-labelledby="conclusionModalLabel"
                  aria-hidden="true">
@@ -127,30 +126,29 @@
                         </div>
                     </form>
                 </div>
+
+                <script>
+
+                    function openConclusionModal(button) {
+                        console.log("Modal được kích hoạt");
+                        const id = button.getAttribute("data-id");
+                        const result = button.getAttribute("data-result");
+                        const note = button.getAttribute("data-note");
+
+                        document.getElementById("orderId").value = id;
+                        document.getElementById("result").value = result || "";
+                        document.getElementById("note").value = note || "";
+
+                        // Thiết lập action cho form gửi đến controller
+                        document.getElementById("conclusionForm").action = `/doctor/${id}/result/update`;
+                    }
+
+
+                </script>
             </div>
-
-            <script>
-
-                function openConclusionModal(button) {
-                    console.log("Modal được kích hoạt");
-                    const id = button.getAttribute("data-id");
-                    const result = button.getAttribute("data-result");
-                    const note = button.getAttribute("data-note");
-
-                    document.getElementById("orderId").value = id;
-                    document.getElementById("result").value = result || "";
-                    document.getElementById("note").value = note || "";
-
-                    // Thiết lập action cho form gửi đến controller
-                    document.getElementById("conclusionForm").action = `/doctor/test-order/${id}/result/update`;
-                }
-
-
-            </script>
-
         </div>
     </div>
-</div>
+</div></html>
 <!--                        <td>-->
 <!--                            <div th:if="${item.status}">-->
 <!--                                <form th:action="@{/doctor/test-order/{id}/result/update(id=${item.id})}" method="post">-->

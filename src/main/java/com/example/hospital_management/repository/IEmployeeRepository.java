@@ -15,8 +15,10 @@ import java.util.List;
 public interface IEmployeeRepository extends JpaRepository<Employee, Long> {
     List<Employee> findByDepartmentId(Long departmentId);
 
+
     @Query("SELECT e FROM Employee e WHERE e.email = :email")
     Employee findByEmail(@Param("email") String email);
+
 
     @Query("SELECT e FROM Employee e WHERE " +
             "(:search = '' OR LOWER(e.name) LIKE LOWER(CONCAT('%', :search, '%')) OR " +

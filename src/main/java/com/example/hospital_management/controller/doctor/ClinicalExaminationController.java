@@ -42,22 +42,17 @@ public class ClinicalExaminationController {
     }
 
 
-//    @PostMapping("/save")
-//    public String save(@ModelAttribute ClinicalExamination clinicalExamination) {
-//        clinicalExamination.setDate(LocalDate.now());
-//        clinicalExaminationService.save(clinicalExamination);
-//        return "redirect:/clinical_examination/" + clinicalExamination.getImpatientRecord().getId();
-//    }
-
     @PostMapping("/save")
     public String save(@ModelAttribute ClinicalExamination clinicalExamination,
-                       @RequestParam("impatientRecordId") Long impatientRecordId,
-                       @ModelAttribute VitalSign vitalSign) {
-
+                       @RequestParam("impatientRecordId") Long impatientRecordId) {
         clinicalExamination.setDate(LocalDate.now());
-        vitalSignService.save(vitalSign);  // tạo mới chỉ số mỗi lần khám
 
-        clinicalExamination.setVitalSign(vitalSign); //cài đặt id vào bảng
+        // Cần lưu riêng VitalSign vì nó là entity độc lập
+        VitalSign vitalSign = clinicalExamination.getVitalSign();
+        vitalSignService.save(vitalSign); // lưu và gán ID
+
+        // Gán VitalSign đã lưu lại vào ClinicalExamination
+        clinicalExamination.setVitalSign(vitalSign);
 
         ImpatientRecord record = impatientRecordService.findById(impatientRecordId).orElse(null);
         clinicalExamination.setImpatientRecord(record);
@@ -65,5 +60,6 @@ public class ClinicalExaminationController {
         clinicalExaminationService.save(clinicalExamination);
         return "redirect:/clinical_examination/" + impatientRecordId;
     }
+
 
 }
