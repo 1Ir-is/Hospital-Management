@@ -1,14 +1,9 @@
 package com.example.hospital_management.controller.nurse;
 
 import com.example.hospital_management.dto.AdvancePaymentDto;
-import com.example.hospital_management.entity.AdvancePayment;
-import com.example.hospital_management.entity.ImpatientRecord;
-import com.example.hospital_management.entity.MedicalRecord;
-import com.example.hospital_management.entity.VitalSign;
-import com.example.hospital_management.service.IAdvancePaymentService;
-import com.example.hospital_management.service.IEmployeeService;
-import com.example.hospital_management.service.IMedicalRecordService;
-import com.example.hospital_management.service.IVitalSignService;
+import com.example.hospital_management.dto.InpatientTreatmentDto;
+import com.example.hospital_management.entity.*;
+import com.example.hospital_management.service.*;
 import com.example.hospital_management.service.impl.ImpatientRecordService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
@@ -34,17 +29,21 @@ public class NurseController {
     private final ImpatientRecordService impatientRecordService;
     private final IAdvancePaymentService iAdvancePaymentService;
     private final IEmployeeService iEmployeeService;
+    public final IInpatientTreatmentService iInpatientTreatmentService;
+    public final IEmployeeAssignmentService employeeAssignmentService;
 
     public NurseController(ImpatientRecordService impatientRecordService,
                            IAdvancePaymentService iAdvancePaymentService,
                            IEmployeeService iEmployeeService,
                            IMedicalRecordService medicalRecordService,
-                           IVitalSignService vitalSignService) {
+                           IVitalSignService vitalSignService, IInpatientTreatmentService iInpatientTreatmentService, IEmployeeAssignmentService employeeAssignmentService) {
         this.impatientRecordService = impatientRecordService;
         this.iAdvancePaymentService = iAdvancePaymentService;
         this.iEmployeeService = iEmployeeService;
         this.medicalRecordService = medicalRecordService;
         this.vitalSignService = vitalSignService;
+        this.iInpatientTreatmentService = iInpatientTreatmentService;
+        this.employeeAssignmentService = employeeAssignmentService;
     }
 
     @ModelAttribute("sizeList")
@@ -157,5 +156,26 @@ public class NurseController {
         iAdvancePaymentService.save(advancePayment);
         return "redirect:/nurse/advance-payments";
     }
+
+
+    @GetMapping("/{id}/update")
+    public String setInpatientTreatment( @PathVariable Long id, Model model){
+        if(!model.containsAttribute("inpatientTreatmentDto")){
+            ImpatientRecord impatientRecord = impatientRecordService.getImpatientRecordById(id);
+            InpatientTreatmentDto inpatientTreatmentDto = new InpatientTreatmentDto();
+            inpatientTreatmentDto.setImpatientRecord(impatientRecord);
+            model.addAttribute("inpatientTreatmentDto",inpatientTreatmentDto);}
+        else{
+            InpatientTreatmentDto dto = (InpatientTreatmentDto) model.getAttribute("inpatientTreatmentDto");
+            assert dto != null;
+            dto.setImpatientRecord(impatientRecordService.getImpatientRecordById(id));
+        }
+        List<InpatientTreatment> treatmentHistory = iInpatientTreatmentService.findByImpatientRecordId(id);
+        List<EmployeeAssignment> employeeAssignments = employeeAssignmentService.findAll(id);
+        model.addAttribute("employeeAssignments", employeeAssignments);
+        model.addAttribute("treatmentHistory", treatmentHistory);
+        return "nurse/treatment_task/detail";
+    }
+
 
 }

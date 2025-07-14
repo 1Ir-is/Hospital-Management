@@ -49,7 +49,7 @@
                 <td th:text="${impatientRecord.bed.number}"></td>
                 <td th:text="${impatientRecord.medicalRecord.patient.name}"></td>
                 <td>
-                    <a href="#" class="btn btn-sm btn-outline-primary">Điều trị</a>
+                    <a th:href="@{/nurse/{id}/update(id=${impatientRecord.id})}" class="btn btn-sm btn-outline-primary">Điều trị</a>
                 </td>
             </tr>
             </tbody>
