@@ -16,4 +16,6 @@ public interface IPrescriptionService {
     Optional<Prescription> findById(Long id);
 
     Optional<PrescriptionRequestDto> findFirstUnprocessedPrescription();
+
+    Prescription saveAndFlush(Prescription prescription);
 }

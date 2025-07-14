@@ -7,6 +7,7 @@ import com.example.hospital_management.service.IExaminationShiftService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -52,7 +53,23 @@ public class ExaminationShiftService implements IExaminationShiftService {
     }
 
     @Override
+    public ExaminationShift findByMedicalRecordId(Long medicalRecordId) {
+        return examinationShiftRepository.findByMedicalRecordId(medicalRecordId);
+    }
+
+    @Override
     public ExaminationShift findByMedicalRecord(MedicalRecord medicalRecord) {
         return examinationShiftRepository.findByMedicalRecord(medicalRecord);
+    }
+
+
+    @Override
+    public Page<ExaminationShift> getTodayRecords(Pageable pageable) {
+        return examinationShiftRepository.findTodayRecordsWithStatus(LocalDate.now(), pageable);
+    }
+
+    @Override
+    public Page<ExaminationShift> getTodayRecordsByStatus(Long statusId, Pageable pageable) {
+        return examinationShiftRepository.findByVisitDateAndStatus(LocalDate.now(), statusId, pageable);
     }
 }

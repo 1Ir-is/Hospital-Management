@@ -5,6 +5,7 @@ import com.example.hospital_management.service.IMedicalRecordService;
 import com.example.hospital_management.service.IPatientService;
 import com.example.hospital_management.service.ITicketService;
 import com.example.hospital_management.service.impl.EmailService;
+import com.example.hospital_management.web_socket.TicketWebSocketSender;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,14 +26,22 @@ public class PatientController {
     private IMedicalRecordService medicalRecordService;
     private IPatientService patientService;
     private EmailService emailService;
+    private TicketWebSocketSender ticketWebSocketSender;
 
-
-    public PatientController(ITicketService ticketService, IMedicalRecordService medicalRecordService, IPatientService patientService, EmailService emailService) {
+    public PatientController(ITicketService ticketService, IMedicalRecordService medicalRecordService, IPatientService patientService, EmailService emailService, TicketWebSocketSender ticketWebSocketSender) {
         this.ticketService = ticketService;
         this.medicalRecordService = medicalRecordService;
         this.patientService = patientService;
         this.emailService = emailService;
+        this.ticketWebSocketSender = ticketWebSocketSender;
     }
+
+//    public PatientController(ITicketService ticketService, IMedicalRecordService medicalRecordService, IPatientService patientService, EmailService emailService) {
+//        this.ticketService = ticketService;
+//        this.medicalRecordService = medicalRecordService;
+//        this.patientService = patientService;
+//        this.emailService = emailService;
+//    }
 
     // xử lí lấy ticket trực tiếp
     @PostMapping("/register-today")
@@ -42,6 +51,11 @@ public class PatientController {
                                 @RequestParam(required = false) String email,
                                 RedirectAttributes redirect) {
         Ticket ticket = ticketService.registerTicket(name, idCard, phone, email, LocalDate.now(), false);
+        // Gửi danh sách mới sau khi đăng ký
+        List<Ticket> updatedWaitingList = ticketService.findWaitingTicketsToday();
+        ticketWebSocketSender.sendUpdatedWaitingList(updatedWaitingList);
+        ticketWebSocketSender.sendNewTicket(ticket);
+
 //        model.addAttribute("ticket", ticket);
         redirect.addFlashAttribute("successMessage",
                 "Đăng ký thành công. Số thứ tự của bạn là: " + ticket.getQueueNumber());
@@ -79,7 +93,10 @@ public class PatientController {
         if (email != null && !email.isEmpty()) {
             emailService.sendAppointmentConfirmation(email, name, appointmentDate, ticket.getQueueNumber());
         }
-
+        // Gửi danh sách mới sau khi đăng ký
+        List<Ticket> updatedWaitingList = ticketService.findWaitingTicketsToday();
+        ticketWebSocketSender.sendUpdatedWaitingList(updatedWaitingList);
+        ticketWebSocketSender.sendNewTicket(ticket);
         redirect.addFlashAttribute("successMessage",
                 "Bạn đã đặt lịch thành công cho ngày " + appointmentDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
                         + ". Số thứ tự ưu tiên là: " + ticket.getQueueNumber());
@@ -147,21 +164,29 @@ public class PatientController {
 
 
     // lấy danh sách hiển thị cho lễ tân
-    @GetMapping("/list")
-    public String getAllListTicket(Model model) {
-        List<Ticket> tickets = ticketService.getAllTodayTicketsOrdered();
-        model.addAttribute("tickets", tickets);
-        return "ticket/list";
+//    @GetMapping("/list")
+//    public String getAllListTicket(Model model) {
+//        List<Ticket> tickets = ticketService.getAllTodayTicketsOrdered();
+//        model.addAttribute("tickets", tickets);
+//        return "ticket/list";
+//    }
+//
+//    @PostMapping("/call")
+//    public String callTicket(@RequestParam("ticketId") Long id, RedirectAttributes redirect) {
+//        Ticket ticket = ticketService.callTickets(id);
+//        if (ticket != null) {
+//            redirect.addFlashAttribute("message", "Đã gọi số " + ticket.getQueueNumber() + " (" + ticket.getName() + ") " + "thành công,");
+//        } else {
+//            redirect.addFlashAttribute("message", "Không tìm thấy phiếu");
+//        }
+//        return "redirect:/patient/list";
+//    }
+
+    @GetMapping("/waiting-room")
+    public String showWaitingRoom(Model model) {
+        List<Ticket> waitingTickets = ticketService.findWaitingTicketsToday();
+        model.addAttribute("waitingTickets", waitingTickets);
+        return "patient/waiting_room";
     }
 
-    @PostMapping("/call")
-    public String callTicket(@RequestParam("ticketId") Long id, RedirectAttributes redirect) {
-        Ticket ticket = ticketService.callTickets(id);
-        if (ticket != null) {
-            redirect.addFlashAttribute("message", "Đã gọi số " + ticket.getQueueNumber() + " (" + ticket.getName() + ") " + "thành công,");
-        } else {
-            redirect.addFlashAttribute("message", "Không tìm thấy phiếu");
-        }
-        return "redirect:/patient/list";
-    }
 }
