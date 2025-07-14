@@ -1,16 +1,16 @@
-//package com.example.hospital_management.controller.receptionist;
-//
-//import org.springframework.security.access.prepost.PreAuthorize;
-//import org.springframework.stereotype.Controller;
-//import org.springframework.ui.Model;
-//import org.springframework.web.bind.annotation.GetMapping;
-//import org.springframework.web.bind.annotation.RequestMapping;
-//
-//@Controller
-//@RequestMapping("/receptionist")
-//@PreAuthorize("hasAnyRole('RECEPTIONIST', 'NURSE', 'DOCTOR', 'DEPARTMENT_HEAD', 'ADMIN')")
-//public class ReceptionistController {
-//
+package com.example.hospital_management.controller.receptionist;
+
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+@RequestMapping("/receptionist")
+@PreAuthorize("hasAnyRole('RECEPTIONIST', 'NURSE', 'DOCTOR', 'DEPARTMENT_HEAD', 'ADMIN')")
+public class ReceptionistController {
+
 //    @GetMapping()
 //    public String receptionistDashboard(Model model) {
 //        // RECEPTIONIST - Chức năng do Bình làm:
@@ -23,4 +23,9 @@
 //        model.addAttribute("userRole", "Lễ tân");
 //        return "receptionist/index";
 //    }
-//}
+
+    @GetMapping("/test")
+    public String receptionistDashboard(Model model) {
+        return "receptionist/index";
+    }
+}

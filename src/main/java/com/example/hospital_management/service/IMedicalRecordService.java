@@ -20,11 +20,14 @@ public interface IMedicalRecordService {
     List<MedicalRecordBasicDto> findAllBasicInfo();
 
     void markAsPaid(Long medicalRecordId);
+
     Long findMaxId();
+
     Page<MedicalRecord> findAllWithOutVitalSign(Pageable pageable);
+
     MedicalRecord findById(Long id);
 
-//    MedicalRecord findRoomByCode(String code);
+    //    MedicalRecord findRoomByCode(String code);
     Page<MedicalRecordDto> getWaitingRecords(Pageable pageable);
 
     MedicalRecordDto getCurrentPatient();
@@ -41,6 +44,7 @@ public interface IMedicalRecordService {
 
 
     List<MedicalRecord> findAll();
+
     MedicalRecord getMedicalRecordById(Long id);
 
     Page<MedicalRecordDto> getAllStatusRecords(Pageable pageable, Long roomId);
