@@ -24,4 +24,9 @@ public class InsuranceService implements IInsuranceService {
     public boolean existsByCode(String code) {
         return insuranceRepository.existsByCode(code);
     }
+
+    @Override
+    public Insurance findByCode(String code) {
+        return insuranceRepository.findByCode(code);
+    }
 }

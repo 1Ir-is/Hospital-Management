@@ -11,7 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TestSummaryDto {
-    private Long inpatientRecordId;
+    private Long medicalRecordId;
     private Long totalOfTest;
     private Long completedTest;
     private String patientName;

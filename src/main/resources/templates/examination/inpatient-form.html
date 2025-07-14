@@ -8,43 +8,29 @@
 </head>
 
 <div layout:fragment="main-content">
-<main>
     <div class="welcome-card"
          style="background: linear-gradient(135deg, #007bff 0%, #0056b3 100%); color: white; border-radius: 15px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 4px 20px rgba(0, 123, 255, 0.3);">
-        <h3>🩺 Danh sách phòng khám</h3>
+        <h3>🩺 Cho bệnh nhân nhập viện</h2>
     </div>
+<main>
     <div class="card">
         <div class="card-body">
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Phòng</th>
-                    <th scope="col">Mô tả</th>
-                    <th scope="col">Khoa</th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="item, itemStatus: ${roomList}">
-                    <th scope="row">
-                        <p th:text="${itemStatus.count}"></p>
-                    </th>
-                    <td>
-                        <p th:text="${item.name}"></p>
-                    </td>
-                    <td>
-                        <p th:text="${item.description}"></p>
-                    </td>
-                    <td>
-                        <p th:text="${item.department.name}"></p>
-                    </td>
-                    <td>
-                        <a class="btn btn-primary" th:href="@{/examination/room/{id}(id=${item.id})}">Chọn</a>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+            <div>
+                <h2>
+                    <span>Chuyển vào nội trú: </span>
+<!--                    <span th:text="${medicalRecord.patient.name}"></span>-->
+                </h2>
+            </div>
+            <form method="post">
+                <div class="mb-3">
+                    <label for="reason" class="form-label">Lí do nhập viện:</label>
+                    <textarea name="reason" id="reason" class="form-control" rows="8"
+                              placeholder="Ghi rõ chi tiết..." required></textarea>
+                </div>
+                <div class="mb-3">
+                    <button type="submit" class="btn btn-large btn-secondary">Lưu và kết thúc khám</button>
+                </div>
+            </form>
         </div>
     </div>
 

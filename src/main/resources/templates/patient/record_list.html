@@ -235,7 +235,6 @@
         <th scope="col">STT</th>
         <th scope="col">Mã hồ sơ</th>
         <th scope="col">Ngày khám</th>
-        <th scope="col">Triệu chứng</th>
         <th scope="col">Trạng thái</th>
         <th scope="col">Phòng khám</th>
         <th scope="col">Hành động</th>
@@ -246,7 +245,6 @@
         <td th:text="${iterStat.count}"></td>
         <td th:text="${record.code}"></td>
         <td th:text="${#temporals.format(record.visitDate, 'dd/MM/yyyy')}"></td>
-        <td th:text="${record.symptom}"></td>
         <td>
           <span th:text="${record.status ? 'Đã khám' : 'Chưa khám'}"
                 th:classappend="${record.status} ? 'text-success' : 'text-danger'"></span>

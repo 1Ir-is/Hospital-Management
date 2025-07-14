@@ -1,23 +1,16 @@
-package com.example.hospital_management.controller;
+package com.example.hospital_management.controller.prescription;
 
 import com.example.hospital_management.dto.PrescriptionDetailDto;
 import com.example.hospital_management.dto.PrescriptionDto;
-import com.example.hospital_management.entity.MedicalRecord;
-import com.example.hospital_management.entity.Medicine;
-import com.example.hospital_management.entity.Prescription;
-import com.example.hospital_management.entity.PrescriptionDetail;
-import com.example.hospital_management.service.IMedicalRecordService;
-import com.example.hospital_management.service.IMedicineService;
-import com.example.hospital_management.service.IPrescriptionDetailService;
-import com.example.hospital_management.service.IPrescriptionService;
+import com.example.hospital_management.entity.*;
+import com.example.hospital_management.service.*;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.config.PropertiesFactoryBean;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.beans.BeanProperty;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,12 +24,18 @@ public class PrescriptionController {
     private final IMedicineService medicineService;
     private final IPrescriptionService prescriptionService;
     private final IPrescriptionDetailService prescriptionDetailService;
+    private final IEmployeeService employeeService;
+    private final IExaminationShiftService examinationShiftService;
+    private final IExaminationShiftStatusService examinationShiftStatusService;
 
-    public PrescriptionController(IMedicalRecordService medicalRecordService, IMedicineService medicineService, IPrescriptionService prescriptionService, IPrescriptionDetailService prescriptionDetailService) {
+    public PrescriptionController(IMedicalRecordService medicalRecordService, IMedicineService medicineService, IPrescriptionService prescriptionService, IPrescriptionDetailService prescriptionDetailService, IEmployeeService employeeService, IExaminationShiftService examinationShiftService, IExaminationShiftStatusService examinationShiftStatusService) {
         this.medicalRecordService = medicalRecordService;
         this.medicineService = medicineService;
         this.prescriptionService = prescriptionService;
         this.prescriptionDetailService = prescriptionDetailService;
+        this.employeeService = employeeService;
+        this.examinationShiftService = examinationShiftService;
+        this.examinationShiftStatusService = examinationShiftStatusService;
     }
 
     @ModelAttribute("prescription")
@@ -61,6 +60,23 @@ public class PrescriptionController {
         return "/prescription/list";
     }
 
+    @PostMapping("/{medicalRecordId}")
+    public String saveNote(@PathVariable("medicalRecordId") Long id,
+                                 @RequestParam(required = false) String note,
+                                 @RequestParam(required = false) String conclusion,
+                                 Model model){
+        MedicalRecord medicalRecord = medicalRecordService.findById(id);
+
+        if(note != null){
+            medicalRecord.setNote(note);
+        } else if (conclusion != null) {
+            medicalRecord.setConclusion(conclusion);
+        }
+
+        medicalRecordService.save(medicalRecord);
+        return "redirect:/prescription/" + id;
+    }
+
     @GetMapping("/form")
     public String form(Model model,
                        @ModelAttribute("prescription") PrescriptionDto prescriptionDto){
@@ -78,6 +94,21 @@ public class PrescriptionController {
         model.addAttribute("medicineList", availableMedicine);
         return "/prescription/form";
     }
+
+    @GetMapping("/{medicalRecordId}/delete/{medicineId}")
+    public String delete(@PathVariable Long medicineId,
+                         @PathVariable Long medicalRecordId,
+                         @ModelAttribute("prescription") PrescriptionDto prescriptionDto){
+        for (int i = 0; i < prescriptionDto.getPrescriptionDetails().size(); i++) {
+            if(prescriptionDto.getPrescriptionDetails().get(i).getMedicine().getId().equals(medicineId)){
+                prescriptionDto.getPrescriptionDetails().remove(i);
+                break;
+            }
+        }
+
+        return "redirect:/prescription/" + medicalRecordId;
+    }
+
 
     @PostMapping("/form/add")
     public String add(RedirectAttributes attributes,
@@ -101,7 +132,8 @@ public class PrescriptionController {
     }
 
     @GetMapping("/confirm")
-    public String confirm(@ModelAttribute("prescription") PrescriptionDto prescriptionDto){
+    public String confirm(@ModelAttribute("prescription") PrescriptionDto prescriptionDto,
+                          SessionStatus sessionStatus){
         Prescription prescription = new Prescription();
         BeanUtils.copyProperties(prescriptionDto, prescription);
         Prescription savedPrescription = prescriptionService.save(prescription);
@@ -111,9 +143,48 @@ public class PrescriptionController {
             detail.setPrescription(savedPrescription);
             prescriptionDetailService.save(detail);
         }
-        MedicalRecord medicalRecord = medicalRecordService.findById(savedPrescription.getMedicalRecord().getId());
-        medicalRecord.setStatus(true);
-        medicalRecordService.save(medicalRecord);
+        Long medicalRecordId = savedPrescription.getMedicalRecord().getId();
+        ExaminationShift shift = examinationShiftService.findByMedicalRecordId(medicalRecordId);
+        shift.setExaminationShiftStatus(examinationShiftStatusService.findById(5L));
+        examinationShiftService.save(shift);
+        sessionStatus.setComplete();
         return "redirect:/examination";
     }
+
+//    @PostMapping("{id}/confirm")
+//    public String confirm(@ModelAttribute("prescription") PrescriptionDto prescriptionDto,
+//                          @RequestParam("conclusion") String conclusion,
+//                          @PathVariable("id") Long medicalRecordId,
+//                          SessionStatus sessionStatus){
+//        Employee employee = employeeService.findById(1L).get();
+//        MedicalRecord medicalRecord = medicalRecordService.findById(medicalRecordId);
+//        Prescription prescription = new Prescription();
+//
+//        prescriptionDto.setMedicalRecord(medicalRecord);
+//        prescriptionDto.setId(null);
+//        BeanUtils.copyProperties(prescriptionDto, prescription);
+//        Prescription savedPrescription = prescriptionService.save(prescription);
+//        for (PrescriptionDetailDto dto : prescriptionDto.getPrescriptionDetails()){
+//            PrescriptionDetail detail = new PrescriptionDetail();
+//            BeanUtils.copyProperties(dto, detail);
+//            detail.setPrescription(savedPrescription);
+//            prescriptionDetailService.save(detail);
+//        }
+//
+//
+//
+//
+//        medicalRecord.setStatus(true);
+//        medicalRecord.setConclusion(conclusion);
+//        medicalRecordService.save(medicalRecord);
+//
+//        ExaminationShift shift = examinationShiftService.findByMedicalRecord(medicalRecord);
+//        shift.setEmployee(employee);
+//        examinationShiftService.save(shift);
+//
+//        sessionStatus.setComplete();
+//
+//        return "redirect:/examination";
+//    }
+
 }
