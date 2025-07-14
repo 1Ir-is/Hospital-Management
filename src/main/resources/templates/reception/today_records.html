@@ -1,0 +1,93 @@
+<html lang="vi"
+      layout:decorate="~{receptionist/layout/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <title>Tiến trình khám hôm nay</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #e5e7eb;
+            text-align: left;
+        }
+        th {
+            background-color: #f3f4f6;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<div layout:fragment="main-content" class="p-6">
+    <h2 class="text-2xl font-bold mb-6 text-gray-800">Tiến trình khám bệnh nhân hôm nay</h2>
+
+    <!-- Lọc theo trạng thái -->
+    <div class="mb-6">
+        <strong class="text-lg font-semibold text-gray-700">Lọc theo trạng thái:</strong>
+        <div class="mt-2 flex flex-wrap gap-2">
+            <a th:href="@{'/receptionist/patients/today-records'}"
+                th:classappend="${statusId == null} ? ' bg-blue-600 text-white ' : ' bg-blue-100 text-blue-700 hover:bg-blue-200 '"
+                class="px-4 py-2 rounded-lg transition duration-200">Tất cả</a>
+
+            <a th:each="status : ${statuses}"
+               th:href="@{'/receptionist/patients/today-records?statusId=' + ${status.id}}"
+               th:text="${status.name}"
+               th:classappend="${status.id == statusId} ? ' bg-blue-600 text-white ' : ' bg-gray-100 text-gray-700 hover:bg-gray-200 '"
+               class="px-4 py-2 rounded-lg transition duration-200">
+            </a>
+
+        </div>
+    </div>
+
+    <!-- Bảng dữ liệu -->
+    <table class="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
+        <thead>
+        <tr>
+            <th>Mã HS</th>
+            <th>Họ tên</th>
+            <th>Trạng thái khám</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${#lists.isEmpty(examinationShifts)}">
+            <td colspan="3" class="text-center py-4 text-gray-500">Không có hồ sơ nào phù hợp</td>
+        </tr>
+        <tr th:each="examinationShift : ${examinationShifts}">
+            <td th:text="${examinationShift.medicalRecord.code}">Mã HS</td>
+            <td th:text="${examinationShift.medicalRecord.patient.name}">Họ tên</td>
+            <td>
+                <div th:switch="${examinationShift.examinationShiftStatus.id}">
+                    <span th:case="1" class="px-2 py-1 bg-orange-100 text-orange-600 rounded-full text-sm">Đang chờ</span>
+                    <span th:case="2" class="px-2 py-1 bg-blue-100 text-blue-600 rounded-full text-sm">Đang khám</span>
+                    <span th:case="3" class="px-2IC py-1 bg-yellow-100 text-yellow-600 rounded-full text-sm">Đang xét nghiệm</span>
+                    <span th:case="4" class="px-2 py-1 bg-green-100 text-green-600 rounded-full text-sm">Đã có kết quả</span>
+                    <span th:case="*" class="px-2 py-1 bg-gray-100 text-gray-600 rounded-full text-sm">Không rõ</span>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- Phân trang -->
+    <div class="mt-6 flex items-center justify-between">
+        <div>
+            <span th:if="${currentPage > 0}">
+                <a th:href="@{'/receptionist/patients/today-records'(page=${currentPage - 1}, statusId=${statusId})}"
+                   class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-200">Trước</a>
+            </span>
+        </div>
+        <div class="text-gray-600">
+            <span th:text="'Trang ' + ${currentPage + 1} + ' / ' + ${totalPages}"></span>
+        </div>
+        <div>
+            <span th:if="${currentPage + 1 < totalPages}">
+                <a th:href="@{'/receptionist/patients/today-records'(page=${currentPage + 1}, statusId=${statusId})}"
+                   class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-200">Sau</a>
+            </span>
+        </div>
+    </div>
+</div>
+</html>

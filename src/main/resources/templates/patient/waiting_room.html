@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Phòng chờ khám</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .current-number {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #10b981;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .ticket-list {
+            margin-top: 2rem;
+        }
+
+        .highlight {
+            background-color: #fef9c3;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body class="p-6 bg-white">
+<h1 class="text-3xl font-bold text-gray-800 mb-4">Phòng chờ khám bệnh</h1>
+
+<!-- Số đang được gọi -->
+<div class="mb-10">
+    <p class="text-xl text-gray-600">Đang gọi đến số:</p>
+    <div id="currentNumber" class="current-number">--</div>
+    <div id="currentName" class="text-lg text-gray-700 mt-2">Chưa có bệnh nhân</div>
+</div>
+
+<!-- Danh sách đang chờ -->
+<div class="ticket-list">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-4">Danh sách đang chờ</h2>
+    <table class="mx-auto w-2/3 border border-gray-300">
+        <thead class="bg-gray-100">
+        <tr>
+            <th class="py-2 px-4 border">STT</th>
+            <th class="py-2 px-4 border">Họ tên</th>
+        </tr>
+        </thead>
+        <tbody id="waitingList">
+        <!-- Danh sách sẽ được cập nhật qua WebSocket -->
+        </tbody>
+    </table>
+</div>
+
+<!-- WebSocket Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+<script>
+    const socket = new SockJS('/ws');
+    const stompClient = Stomp.over(socket);
+
+    stompClient.connect({}, function () {
+        // Lắng nghe số đang gọi
+        stompClient.subscribe('/topic/current-ticket', function (message) {
+            const ticket = JSON.parse(message.body);
+            document.getElementById("currentNumber").textContent = ticket.queueNumber;
+            document.getElementById("currentName").textContent = ticket.name;
+
+            const numberDiv = document.getElementById("currentNumber");
+            numberDiv.classList.add("highlight");
+            setTimeout(() => numberDiv.classList.remove("highlight"), 1000);
+        });
+
+        // Lắng nghe danh sách chờ
+        stompClient.subscribe('/topic/waiting-list', function (message) {
+            const tickets = JSON.parse(message.body);
+            const tableBody = document.getElementById("waitingList");
+            tableBody.innerHTML = "";
+
+            tickets.forEach(ticket => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                        <td class="py-2 px-4 border">${ticket.queueNumber}</td>
+                        <td class="py-2 px-4 border">${ticket.name}</td>
+                    `;
+                tableBody.appendChild(row);
+            });
+        });
+    });
+</script>
+</body>
+</html>

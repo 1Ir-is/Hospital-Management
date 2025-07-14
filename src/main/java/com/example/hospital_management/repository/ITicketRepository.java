@@ -18,8 +18,10 @@ public interface ITicketRepository extends JpaRepository<Ticket, Long> {
     @Query(value = "select count (t) from Ticket t where t.appointmentDate=:date")
     long countAllByDate(@Param("date") LocalDate date);
 
-    @Query("SELECT t FROM Ticket t WHERE t.appointmentDate = :today ORDER BY t.isCalled ASC, t.isPriority DESC, t.queueNumber ASC")
+    @Query("SELECT t FROM Ticket t WHERE t.appointmentDate = :today ORDER BY t.isCalled ASC, t.queueNumber DESC")
     List<Ticket> findAllTodayTicketsOrdered(@Param("today") LocalDate today);
 
+    @Query("SELECT t FROM Ticket t WHERE t.isCalled = false AND t.appointmentDate = :today")
+    List<Ticket> findWaitingTicketsToday(@Param("today") LocalDate today);
 
 }

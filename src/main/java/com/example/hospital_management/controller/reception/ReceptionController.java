@@ -4,6 +4,7 @@ import com.example.hospital_management.dto.ImpatientRecordDto;
 import com.example.hospital_management.dto.PatientInsuranceDto;
 import com.example.hospital_management.entity.*;
 import com.example.hospital_management.service.*;
+import com.example.hospital_management.web_socket.TicketWebSocketSender;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -38,11 +39,13 @@ public class ReceptionController {
     private final IRoomService iRoomService;
     private final IMedicalRecordService iMedicalRecordService;
     private final IImpatientRecordService impatientRecordService;
-
+    private final ITicketService ticketService;
+    private final TicketWebSocketSender ticketWebSocketSender;
+    private final IExaminationShiftStatusService examinationShiftStatusService;
     @Autowired
     public ReceptionController(IPatientService patientService, IInsuranceService insuranceService,
                                IDepartmentService departmentService, IRoomService roomService,
-                               IExaminationShiftService examinationShiftService, IMedicalRecordService medicalRecordService, IBedService iBedService, IRoomService iRoomService, IMedicalRecordService iMedicalRecordService, IImpatientRecordService impatientRecordService) {
+                               IExaminationShiftService examinationShiftService, IMedicalRecordService medicalRecordService, IBedService iBedService, IRoomService iRoomService, IMedicalRecordService iMedicalRecordService, IImpatientRecordService impatientRecordService, ITicketService ticketService, TicketWebSocketSender ticketWebSocketSender, IExaminationShiftStatusService examinationShiftStatusService) {
         this.patientService = patientService;
         this.insuranceService = insuranceService;
         this.departmentService = departmentService;
@@ -53,6 +56,9 @@ public class ReceptionController {
         this.iRoomService = iRoomService;
         this.iMedicalRecordService = iMedicalRecordService;
         this.impatientRecordService = impatientRecordService;
+        this.ticketService = ticketService;
+        this.ticketWebSocketSender = ticketWebSocketSender;
+        this.examinationShiftStatusService = examinationShiftStatusService;
     }
 
 
@@ -63,6 +69,7 @@ public class ReceptionController {
 
     @GetMapping("/patients/register")
     public String showFormAddPatient(@RequestParam(value = "departmentId", required = false) Long departmentId,
+                                     @RequestParam(value = "ticketId", required = false) Long ticketId,
                                      Model model) {
         model.addAttribute("departments", departmentService.findAll());
 
@@ -70,8 +77,17 @@ public class ReceptionController {
             model.addAttribute("selectedDepartmentId", departmentId);
             model.addAttribute("rooms", roomService.findAllClinicRoomsByDepartment(departmentId));
         }
+        PatientInsuranceDto patientInsuranceDto = new PatientInsuranceDto();
 
-        model.addAttribute("patientInsuranceDto", new PatientInsuranceDto());
+        // 👇 Gán queueNumber nếu có ticketId
+        if (ticketId != null) {
+            Ticket ticket = ticketService.findById(ticketId);
+            if (ticket != null) {
+                patientInsuranceDto.setQueueNumber(ticket.getQueueNumber()); // thêm field queueNumber trong PatientInsuranceDto
+                model.addAttribute("ticketInfo", ticket); // để hiện thị trên view nếu muốn
+            }
+        }
+        model.addAttribute("patientInsuranceDto", patientInsuranceDto);
         model.addAttribute("insurance", new Insurance());
         return "reception/create";
     }
@@ -107,11 +123,6 @@ public class ReceptionController {
         Patient patient = new Patient();
         patientInsuranceDto.validate(patientInsuranceDto, bindingResult);
 
-        if (Boolean.TRUE.equals(patientInsuranceDto.getHasInsurance())) {
-            if (insuranceService.existsByCode(patientInsuranceDto.getCode())) {
-                bindingResult.rejectValue("code", "null", "Mã BHYT đã tồn tại, vui lòng kiểm tra lại.");
-            }
-        }
         if (bindingResult.hasErrors()) {
             model.addAttribute("departments", departmentService.findAll());
             model.addAttribute("patientInsuranceDto", patientInsuranceDto);
@@ -119,7 +130,6 @@ public class ReceptionController {
                 model.addAttribute("selectedDepartmentId", patientInsuranceDto.getDepartmentId());
                 model.addAttribute("rooms", roomService.findAllClinicRoomsByDepartment(patientInsuranceDto.getDepartmentId()));
             }
-
             return "reception/create";
         }
         //tạo bệnh nhân
@@ -134,14 +144,16 @@ public class ReceptionController {
             insuranceService.save(insurance);
         }
 
+
         MedicalRecord medicalRecord = new MedicalRecord();
         medicalRecord.setPatient(patient);
         medicalRecord.setVisitDate(LocalDate.now());
-        medicalRecord.setQueueNumber(0);
+//        medicalRecord.setQueueNumber(0);
         medicalRecord.setStatus(false);
         medicalRecord.setFollowupDate(null);
         medicalRecord.setConclusion(null);
         medicalRecord.setStatus(false);
+        medicalRecord.setQueueNumber(patientInsuranceDto.getQueueNumber() != null ? patientInsuranceDto.getQueueNumber() : 0);
 
         long fee;
         if (Boolean.TRUE.equals(patientInsuranceDto.getHasInsurance())) {
@@ -158,10 +170,11 @@ public class ReceptionController {
         Room room = roomService.findById(patientInsuranceDto.getRoomId());
         ExaminationShift examinationShift = new ExaminationShift();
         examinationShift.setRoom(room);
+        examinationShift.setExaminationShiftStatus(examinationShiftStatusService.findById(1L));
         examinationShift.setMedicalRecord(medicalRecord);
         examinationShiftService.save(examinationShift);
         redirectAttributes.addFlashAttribute("success", "Thêm mới thành công bệnh nhân");
-        return "redirect:/receptionist";
+        return "redirect:/receptionist/list";
     }
 
     @GetMapping("/admission/getBed")
@@ -215,4 +228,55 @@ public class ReceptionController {
         }
         return "/reception/create-admission";
     }
+
+    // lấy danh sách hiển thị cho lễ tân
+    @GetMapping("/list")
+    public String getAllListTicket(Model model) {
+        List<Ticket> tickets = ticketService.getAllTodayTicketsOrdered();
+        model.addAttribute("tickets", tickets);
+        return "ticket/list";
+    }
+
+    @PostMapping("/call")
+    public String callTicket(@RequestParam("ticketId") Long id, RedirectAttributes redirect) {
+        Ticket ticket = ticketService.callTickets(id);
+        if (ticket != null) {
+            ticketWebSocketSender.sendCurrentCalledTicket(ticket);
+
+            // Gửi danh sách chờ mới
+            List<Ticket> updatedWaiting = ticketService.findWaitingTicketsToday();
+            ticketWebSocketSender.sendUpdatedWaitingList(updatedWaiting);
+            ticketWebSocketSender.sendNewTicket(ticket); // Tùy mục đích
+
+            redirect.addFlashAttribute("message", "Đã gọi số " + ticket.getQueueNumber() + " (" + ticket.getName() + ") thành công");
+            return "redirect:/receptionist/patients/register?ticketId=" + ticket.getId();
+        } else {
+            redirect.addFlashAttribute("message", "Không tìm thấy phiếu");
+            return "redirect:/patient/list";
+        }
+    }
+
+
+    @GetMapping("/patients/today-records")
+    public String viewTodayRecords(@RequestParam(required = false) Long statusId,
+                                   @RequestParam(defaultValue = "0") int page,
+                                   @RequestParam(defaultValue = "5") int size,
+                                   Model model) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ExaminationShift> examinationShifts;
+
+        if (statusId != null) {
+            examinationShifts = examinationShiftService.getTodayRecordsByStatus(statusId, pageable);
+        } else {
+            examinationShifts = examinationShiftService.getTodayRecords(pageable); // lấy tất cả
+        }
+
+        model.addAttribute("examinationShifts", examinationShifts.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", examinationShifts.getTotalPages());
+        model.addAttribute("statuses", examinationShiftStatusService.findAll());
+        model.addAttribute("statusId", statusId); // để hiển thị lại select
+        return "reception/today_records";
+    }
+
 }

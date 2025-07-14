@@ -55,4 +55,14 @@ public class TicketService implements ITicketService {
     public List<Ticket> getAllTodayTicketsOrdered() {
         return ticketRepository.findAllTodayTicketsOrdered(LocalDate.now());
     }
+
+    @Override
+    public Ticket findById(Long id) {
+        return ticketRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public List<Ticket> findWaitingTicketsToday() {
+        return ticketRepository.findWaitingTicketsToday(LocalDate.now());
+    }
 }
