@@ -61,9 +61,16 @@ public class ImpatientRecordService implements IImpatientRecordService {
     }
 
     @Override
-    public Page<ImpatientRecord> searchByFields(String patientName, String roomNumber, String doctorName, String nurseName, Pageable pageable) {
-        return impatientRecordRepository.searchByFields(patientName, roomNumber, doctorName ,nurseName, pageable);
+    public Page<ImpatientRecord> searchByFieldsWithDepartment(String patientName,
+                                                              String roomNumber,
+                                                              String doctorName,
+                                                              String nurseName,
+                                                              Long departmentId,
+                                                              Pageable pageable) {
+        return impatientRecordRepository.searchByFieldsWithDepartment(
+                patientName, roomNumber, doctorName, nurseName, departmentId, pageable);
     }
+
     @Override
     public void updateNote(Long recordId, String note) {
         ImpatientRecord record = impatientRecordRepository.findById(recordId)
@@ -136,6 +143,11 @@ public class ImpatientRecordService implements IImpatientRecordService {
     }
 
     @Override
+    public Page<ImpatientRecord> findAllByStatusTrue(String name ,Pageable pageable) {
+        return impatientRecordRepository.findWaitingPatients(name,pageable);
+    }
+
+    @Override
     public Page<ImpatientRecord> searchByName(String searchByName, Pageable pageable) {
         return impatientRecordRepository.searchByName(searchByName, pageable);
     }
@@ -173,5 +185,10 @@ public class ImpatientRecordService implements IImpatientRecordService {
     @Override
     public Page<ImpatientRecord> findAll(String patientName, Pageable pageable) {
         return impatientRecordRepository.findAllImpatientRecords(patientName, pageable);
+    }
+
+    @Override
+    public Page<ImpatientRecord> findAllImpatientRecordsList(String patientName,String code, Pageable pageable) {
+        return impatientRecordRepository.getInpatientRecordsList(patientName,code,pageable);
     }
 }

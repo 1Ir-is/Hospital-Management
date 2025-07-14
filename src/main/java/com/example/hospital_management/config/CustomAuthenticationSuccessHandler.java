@@ -39,7 +39,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
                 // - Xem danh sách nhân viên trong khoa
                 // - Phân công điều dưỡng phụ trách mỗi phòng bệnh nhân
                 // - Phân công bác sĩ phẫu thuật cho bệnh nhân
-                redirectURL = "/department-head";
+                redirectURL = "/department-head/dashboard";
                 break;
             } else if (role.equals("ROLE_DOCTOR")) {
                 // DOCTOR - Chức năng do Vĩnh và Chung làm

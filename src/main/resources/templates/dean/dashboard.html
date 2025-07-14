@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{department-head/layout/layout}">
+<head>
+    <title>Trang Trưởng khoa</title>
+</head>
+<body>
+<div layout:fragment="main-content">
+    <div class="row mb-4">
+        <div class="col-12 text-center">
+            <h2 class="fw-bold text-primary-emphasis">👨‍⚕️ Trang quản lý Trưởng khoa</h2>
+            <p class="text-muted">Quản lý nhân viên và bệnh nhân trong khoa của bạn</p>
+        </div>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+        <!-- Card nhân viên -->
+        <div class="col-md-5">
+            <div class="card shadow-sm border-0 h-100 hover-card">
+                <div class="card-body">
+                    <h5 class="card-title text-primary fw-bold">👥 Xem danh sách nhân viên</h5>
+                    <p class="card-text">Bao gồm các bác sĩ, điều dưỡng thuộc khoa.</p>
+                    <a th:href="@{/department-head(departmentId=${departmentId})}" class="btn btn-outline-primary">Xem ngay</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card bệnh nhân -->
+        <div class="col-md-5">
+            <div class="card shadow-sm border-0 h-100 hover-card">
+                <div class="card-body">
+                    <h5 class="card-title text-success fw-bold">🩺 Danh sách bệnh nhân nội trú</h5>
+                    <p class="card-text">Quản lý phân công bác sĩ điều trị và cập nhật tình trạng.</p>
+                    <a th:href="@{/department-head/list-inpatient}" class="btn btn-outline-success">Truy cập</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
