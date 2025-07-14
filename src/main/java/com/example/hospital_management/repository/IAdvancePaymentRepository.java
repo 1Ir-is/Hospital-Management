@@ -14,13 +14,15 @@ public interface IAdvancePaymentRepository extends JpaRepository<AdvancePayment,
     @Query(value="select ap.* from advance_payments ap " +
             "join impatient_records ir on ap.impatient_record_id = ir.id " +
             "join employees e on ap.employee_id = e.id " +
-            "join patients p on ir.patient_id = p.id " +
+            "JOIN medical_records mr on ir.medical_record_id = mr.id " +
+            "join patients p on mr.patient_id = p.id " +
             "where p.name like concat('%', :patientName ,'%') and  e.id= :employeeId",
 
             countQuery="select count(*) from advance_payments ap " +
                     "join impatient_records ir on ap.impatient_record_id = ir.id " +
                     "join employees e on ap.employee_id = e.id " +
-                    "join patients p on ir.patient_id = p.id " +
+                    "JOIN medical_records mr on ir.medical_record_id = mr.id " +
+                    "join patients p on mr.patient_id = p.id " +
                     "where p.name like concat('%', :patientName,'%') and  e.id= :employeeId "
 
             ,nativeQuery = true)

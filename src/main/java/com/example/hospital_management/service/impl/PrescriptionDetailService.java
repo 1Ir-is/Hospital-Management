@@ -1,5 +1,6 @@
 package com.example.hospital_management.service.impl;
 
+import com.example.hospital_management.dto.IPrescriptionDetailDto;
 import com.example.hospital_management.dto.PrescriptionDetailDto;
 import com.example.hospital_management.repository.IPrescriptionDetailRepository;
 import com.example.hospital_management.entity.PrescriptionDetail;
@@ -19,7 +20,7 @@ public class PrescriptionDetailService implements IPrescriptionDetailService {
 
 
     @Override
-    public List<PrescriptionDetailDto> getDetailsByPrescriptionId(Long prescriptionId) {
+    public List<IPrescriptionDetailDto> getDetailsByPrescriptionId(Long prescriptionId) {
         return prescriptionDetailRepository.getDetailsByPrescriptionId(prescriptionId);
     }
     @Override

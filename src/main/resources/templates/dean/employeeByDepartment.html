@@ -1,60 +1,80 @@
+<!-- templates/dean/employeeByDepartment.html -->
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{department-head/layout/layout}">
 <head>
-    <meta charset="UTF-8">
-    <title>Danh sách nhân viên</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Danh sách nhân viên trong khoa</title>
 </head>
 <body>
+<div layout:fragment="main-content">
+    <div class="row mb-4">
+        <div class="col-12 text-center">
+            <h2 class="fw-bold text-primary-emphasis">👥 Danh sách nhân viên trong khoa</h2>
+            <p class="text-muted">Bao gồm các bác sĩ, điều dưỡng và trưởng khoa hiện tại</p>
+        </div>
+    </div>
 
-<div class="container py-4">
-    <h2 class="mb-4">Danh sách nhân viên</h2>
-    <a th:href="@{/department-head/list-inpatient}" class="btn btn-sm btn-outline-primary mb-3">
-        Danh sách bệnh nhân nội trú
-    </a>
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle text-center">
+                    <thead class="table-light">
+                    <tr>
+                        <th>Ảnh đại diện</th>
+                        <th>Tên nhân viên</th>
+                        <th>Giới tính</th>
+                        <th>Email</th>
+                        <th>Điện thoại</th>
+                        <th>Ngày vào làm</th>
+                        <th>Chức vụ</th>
+                        <th>Trạng thái</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="nv : ${employeeList}">
+                        <td>
+                            <img th:src="${nv.avatar != null} ? ${nv.avatar} : '@{/images/default-avatar.png}'"
+                                 alt="Avatar"
+                                 class="rounded-circle border"
+                                 style="width: 50px; height: 50px; object-fit: cover;">
+                        </td>
+                        <td th:text="${nv.name}">Tên</td>
+                        <td>
+                            <span th:text="${nv.gender} ? 'Nam' : 'Nữ'"
+                                  th:classappend="${nv.gender} ? 'text-primary' : 'text-danger'">
+                            </span>
+                        </td>
+                        <td th:text="${nv.email}">email</td>
+                        <td th:text="${nv.phone}">sdt</td>
+                        <td th:text="${#temporals.format(nv.startingDate, 'dd-MM-yyyy')}">ngày</td>
+                        <td>
+                            <span class="badge"
+                                  th:classappend="${nv.position.name == 'Bác sĩ'} ? ' bg-primary' :
+                                                  (nv.position.name == 'Điều dưỡng' ? ' bg-success' :
+                                                  (nv.position.name == 'Trưởng khoa' ? ' bg-warning text-dark' : ' bg-secondary'))"
+                                  th:text="${nv.position.name}">
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge"
+                                  th:classappend="${nv.status} ? ' bg-info' : ' bg-dark'"
+                                  th:text="${nv.status} ? 'Đang công tác' : 'Đang nghỉ làm'">
+                            </span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 
-    <table class="table table-bordered table-hover">
-        <thead class="table-light">
-        <tr>
-            <th>Ảnh đại diện</th>
-            <th>Tên nhân viên</th>
-            <th>Giới tính</th>
-            <th>Email</th>
-            <th>Điện thoại</th>
-            <th>Ngày vào làm</th>
-            <th>Chức vụ</th>
-            <th>Trạng thái</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="nv : ${employeeList}">
-            <td>
-                <img th:src="${nv.avatar != null} ? ${nv.avatar} : '@{/images/default-avatar.png}'"
-                     alt="Avatar" style="width: 60px; height: 60px; object-fit: cover; border-radius: 50%;">
-            </td>
-            <td th:text="${nv.name}">Tên</td>
-            <td th:text="${nv.gender} ? 'Nam' : 'Nữ'">Giới tính</td>
-            <td th:text="${nv.email}">email@example.com</td>
-            <td th:text="${nv.phone}">0123456789</td>
-            <td th:text="${#temporals.format(nv.startingDate, 'dd-MM-yyyy')}"></td>
-            <td>
-        <span class="badge"
-              th:classappend="${nv.position.name == 'Bác sĩ'} ? ' bg-primary' :
-                              (${nv.position.name == 'Điều dưỡng'} ? ' bg-success' : ' bg-secondary')"
-              th:text="${nv.position.name}">
-        </span>
-            </td>
-            <td>
-        <span class="badge"
-              th:classappend="${nv.status} ? ' bg-info' : ' bg-dark'"
-              th:text="${nv.status} ? 'Đang công tác' : 'Đang nghỉ làm'">
-        </span>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+    <div class="d-flex justify-content-start mt-4">
+        <a th:href="@{/department-head/dashboard}" class="btn btn-outline-secondary">
+            ← Quay về bảng điều khiển
+        </a>
+    </div>
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

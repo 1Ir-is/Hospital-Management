@@ -54,6 +54,27 @@ public class EmployeeAssignmentService implements IEmployeeAssignmentService {
         employeeAssigmentRepository.save(assignment);
     }
 
+    @Override
+    public List<EmployeeAssignment> findAll(Long id) {
+        return employeeAssigmentRepository.findByImpatientRecordId(id);
+    }
+
+    @Override
+    public void save(EmployeeAssignment employeeAssignment) {
+        employeeAssigmentRepository.save(employeeAssignment);
+    }
+
+
+    @Override
+    public List<EmployeeAssignment> findByInpatientRecordId(Long impatientRecordId) {
+        return employeeAssigmentRepository.findByImpatientRecordId(impatientRecordId);
+    }
+
+    @Override
+    public void deleteByInpatientRecordId(Long inpatientRecordId) {
+        employeeAssigmentRepository.deleteByInpatientRecordId(inpatientRecordId);
+    }
+
 
     @Override
     public Optional<Employee> findDoctorByRecordId(Long recordId) {

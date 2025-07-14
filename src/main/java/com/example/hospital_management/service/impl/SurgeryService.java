@@ -49,4 +49,9 @@ public class SurgeryService implements ISurgeryService {
     public Page<Surgery> searchByName(String searchByName, Long medicalRecordId, Pageable pageable) {
         return surgeryRepository.searchByName(searchByName,medicalRecordId,pageable);
     }
+
+    @Override
+    public Optional<Surgery> findByRecordId(Long recordId) {
+        return surgeryRepository.findByImpatientRecordId(recordId);
+    }
 }

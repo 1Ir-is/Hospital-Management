@@ -1,0 +1,34 @@
+body {
+    font-family: "Segoe UI", sans-serif;
+    background-color: #f4f6f9;
+    color: #333;
+}
+
+.card {
+    border-radius: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+h2, h4 {
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.table th, .table td {
+    vertical-align: middle !important;
+}
+
+.badge {
+    font-size: 0.85rem;
+    padding: 0.45em 0.75em;
+    border-radius: 0.6rem;
+}
+
+.btn {
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+img.rounded-circle {
+    border: 2px solid #dee2e6;
+}

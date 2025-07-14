@@ -1,22 +1,17 @@
-<!doctype html>
-<html lang="en"
-        xmlns:th="http://www.thymeleaf.org">
+<html lang="vi"
+      layout:decorate="~{doctor/layout/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 
 <head>
-    <title>Title</title>
-    <!-- Required meta tags -->
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-
-    <!-- Bootstrap CSS v5.2.1 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous"/>
 </head>
 
-<body>
-<header>
-    <!-- place navbar here -->
-</header>
+<div layout:fragment="main-content">
+    <div class="welcome-card"
+         style="background: linear-gradient(135deg, #007bff 0%, #0056b3 100%); color: white; border-radius: 15px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 4px 20px rgba(0, 123, 255, 0.3);">
+        <h2>🩺 Chon thuốc và hướng dẫn sử dụng</h2>
+    </div>
 <main>
     <div class="card">
         <div class="card-body">
@@ -27,7 +22,7 @@
                         <td>
                             <div class="mb-3">
                                 <label for="medicine" class="form-label">Thuốc</label>
-                                <select class="form-select form-control" name="medicine" id="medicine">
+                                <select class="form-select form-control" name="medicine" id="medicine" required>
                                     <option value="" selected disabled>-- Chọn thuốc --</option>
                                     <option th:each="item : ${medicineList}"
                                             th:value="${item.id}" th:text="${item.name}"
@@ -49,14 +44,14 @@
                             <div class="mb-3">
                                 <label for="duration" class="form-label">Số ngày sử dụng</label>
                                 <input type="number" class="form-control" name="duration" id="duration"
-                                       placeholder=""/>
+                                       placeholder="" required min="1"/>
                             </div>
                         </td>
                         <td>
                             <div class="mb-3">
                                 <label for="quantity" class="form-label">Số lượng</label>
                                 <input type="number" class="form-control" name="quantity" id="quantity"
-                                       placeholder="" />
+                                       placeholder="" required min="1"/>
                             </div>
                         </td>
                     </tr>
@@ -65,7 +60,7 @@
                             <div class="mb-3">
                                 <label for="instruction" class="form-label">Hướng dẫn sử dụng:</label>
                                 <textarea name="instruction" id="instruction" class="form-control" rows="8"
-                                          placeholder="Liều lượng trong ngày..."></textarea>
+                                          placeholder="Liều lượng trong ngày..." required></textarea>
                             </div>
                         </td>
                     </tr>
@@ -103,6 +98,5 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
         integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
         crossorigin="anonymous"></script>
-</body>
-
+</div>
 </html>

@@ -69,7 +69,7 @@
 
             <div class="menu-section">
                 <div class="menu-title">Kiểm tra Sinh hiệu</div>
-                <a class="menu-item" href="/nurse/vital-signs"
+                <a class="menu-item" href="/nurse/vital-signs/check-non"
                    th:classappend="${activeMenu} == 'vital-signs' ? 'active' : ''">
                     <i class="fas fa-heartbeat"></i>
                     <span>Đo huyết áp, cân nặng</span>
@@ -93,20 +93,10 @@
 
             <div class="menu-section">
                 <div class="menu-title">Quản lý Bệnh án</div>
-                <a class="menu-item" href="/nurse/patient-records"
+                <a class="menu-item" href="/nurse"
                    th:classappend="${activeMenu} == 'patient-records' ? 'active' : ''">
                     <i class="fas fa-file-medical"></i>
                     <span>Danh sách bệnh án phụ trách</span>
-                </a>
-                <a class="menu-item" href="/nurse/admission"
-                   th:classappend="${activeMenu} == 'admission' ? 'active' : ''">
-                    <i class="fas fa-hospital-user"></i>
-                    <span>Làm hồ sơ nhập viện</span>
-                </a>
-                <a class="menu-item" href="/nurse/room-bed-assignment"
-                   th:classappend="${activeMenu} == 'room-bed-assignment' ? 'active' : ''">
-                    <i class="fas fa-bed"></i>
-                    <span>Chọn phòng và giường</span>
                 </a>
                 <a class="menu-item" href="/nurse/discharge-procedures"
                    th:classappend="${activeMenu} == 'discharge-procedures' ? 'active' : ''">
@@ -122,34 +112,24 @@
                     <i class="fas fa-prescription-bottle-alt"></i>
                     <span>Y lệnh thuốc từ bác sĩ</span>
                 </a>
-                <a class="menu-item" href="/nurse/medication-distribution"
-                   th:classappend="${activeMenu} == 'medication-distribution' ? 'active' : ''">
-                    <i class="fas fa-pills"></i>
-                    <span>Cấp phát thuốc</span>
-                </a>
                 <a class="menu-item" href="/nurse/medication-schedule"
                    th:classappend="${activeMenu} == 'medication-schedule' ? 'active' : ''">
                     <i class="fas fa-clock"></i>
                     <span>Lịch uống thuốc</span>
                 </a>
-                <a class="menu-item" href="/nurse/medication-tracking"
-                   th:classappend="${activeMenu} == 'medication-tracking' ? 'active' : ''">
-                    <i class="fas fa-chart-line"></i>
-                    <span>Theo dõi thuốc đã uống</span>
-                </a>
             </div>
 
             <div class="menu-section">
                 <div class="menu-title">Tài chính & Thủ tục</div>
-                <a class="menu-item" href="/nurse/advance-payment"
-                   th:classappend="${activeMenu} == 'advance-payment' ? 'active' : ''">
+                <a class="menu-item" href="/nurse/advance-payments"
+                   th:classappend="${activeMenu} == 'advance-payments' ? 'active' : ''">
                     <i class="fas fa-money-bill-wave"></i>
                     <span>Yêu cầu tạm ứng viện phí</span>
                 </a>
-                <a class="menu-item" href="/nurse/payment-status"
-                   th:classappend="${activeMenu} == 'payment-status' ? 'active' : ''">
-                    <i class="fas fa-credit-card"></i>
-                    <span>Trạng thái thanh toán</span>
+                <a class="menu-item" href="/nurse/advance-payments/create"
+                   th:classappend="${activeMenu} == 'advance-payments' ? 'active' : ''">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <span>Thêm đơn tạm ứng viện phí</span>
                 </a>
                 <a class="menu-item" href="/nurse/insurance-verification"
                    th:classappend="${activeMenu} == 'insurance-verification' ? 'active' : ''">
