@@ -17,6 +17,7 @@ public class Medicine { // Thuốc
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    private Long price;
 
     //Foreign Key
     //Medicine Type - Loại thuốc

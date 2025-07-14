@@ -4,6 +4,7 @@ package com.example.hospital_management.service;
 import com.example.hospital_management.dto.BillingSummaryDto;
 import com.example.hospital_management.dto.MedicalRecordBasicDto;
 
+import java.time.LocalDate;
 import java.util.List;
 
 
@@ -12,12 +13,13 @@ import com.example.hospital_management.dto.TestSummaryDto;
 import com.example.hospital_management.entity.MedicalRecord;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 
 public interface IMedicalRecordService {
 
     BillingSummaryDto getBillingSummary(Long medicalRecordId);
 
-    List<MedicalRecordBasicDto> findAllBasicInfo();
+    Page<MedicalRecordBasicDto> findAllBasicInfo(Pageable pageable);
 
     void markAsPaid(Long medicalRecordId);
 
@@ -49,4 +51,6 @@ public interface IMedicalRecordService {
 
     Page<MedicalRecordDto> getAllStatusRecords(Pageable pageable, Long roomId);
     List<MedicalRecord> findByPatientIdCard(String idCard);
+
+    List<BillingSummaryDto> getBillingSummaryToday();
 }

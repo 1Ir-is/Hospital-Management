@@ -194,6 +194,11 @@ public class EmployeeService implements IEmployeeService {
     }
 
     @Override
+    public Optional<Employee> findEmployeeByEmail(String email) {
+        return employeeRepository.findEmployeeByEmail(email);
+    }
+
+    @Override
     public Employee findByEmail(String email) {
         return employeeRepository.findByEmail(email);
     }
@@ -219,7 +224,3 @@ public class EmployeeService implements IEmployeeService {
         return employeeRepository.countByStartingDateGreaterThanEqual(startOfMonth);
     }
 }
-
-
-
-
