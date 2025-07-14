@@ -1,16 +1,16 @@
 package com.example.hospital_management.service.impl;
 
 import com.example.hospital_management.entity.ExaminationShift;
-import com.example.hospital_management.repository.IExaminationShiftRepository;
-import com.example.hospital_management.entity.ExaminationShift;
 import com.example.hospital_management.entity.MedicalRecord;
 import com.example.hospital_management.repository.IExaminationShiftRepository;
 import com.example.hospital_management.service.IExaminationShiftService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ExaminationShiftService implements IExaminationShiftService {
@@ -44,6 +44,11 @@ public class ExaminationShiftService implements IExaminationShiftService {
     @Override
     public void save(ExaminationShift examinationShift) {
         examinationShiftRepository.save(examinationShift);
+    }
+
+    @Override
+    public Page<ExaminationShift> getCurrentShifts(int page, int size) {
+        return examinationShiftRepository.findCurrentShifts(LocalDate.now(), PageRequest.of(page, size));
     }
 
     @Override

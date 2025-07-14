@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/receptionist")
+@PreAuthorize("hasAnyRole('RECEPTIONIST', 'NURSE', 'DOCTOR', 'DEPARTMENT_HEAD', 'ADMIN')")
 public class ReceptionController {
     private static final long BASE_FEE = 200000;
     private static final double INSURANCE_DISCOUNT = 0.8;
