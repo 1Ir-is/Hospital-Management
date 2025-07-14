@@ -105,6 +105,12 @@ WHERE (:patientName IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :patientName
             """, nativeQuery = true)
     void markTestsAsPaid(@Param("medicalRecordId") Long medicalRecordId);
 
+
+    @Query("SELECT i FROM ImpatientRecord i WHERE i.status = true AND (:searchName IS NULL OR LOWER(i.medicalRecord.patient.name) LIKE LOWER(CONCAT('%', :searchName, '%')))")
+    Page<ImpatientRecord> findWaitingPatients(@Param("searchName") String searchName,Pageable pageable);
+
+
+
     @Query("SELECT ipt FROM ImpatientRecord ipt " +
             "WHERE (:searchName IS NULL OR LOWER(ipt.medicalRecord.patient.name) LIKE LOWER(CONCAT('%', :searchName, '%'))) ")
     Page<ImpatientRecord> searchByName(@Param("searchName") String searchName,

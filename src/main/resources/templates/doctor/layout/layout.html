@@ -108,25 +108,10 @@
                     <i class="fas fa-bed"></i>
                     <span>Danh sách bệnh nhân</span>
                 </a>
-                <a class="menu-item" href="/doctor/daily-prescriptions"
-                   th:classappend="${activeMenu} == 'daily-prescriptions' ? 'active' : ''">
-                    <i class="fas fa-pills"></i>
-                    <span>Kê thuốc hàng ngày</span>
-                </a>
-                <a class="menu-item" href="/doctor/surgery-schedule"
-                   th:classappend="${activeMenu} == 'surgery-schedule' ? 'active' : ''">
-                    <i class="fas fa-procedures"></i>
-                    <span>Lịch phẫu thuật</span>
-                </a>
-                <a class="menu-item" href="/doctor/inpatient-test-results"
-                   th:classappend="${activeMenu} == 'inpatient-test-results' ? 'active' : ''">
+                <a class="menu-item" href="/doctor/result/view"
+                   th:classappend="${activeMenu} == 'result/view' ? 'active' : ''">
                     <i class="fas fa-file-medical"></i>
                     <span>Kết quả xét nghiệm</span>
-                </a>
-                <a class="menu-item" href="/doctor/discharge-decisions"
-                   th:classappend="${activeMenu} == 'discharge-decisions' ? 'active' : ''">
-                    <i class="fas fa-sign-out-alt"></i>
-                    <span>Quyết định xuất viện</span>
                 </a>
             </div>
 

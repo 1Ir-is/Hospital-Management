@@ -37,6 +37,8 @@ public interface IImpatientRecordService {
     void save(ImpatientRecord impatientRecord);
 
     void remove(Long id);
+    Page<ImpatientRecord> findAllByStatusTrue(String name,Pageable pageable);
+
 
     Page<ImpatientRecord> searchByName(String searchByName, Pageable pageable);
 
