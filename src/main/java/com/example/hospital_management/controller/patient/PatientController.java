@@ -6,7 +6,6 @@ import com.example.hospital_management.service.IPatientService;
 import com.example.hospital_management.service.ITicketService;
 import com.example.hospital_management.service.impl.EmailService;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +20,6 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/patient")
-@PreAuthorize("hasAnyRole('PATIENT', 'RECEPTIONIST', 'NURSE', 'DOCTOR', 'DEPARTMENT_HEAD', 'ADMIN')")
 public class PatientController {
     private ITicketService ticketService;
     private IMedicalRecordService medicalRecordService;

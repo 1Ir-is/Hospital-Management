@@ -50,9 +50,15 @@
             <a href="#contact">Liên Hệ</a>
         </nav>
 
+        <!-- Ẩn/hiện nút Đăng Nhập và modal login -->
         <div class="header-actions">
             <button class="btn-appointment">Đặt Lịch Khám</button>
-            <button class="btn-login">Đăng Nhập</button>
+            <button class="btn-login" th:if="${not #authorization.expression('isAuthenticated()')}">Đăng Nhập</button>
+            <span th:if="${#authorization.expression('isAuthenticated()')}">
+        <!-- Hiển thị tên người dùng hoặc nút đăng xuất -->
+        <span th:text="${#authentication.getName()}"></span>
+        <a href="/logout">Đăng xuất</a>
+    </span>
             <div class="menu-toggle">
                 <span></span>
                 <span></span>
