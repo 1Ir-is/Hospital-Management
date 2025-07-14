@@ -3,6 +3,8 @@ package com.example.hospital_management.service.impl;
 import com.example.hospital_management.entity.Ticket;
 import com.example.hospital_management.repository.ITicketRepository;
 import com.example.hospital_management.service.ITicketService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -52,8 +54,8 @@ public class TicketService implements ITicketService {
     }
 
     @Override
-    public List<Ticket> getAllTodayTicketsOrdered() {
-        return ticketRepository.findAllTodayTicketsOrdered(LocalDate.now());
+    public Page<Ticket> getAllTodayTicketsOrdered(Pageable pageable) {
+        return ticketRepository.findAllTodayTicketsOrdered(LocalDate.now(),pageable);
     }
 
     @Override
