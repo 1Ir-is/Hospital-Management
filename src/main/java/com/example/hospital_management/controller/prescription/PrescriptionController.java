@@ -85,13 +85,14 @@ public class PrescriptionController {
         if(prescriptionDto.getPrescriptionDetails() == null){
             prescriptionDto.setPrescriptionDetails(new ArrayList<>());
         }
-
+        Long medicalRecordId = prescriptionDto.getMedicalRecord().getId();
         List<Medicine> availableMedicine = medicineList.stream()
                         .filter(medicine -> prescriptionDto.getPrescriptionDetails().stream()
                                 .noneMatch(detail -> detail.getMedicine().getId().equals(medicine.getId())))
                                 .collect(Collectors.toList());
 
         model.addAttribute("medicineList", availableMedicine);
+//        model.addAttribute("medicalRecordId", medicalRecordId);
         return "/prescription/form";
     }
 
