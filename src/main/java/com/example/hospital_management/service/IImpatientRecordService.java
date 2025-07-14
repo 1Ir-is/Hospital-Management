@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface IImpatientRecordService {
+    Page<ImpatientBasicDto> findAllUnpaidImpatients(Pageable pageable);
     List<ImpatientRecord> findAllDangNhapVien();
 
     Optional<ImpatientRecord> findById(Long id);
@@ -24,7 +25,6 @@ public interface IImpatientRecordService {
     Page<ImpatientRecord> searchByFields(String patientName, String roomNumber, String doctorName, String nurseName, Pageable pageable);
 
     void updateNote(Long recordId, String note);
-    List<ImpatientBasicDto> findAllUnpaidImpatients();
 
     BillingSummaryDto getBillingSummary(Long medicalRecordId);
 
@@ -33,6 +33,7 @@ public interface IImpatientRecordService {
     List<ImpatientRecord> findAll();
 
     Page<ImpatientRecord> findAll(Pageable pageable);
+
 
     void save(ImpatientRecord impatientRecord);
 

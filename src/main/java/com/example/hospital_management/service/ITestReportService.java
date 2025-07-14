@@ -4,6 +4,7 @@ import com.example.hospital_management.dto.TestRequestDto;
 import com.example.hospital_management.entity.TestReport;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
@@ -25,4 +26,14 @@ public interface ITestReportService {
     void remove(Long id);
 
     Page<TestReport> searchByName(String searchByName, Long medicalRecordId, Pageable pageable);
+
+    List<TestRequestDto> findAllByPatientId(Long patientId);
+
+    List<TestRequestDto> findTodayCompletedReports(Long roomId);
+
+    void updateTestReportStatus(Long testOrderId, Long testStatusId);
+
+    void saveTestResult(Long testReportId, String imageUrl, String note, Long employeeId);
+
+    String findImageByTestReportId(Long id);
 }

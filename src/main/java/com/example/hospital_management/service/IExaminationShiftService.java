@@ -27,4 +27,5 @@ public interface IExaminationShiftService {
     Page<ExaminationShift> getTodayRecords(Pageable pageable);
     Page<ExaminationShift> getTodayRecordsByStatus(Long statusId, Pageable pageable);
 
+    ExaminationShift getByMedicalRecordId(Long recordId);
 }

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{pharmacy/layout/layout.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>Đơn thuốc đã thanh toán</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="container mt-4">
+<main layout:fragment="main-content" class="container mt-4">
+
+    <h4>📄 Đơn thuốc đã thanh toán - Mã hồ sơ: <span th:text="${code}"></span></h4>
+
+    <div th:if="${prescriptions.isEmpty()}">
+        <div class="alert alert-warning">Không có đơn thuốc nào đã thanh toán.</div>
+    </div>
+
+    <div th:if="${!prescriptions.isEmpty()}">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Tên bệnh nhân</th>
+                <th>Ngày tạo</th>
+                <th>Trạng thái</th>
+                <th>Thao tác</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item, iterStat : ${prescriptions}">
+                <td th:text="${iterStat.count}"></td>
+                <td th:text="${item.patientsName}"></td>
+                <td th:text="${#dates.format(item.createdDate, 'dd/MM/yyyy')}"></td>
+                <td th:text="${item.status}"></td>
+                <td>
+                    <a class="btn btn-sm btn-info"
+                       th:href="@{/pharmacy/prescription/{id}(id=${item.id})}">👁️ Chi tiết</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <a class="btn btn-secondary" href="/pharmacy">⬅️ Quay lại</a>
+</main>
+</body>
+</html>
