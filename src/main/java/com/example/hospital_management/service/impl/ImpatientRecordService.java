@@ -99,6 +99,11 @@ impatientRecordRepository.deleteById(id);
     }
 
     @Override
+    public Page<ImpatientRecord> findAllByStatusTrue(String name ,Pageable pageable) {
+        return impatientRecordRepository.findWaitingPatients(name,pageable);
+    }
+
+    @Override
     public Page<ImpatientRecord> searchByName(String searchByName, Pageable pageable) {
         return impatientRecordRepository.searchByName(searchByName,pageable);
     }
