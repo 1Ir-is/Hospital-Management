@@ -20,6 +20,8 @@ public interface IPrescriptionService {
 
     Optional<PrescriptionRequestDto> findFirstUnprocessedPrescription();
 
+    Prescription saveAndFlush(Prescription prescription);
+
     List<PrescriptionRequestDto> findTodayDispensedPrescriptions();
 
     List<PrescriptionRequestDto> findAllPaidPrescriptionsByMedicalRecordCode(String code);

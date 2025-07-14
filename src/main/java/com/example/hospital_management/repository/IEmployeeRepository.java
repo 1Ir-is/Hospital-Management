@@ -14,6 +14,18 @@ import java.util.Optional;
 
 @Repository
 public interface IEmployeeRepository extends JpaRepository<Employee, Long> {
+    List<Employee> findByDepartment_Id(Long departmentId);
+
+    @Query("SELECT e FROM Employee e WHERE e.position.name = 'Bác sĩ'")
+    List<Employee> findAllDoctors();
+    @Query("SELECT e FROM Employee e WHERE e.position.name = 'Điều dưỡng'")
+    List<Employee> findAllNurses();
+    @Query("SELECT e FROM Employee e WHERE e.position.name = 'Bác sĩ' AND e.department.id = :departmentId")
+    List<Employee> findDoctorsByDepartment(@Param("departmentId") Long departmentId);
+
+    @Query("SELECT e FROM Employee e WHERE e.position.name = 'Điều dưỡng' AND e.department.id = :departmentId")
+    List<Employee> findNursesByDepartment(@Param("departmentId") Long departmentId);
+
     List<Employee> findByDepartmentId(Long departmentId);
 
     @Query("SELECT e FROM Employee e WHERE e.email = :email")

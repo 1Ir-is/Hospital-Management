@@ -42,7 +42,7 @@ public interface IRoomRepository extends JpaRepository<Room, Long> {
     List<Room> findAllExaminationRoom();
 
     // Tìm kiếm phòng với phòng xét nghiệm
-    @Query(value = "SELECT * FROM rooms where room_type_id = 2", nativeQuery = true)
+    @Query(value = "SELECT * FROM rooms where room_type_id = 7", nativeQuery = true)
     List<Room> findAllTestRoom();
 
     // Tìm kiếm phòng với filter tổng hợp

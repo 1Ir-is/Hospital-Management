@@ -32,8 +32,7 @@ public interface ITestReportRepository extends JpaRepository<TestReport, Long> {
                 JOIN medical_records mr ON tr.medical_record_id = mr.id
                 JOIN patients p ON mr.patient_id = p.id
                 JOIN test_status ts ON tr.test_status_id = ts.id
-                WHERE t.room_id = :roomId
-                  AND tr.medical_record_id IS NOT NULL
+                WHERE tr.medical_record_id IS NOT NULL
                   AND tr.test_status_id != 2
                   AND tr.pay_status = 1
                   AND NOT EXISTS (

@@ -60,7 +60,7 @@
         <div class="sidebar-menu">
             <div class="menu-section">
                 <div class="menu-title">Tổng quan</div>
-                <a class="menu-item" href="/receptionist"
+                <a class="menu-item" href="/receptionist/list"
                    th:classappend="${activeMenu} == 'dashboard' ? 'active' : ''">
                     <i class="fas fa-tachometer-alt"></i>
                     <span>Dashboard</span>
@@ -117,7 +117,7 @@
 
             <div class="menu-section">
                 <div class="menu-title">Theo dõi Tiến trình</div>
-                <a class="menu-item" href="/receptionist/examination-progress"
+                <a class="menu-item" href="/receptionist/patients/today-records"
                    th:classappend="${activeMenu} == 'examination-progress' ? 'active' : ''">
                     <i class="fas fa-chart-line"></i>
                     <span>Tiến trình khám bệnh</span>

@@ -1,6 +1,10 @@
 package com.example.hospital_management.service;
 
 import com.example.hospital_management.entity.Patient;
+
+import java.util.List;
+
+import com.example.hospital_management.entity.Patient;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

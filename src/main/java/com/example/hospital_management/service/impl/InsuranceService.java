@@ -28,6 +28,11 @@ public class InsuranceService implements IInsuranceService {
     }
 
     @Override
+    public Insurance findByCode(String code) {
+        return insuranceRepository.findByCode(code);
+    }
+
+    @Override
     public boolean existsValidInsurance(Long patientId, LocalDate today) {
         return insuranceRepository.existsValidInsurance(patientId, today);
     }

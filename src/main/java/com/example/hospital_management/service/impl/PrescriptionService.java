@@ -51,4 +51,9 @@ public class PrescriptionService implements IPrescriptionService {
     public List<PrescriptionRequestDto> findAllPaidPrescriptionsByMedicalRecordCode(String code) {
         return prescriptionRepository.findAllPaidPrescriptionsByMedicalRecordCode(code);
     }
+    @Override
+    public Prescription saveAndFlush(Prescription prescription) {
+        return saveAndFlush(prescription);
+    }
+
 }

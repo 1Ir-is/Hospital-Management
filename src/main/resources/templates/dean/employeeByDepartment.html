@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách nhân viên</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container py-4">
+    <h2 class="mb-4">Danh sách nhân viên</h2>
+    <a th:href="@{/department-head/list-inpatient}" class="btn btn-sm btn-outline-primary mb-3">
+        Danh sách bệnh nhân nội trú
+    </a>
+
+    <table class="table table-bordered table-hover">
+        <thead class="table-light">
+        <tr>
+            <th>Ảnh đại diện</th>
+            <th>Tên nhân viên</th>
+            <th>Giới tính</th>
+            <th>Email</th>
+            <th>Điện thoại</th>
+            <th>Ngày vào làm</th>
+            <th>Chức vụ</th>
+            <th>Trạng thái</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="nv : ${employeeList}">
+            <td>
+                <img th:src="${nv.avatar != null} ? ${nv.avatar} : '@{/images/default-avatar.png}'"
+                     alt="Avatar" style="width: 60px; height: 60px; object-fit: cover; border-radius: 50%;">
+            </td>
+            <td th:text="${nv.name}">Tên</td>
+            <td th:text="${nv.gender} ? 'Nam' : 'Nữ'">Giới tính</td>
+            <td th:text="${nv.email}">email@example.com</td>
+            <td th:text="${nv.phone}">0123456789</td>
+            <td th:text="${#temporals.format(nv.startingDate, 'dd-MM-yyyy')}"></td>
+            <td>
+        <span class="badge"
+              th:classappend="${nv.position.name == 'Bác sĩ'} ? ' bg-primary' :
+                              (${nv.position.name == 'Điều dưỡng'} ? ' bg-success' : ' bg-secondary')"
+              th:text="${nv.position.name}">
+        </span>
+            </td>
+            <td>
+        <span class="badge"
+              th:classappend="${nv.status} ? ' bg-info' : ' bg-dark'"
+              th:text="${nv.status} ? 'Đang công tác' : 'Đang nghỉ làm'">
+        </span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

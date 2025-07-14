@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Danh sách bệnh nhân nội trú</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-4">
+  <h2 class="mb-4">Danh sách bệnh nhân nội trú</h2>
+  <form th:action="@{/department-head/list-inpatient}" method="get" class="row mb-3">
+    <input type="hidden" name="departmentId" th:value="${departmentId}"/>
+    <div class="col-md-3">
+      <input type="text" name="patientName" class="form-control" placeholder="Tên bệnh nhân"
+             th:value="${patientName}">
+    </div>
+    <div class="col-md-3">
+      <input type="text" name="roomNumber" class="form-control" placeholder="Số phòng"
+             th:value="${roomNumber}">
+    </div>
+    <div class="col-md-3">
+      <input type="text" name="doctorName" class="form-control" placeholder="Tên bác sĩ điều trị"
+             th:value="${doctorName}">
+    </div>
+    <div class="col-md-3">
+      <input type="text" name="nurseName" class="form-control" placeholder="Tên điều dưỡng"
+             th:value="${nurseName}">
+    </div>
+
+    <div class="col-md-3">
+      <button type="submit" class="btn btn-primary w-100">Tìm kiếm</button>
+    </div>
+  </form>
+
+
+
+
+
+
+  <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert" id="alertSuccess">
+    <span th:text="${success}"></span>
+  </div>
+
+
+  <table class="table table-bordered table-hover">
+    <thead class="table-light">
+    <tr>
+      <th>Tên bệnh nhân</th>
+      <th>Giới tính</th>
+      <th>Ngày sinh</th>
+      <th>Phòng</th>
+      <th>Ngày nhập viện</th>
+      <th>Trạng thái</th>
+      <th>Bác sĩ điều trị</th>
+      <th>Điều dưỡng phụ trách</th>
+      <th>Hành động</th>
+
+
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="r : ${recordList}">
+      <td th:text="${r.medicalRecord.patient.name}">Tên</td>
+      <td th:text="${r.medicalRecord.patient.gender} ? 'Nam' : 'Nữ'">Giới tính</td>
+      <td th:text="${r.medicalRecord.patient.birthday}">1990-01-01</td>
+      <td th:text="${r.medicalRecord.room.number}">101</td>
+      <td th:text="${#temporals.format(r.admissionDate, 'dd-MM-yyyy')}"></td>
+      <td>
+        <span class="badge bg-success">Đang điều trị</span>
+      </td>
+      <td th:text="${r.assignedDoctor != null ? r.assignedDoctor.name : 'Chưa phân công'}">Tên bác sĩ</td>
+      <td th:text="${r.assignedNurse != null ? r.assignedNurse.name : 'Chưa phân công'}">Tên điều dưỡng</td>
+      <td>
+        <div class="d-flex gap-1">
+        <a th:href="@{/department-head/inpatient/detail(recordId=${r.id})}"
+           class="btn btn-sm btn-info" title="Xem chi tiết bệnh nhân">
+          Chi tiết
+        </a>
+
+        <a th:if="${r.assignedDoctor == null}"
+           th:href="@{/department-head/doctors/assign-form(recordId=${r.id}, departmentId=${departmentId})}"
+           class="btn btn-sm btn-primary"
+           title="Phân công bác sĩ điều trị">Phân công</a>
+
+        <form th:if="${r.assignedDoctor != null}"
+              th:action="@{/department-head/doctors/assign-form}" method="get">
+          <input type="hidden" name="recordId" th:value="${r.id}">
+          <input type="hidden" name="departmentId" th:value="${departmentId}"> <!-- 👈 THÊM -->
+          <button type="submit" class="btn btn-sm btn-warning">Chỉnh sửa</button>
+        </form>
+        </div>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+<a th:href="@{/department-head(departmentId=${departmentId})}" class="btn btn-secondary mb-3">
+  ← Quay lại danh sách nhân viên
+</a>
+<div class="d-flex justify-content-center align-items-center mt-4">
+  <a th:if="${recordPage.hasPrevious()}"
+     th:href="@{/department-head/list-inpatient(page=${recordPage.number - 1},
+                                               size=${recordPage.size},
+                                               patientName=${patientName},
+                                               roomNumber=${roomNumber},
+                                               doctorName=${doctorName},
+                                               nurseName=${nurseName},
+                                               departmentId=${departmentId})}"
+     class="btn btn-outline-secondary me-2">Trước</a>
+
+  <!-- Số trang -->
+  <span class="me-2">
+    Trang <span th:text="${recordPage.number + 1}"></span> / <span th:text="${recordPage.totalPages}"></span>
+</span>
+
+  <a th:if="${recordPage.hasNext()}"
+     th:href="@{/department-head/list-inpatient(page=${recordPage.number + 1},
+                                               size=${recordPage.size},
+                                               patientName=${patientName},
+                                               roomNumber=${roomNumber},
+                                               doctorName=${doctorName},
+                                               nurseName=${nurseName},
+                                               departmentId=${departmentId})}"
+     class="btn btn-outline-secondary">Sau</a>
+
+</div>
+
+<script>
+  setTimeout(function () {
+    const alert = document.getElementById('alertSuccess');
+    if (alert) {
+      alert.classList.remove('show');
+      alert.classList.add('d-none');
+    }
+  }, 3000); // 3 giây
+</script>
+
+</body>
+</html>

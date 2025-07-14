@@ -10,6 +10,7 @@ import java.time.LocalDate;
 
 public interface IInsuranceRepository extends JpaRepository<Insurance, Long> {
     boolean existsByCode(String code);
+    Insurance findByCode(String code);
 
     @Query("""
     SELECT CASE WHEN COUNT(i) > 0 THEN true ELSE false END

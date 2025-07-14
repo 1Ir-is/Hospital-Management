@@ -11,4 +11,5 @@ public interface IInsuranceService {
 
     boolean existsValidInsurance(@Param("patientId") Long patientId, @Param("today") LocalDate today);
 
+    Insurance findByCode(String code);
 }

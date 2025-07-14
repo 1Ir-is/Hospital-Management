@@ -38,6 +38,7 @@ public class MedicalRecordDto {
     private LocalDate birthday;
     private Boolean gender;
 
-    private Long examination_shift_id;
+    private Long examinationShiftId;
+    private Long examinationShiftStatusId;
 
 }
