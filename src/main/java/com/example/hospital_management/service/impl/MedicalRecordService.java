@@ -129,6 +129,11 @@ public class MedicalRecordService implements IMedicalRecordService {
     }
 
     @Override
+    public List<MedicalRecord> findByPatientIdCard(String idCard) {
+        return medicalRecordRepository.findByPatientIdCard(idCard);
+    }
+
+    @Override
     public List<MedicalRecord> findAll() {
         return medicalRecordRepository.findAll();
     }

@@ -1,0 +1,101 @@
+<!-- fragments/registration-modals.html -->
+<div th:fragment="registrationModals (today, minDate, maxDate, successMessage)">
+
+  <!-- Modal chọn hình thức đăng ký -->
+  <div class="modal fade" id="choiceModal" tabindex="-1" aria-labelledby="choiceModalLabel">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered">
+      <div class="modal-content modal-custom">
+        <div class="row g-0">
+
+          <!-- Cột trái -->
+          <div class="col-md-5 left-panel d-flex flex-column justify-content-center align-items-center text-white p-4">
+            <h4 class="fw-bold text-center">Chọn hình thức đăng ký</h4>
+            <i class="bi bi-calendar-check-fill fs-1 mt-3"></i>
+          </div>
+
+          <!-- Cột phải -->
+          <div class="col-md-7 p-4">
+            <button type="button" class="btn-close float-end" data-bs-dismiss="modal" aria-label="Close"></button>
+            <h5 class="text-center my-4 fw-semibold">Chọn cách đăng ký:</h5>
+            <div class="d-grid gap-3 px-3">
+              <button class="btn btn-outline-primary btn-lg" onclick="showTodayForm()">Khám trực tiếp hôm nay</button>
+              <button class="btn btn-outline-success btn-lg" onclick="showAdvanceForm()">Đặt lịch khám trước</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal khám hôm nay -->
+  <div class="modal fade" id="todayFormModal" tabindex="-1" aria-labelledby="todayFormModalLabel">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content modal-custom">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title">Đăng ký khám trực tiếp hôm nay</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+        </div>
+        <div class="modal-body">
+          <form method="post" th:action="@{/queue/input-info}">
+            <input type="hidden" name="formType" value="today" />
+            <div class="mb-3">
+              <label for="name" class="form-label">Họ tên</label>
+              <input type="text" class="form-control" id="name" name="name" required>
+            </div>
+            <div class="mb-3">
+              <label for="idCard" class="form-label">CCCD</label>
+              <input type="text" class="form-control" id="idCard" name="idCard" required>
+            </div>
+            <div class="mb-3">
+              <label for="phone" class="form-label">Số điện thoại</label>
+              <input type="text" class="form-control" id="phone" name="phone" required>
+            </div>
+            <div class="text-end">
+              <button type="submit" class="btn btn-primary">Lấy số khám</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal đặt lịch khám trước -->
+  <div class="modal fade" id="advanceFormModal" tabindex="-1" aria-labelledby="advanceFormModalLabel">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content modal-custom">
+        <div class="modal-header bg-success text-white">
+          <h5 class="modal-title">Đặt lịch khám trước</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+        </div>
+        <div class="modal-body">
+          <form method="post" th:action="@{/appointments}">
+            <input type="hidden" name="formType" value="advance" />
+            <div class="mb-3">
+              <label for="name2" class="form-label">Họ tên</label>
+              <input type="text" class="form-control" id="name2" th:field="*{appointment.patient.name}" required>
+            </div>
+            <div class="mb-3">
+              <label for="idCard2" class="form-label">CCCD</label>
+              <input type="text" class="form-control" id="idCard2" th:field="*{appointment.patient.idCard}" required>
+            </div>
+            <div class="mb-3">
+              <label for="phone2" class="form-label">Số điện thoại</label>
+              <input type="text" class="form-control" id="phone2" th:field="*{appointment.patient.phone}" required>
+            </div>
+            <div class="mb-3">
+              <label for="appointmentTime" class="form-label">Ngày khám</label>
+              <input type="datetime-local" class="form-control" id="appointmentTime"
+                     th:field="*{appointment.appointmentTime}"
+                     th:min="${minDate}" th:max="${maxDate}" required>
+            </div>
+            <div class="text-end">
+              <button type="submit" class="btn btn-success">Đặt lịch</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

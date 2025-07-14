@@ -21,4 +21,5 @@ public interface IExaminationShiftService {
     List<ExaminationShift> findAllByRoom_Id(Long id);
     ExaminationShift findById(Long id);
     void save(ExaminationShift examinationShift);
+    ExaminationShift getByMedicalRecordId(Long recordId);
 }

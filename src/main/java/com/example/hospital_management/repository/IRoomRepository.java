@@ -60,4 +60,7 @@ public interface IRoomRepository extends JpaRepository<Room, Long> {
     // Lấy danh sách phòng đang hoạt động
     @Query("SELECT r FROM Room r WHERE r.status = true ORDER BY r.department.name, r.number")
     List<Room> findActiveRoomsOrderByDepartmentAndNumber();
+
+
+
 }

@@ -174,16 +174,6 @@ public interface IMedicalRecordRepository extends JpaRepository<MedicalRecord, L
     @Query("select m from MedicalRecord m where m.vitalSign is null ")
     Page<MedicalRecord> findAllWithOutVitalSign(Pageable pageable);
 
-    @Query(value = "SELECT mr FROM MedicalRecord mr WHERE mr.code = :code")
-    Optional<MedicalRecord> findRoomByCode(@Param("code") String code);
-
-    Optional<MedicalRecord> findDistinctByPatient_IdCard(String patientIdCard);
-
-
-    List<MedicalRecord> findByPatient(Patient patient);
-
-    Optional<MedicalRecord> findByCode(String code);
-
     @Query(value = """
                 SELECT SUM(m.price * pd.quantity)
                 FROM prescriptions pr
@@ -232,4 +222,7 @@ public interface IMedicalRecordRepository extends JpaRepository<MedicalRecord, L
                 WHERE id = :medicalRecordId
             """, nativeQuery = true)
     void updatePaymentStatus(@Param("medicalRecordId") Long medicalRecordId);
+
+    @Query(value = "select mr from  MedicalRecord mr where mr.patient.idCard = :idCard")
+    List<MedicalRecord> findByPatientIdCard(@Param("idCard") String idCard);
 }

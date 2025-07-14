@@ -42,4 +42,5 @@ public interface IMedicalRecordService {
 
     List<MedicalRecord> findAll();
     MedicalRecord getMedicalRecordById(Long id);
+    List<MedicalRecord> findByPatientIdCard(String idCard);
 }
