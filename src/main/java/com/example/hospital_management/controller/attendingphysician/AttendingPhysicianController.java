@@ -19,7 +19,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
-@RequestMapping("/attending-physician")
+@RequestMapping("/doctor/attending-physician")
 public class AttendingPhysicianController {
     public final IImpatientRecordService impatientRecordService;
     public final IInpatientTreatmentService iInpatientTreatmentService;
@@ -92,7 +92,7 @@ public class AttendingPhysicianController {
         employeeAssignment.setImpatientRecord(impatientRecordService.getImpatientRecordById(inpatientRecordId));
         employeeAssignmentService.save(employeeAssignment);
         redirectAttributes.addFlashAttribute("successMessage", "Cập nhật thành công!");
-        return "redirect:/attending-physician";
+        return "redirect:/doctor/attending-physician";
     }
 
     @GetMapping("/{id}/create")
@@ -127,12 +127,12 @@ public class AttendingPhysicianController {
             redirectAttributes.addFlashAttribute("inpatientTreatmentDto", inpatientTreatmentDto);
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.inpatientTreatmentDto", bindingResult);
             redirectAttributes.addFlashAttribute("showModal", true);
-            return "redirect:/attending-physician/" + id + "/create";
+            return "redirect:/doctor/attending-physician/" + id + "/create";
         }
         BeanUtils.copyProperties(inpatientTreatmentDto,inpatientTreatment);
         iInpatientTreatmentService.save(inpatientTreatment);
         redirectAttributes.addFlashAttribute("successMessage", "Tạo đơn thuốc thành công!");
-        return "redirect:/attending-physician/" + id + "/create";
+        return "redirect:/doctor/attending-physician/" + id + "/create";
     }
 
 

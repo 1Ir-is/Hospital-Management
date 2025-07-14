@@ -7,11 +7,14 @@ import com.example.hospital_management.entity.*;
 import com.example.hospital_management.repository.ITreatmentTaskRepository;
 import com.example.hospital_management.service.*;
 import com.example.hospital_management.service.impl.ImpatientRecordService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -84,12 +87,21 @@ public class NurseController {
             @RequestParam(required = false, defaultValue = "5") int size,
             @RequestParam(required = false, defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "") String patientName,
-            @RequestParam(required = false, defaultValue = "4") Long employeeId,
+            @RequestParam(required = false) Long employeeId,
+            HttpSession session,
+            @AuthenticationPrincipal UserDetails userDetails,
             Model model) {
+        String email = userDetails.getUsername();
+        Employee employee = iEmployeeService.findByEmail(email);
+        session.setAttribute("employee",employee);
+        if (employeeId == null) {
+            employeeId = employee.getId();
+        }
         Pageable pageable = PageRequest.of(page, size);
         Page<ImpatientRecord> impatientRecords = impatientRecordService.findAll(patientName, employeeId, pageable);
         model.addAttribute("impatientRecords", impatientRecords);
         model.addAttribute("patientName", patientName);
+        model.addAttribute("employeeId", employeeId);
         model.addAttribute("size", size);
         return "nurse/patient/list";
     }

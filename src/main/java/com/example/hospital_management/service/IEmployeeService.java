@@ -50,4 +50,6 @@ public interface IEmployeeService {
     void updateEmployeeWithRoles(Long employeeId, Employee updatedEmployee, List<Long> roleIds);
 
     List<Employee> findNurse();
+
+    Employee findByEmail(String email);
 }

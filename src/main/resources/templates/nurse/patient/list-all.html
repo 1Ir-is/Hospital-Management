@@ -1,11 +1,14 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html lang="vi"
+      layout:decorate="~{nurse/layout/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+>
 <head>
-    <meta charset="UTF-8">
-    <title>Danh sách tất cả bệnh nhân</title>
+    <title>Danh sách bệnh nhân</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body class="bg-light">
+<div layout:fragment="main-content">
+<div class="bg-light">
 
 <div class="container py-5">
     <h2 class="mb-4">Danh sách tất cả bệnh nhân</h2>
@@ -22,10 +25,10 @@
     </form>
 
     <!-- Link danh sách phụ -->
-    <div class="mb-4">
-        <a href="/nurse/advance-payments" class="btn btn-outline-secondary">📄 Danh sách bệnh nhân tạm ứng tiền</a>
-        <a href="/nurse" class="btn btn-outline-secondary">Quay lại trang chủ</a>
-    </div>
+<!--    <div class="mb-4">-->
+<!--        <a href="/nurse/advance-payments" class="btn btn-outline-secondary">📄 Danh sách bệnh nhân tạm ứng tiền</a>-->
+<!--        <a href="/nurse" class="btn btn-outline-secondary">Quay lại trang chủ</a>-->
+<!--    </div>-->
 
     <!-- Bảng danh sách bệnh nhân -->
     <div class="table-responsive">
@@ -43,8 +46,8 @@
             <tbody>
             <tr th:each="impatientRecord, status : ${impatientRecords}">
                 <td th:text="${status.count}"></td>
-                <td th:text="${impatientRecord.admissionDate}"></td>
-                <td th:if="${impatientRecord.dischargeDate != null}" th:text="${impatientRecord.dischargeDate}"></td>
+                <td th:text="${#temporals.format(impatientRecord.admissionDate, 'dd/MM/yyyy')}"></td>
+                <td th:if="${impatientRecord.dischargeDate != null}" th:text="${#temporals.format(impatientRecord.dischargeDate, 'dd/MM/yyyy')}" ></td>
                 <td th:if="${impatientRecord.dischargeDate == null}">Đang điều trị</td>
                 <td th:text="${impatientRecord.bed.number}"></td>
                 <td th:text="${impatientRecord.medicalRecord.patient.name}"></td>
@@ -87,6 +90,6 @@
         Không tìm thấy dữ liệu.
     </div>
 </div>
-
-</body>
+</div>
+</div>
 </html>

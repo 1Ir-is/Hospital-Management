@@ -1,13 +1,16 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html lang="vi"
+      layout:decorate="~{doctor/layout/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+>
 <head>
-    <meta charset="UTF-8">
-    <title>Điều trị cho bệnh nhân</title>
+    <title>Điều trị bệnh nhân</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
-<body class="bg-light">
+<div layout:fragment="main-content">
+<div class="bg-light">
 
 <div class="container py-5">
     <h2 class="mb-4">Thông tin điều trị</h2>
@@ -34,7 +37,7 @@
     <div class="modal fade" id="treatmentModal" tabindex="-1" aria-labelledby="treatmentModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <form th:action="@{/attending-physician/{id}/create(id=${id})}" method="post" th:object="${inpatientTreatmentDto}">
+                <form th:action="@{/doctor/attending-physician/{id}/create(id=${id})}" method="post" th:object="${inpatientTreatmentDto}">
                     <div class="modal-header">
                         <h5 class="modal-title" id="treatmentModalLabel">Tạo đơn điều trị</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
@@ -113,7 +116,7 @@
     <!-- Lịch sử kê đơn -->
     <h3 class="mt-5 mb-3">Lịch sử kê đơn thuốc</h3>
     <div class="text-end mb-3">
-        <a th:href="@{/attending-physician}" class="btn btn-outline-secondary">
+        <a th:href="@{/doctor/attending-physician}" class="btn btn-outline-secondary">
             ← Quay lại danh sách hồ sơ
         </a>
     </div>
@@ -190,5 +193,6 @@
     }
     /*]]>*/
 </script>
-</body>
+</div>
+</div>
 </html>
