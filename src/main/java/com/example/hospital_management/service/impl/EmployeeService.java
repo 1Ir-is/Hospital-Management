@@ -194,6 +194,11 @@ public class EmployeeService implements IEmployeeService {
     }
 
     @Override
+    public Employee findByEmail(String email) {
+        return employeeRepository.findByEmail(email);
+    }
+
+    @Override
     public long countTotalEmployees() {
         return employeeRepository.count();
     }

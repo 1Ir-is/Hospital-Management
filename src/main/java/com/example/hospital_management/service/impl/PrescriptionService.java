@@ -41,4 +41,9 @@ public class PrescriptionService implements IPrescriptionService {
         return prescriptionRepository.findFirstUnprocessedPrescription();
     }
 
+    @Override
+    public Prescription saveAndFlush(Prescription prescription) {
+        return saveAndFlush(prescription);
+    }
+
 }

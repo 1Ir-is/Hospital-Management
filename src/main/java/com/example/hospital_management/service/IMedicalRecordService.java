@@ -33,7 +33,7 @@ public interface IMedicalRecordService {
 
     void save(MedicalRecord medicalRecord);
 
-    Page<TestSummaryDto> getTestingMedicalRecordList(Pageable pageable);
+    Page<TestSummaryDto> getTestingMedicalRecordList(Pageable pageable, Long roomId);
 
     MedicalRecordDto getCurrentPatient(Long roomId);
 
@@ -42,4 +42,6 @@ public interface IMedicalRecordService {
 
     List<MedicalRecord> findAll();
     MedicalRecord getMedicalRecordById(Long id);
+
+    Page<MedicalRecordDto> getAllStatusRecords(Pageable pageable, Long roomId);
 }

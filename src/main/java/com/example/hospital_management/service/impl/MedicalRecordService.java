@@ -4,10 +4,13 @@ import com.example.hospital_management.dto.BillingSummaryDto;
 import com.example.hospital_management.dto.MedicalRecordBasicDto;
 import com.example.hospital_management.dto.MedicalRecordDto;
 import com.example.hospital_management.dto.TestSummaryDto;
+import com.example.hospital_management.entity.ExaminationShift;
 import com.example.hospital_management.entity.MedicalRecord;
 import com.example.hospital_management.repository.IMedicalRecordRepository;
 import com.example.hospital_management.repository.IPrescriptionRepository;
 import com.example.hospital_management.repository.ITestReportRepository;
+import com.example.hospital_management.service.IExaminationShiftService;
+import com.example.hospital_management.service.IExaminationShiftStatusService;
 import com.example.hospital_management.service.IMedicalRecordService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,11 +25,16 @@ public class MedicalRecordService implements IMedicalRecordService {
     private final ITestReportRepository testReportRepository;
 
     private final IPrescriptionRepository prescriptionRepository;
+    private final IExaminationShiftService examinationShiftService;
+    private final IExaminationShiftStatusService examinationShiftStatusService;
 
-    public MedicalRecordService(IMedicalRecordRepository medicalRecordRepository, ITestReportRepository testReportRepository, IPrescriptionRepository prescriptionRepository) {
+    public MedicalRecordService(IMedicalRecordRepository medicalRecordRepository, ITestReportRepository testReportRepository,
+                                IPrescriptionRepository prescriptionRepository, IExaminationShiftService examinationShiftService, IExaminationShiftStatusService examinationShiftStatusService) {
         this.medicalRecordRepository = medicalRecordRepository;
         this.testReportRepository = testReportRepository;
         this.prescriptionRepository = prescriptionRepository;
+        this.examinationShiftService = examinationShiftService;
+        this.examinationShiftStatusService = examinationShiftStatusService;
     }
 
     @Override
@@ -95,7 +103,7 @@ public class MedicalRecordService implements IMedicalRecordService {
 
     @Override
     public Page<MedicalRecordDto> getWaitingRecords(Pageable pageable) {
-        return medicalRecordRepository.getWaitingRecords(pageable);
+        return medicalRecordRepository.getAllStatusRecords(pageable);
     }
 
     @Override
@@ -109,8 +117,22 @@ public class MedicalRecordService implements IMedicalRecordService {
 //    }
 
     @Override
-    public Page<TestSummaryDto> getTestingMedicalRecordList(Pageable pageable) {
-        return medicalRecordRepository.getTestingMedicalRecordList(pageable);
+    public Page<TestSummaryDto> getTestingMedicalRecordList(Pageable pageable, Long roomId) {
+        Page<TestSummaryDto> testSummaryDtos =  medicalRecordRepository.getTestingMedicalRecordList(pageable, roomId);
+        if(testSummaryDtos.isEmpty()){
+            return testSummaryDtos;
+        }
+        for (TestSummaryDto dto : testSummaryDtos){
+            if(dto.getCompletedTest().equals(dto.getTotalOfTest())){
+                ExaminationShift shift = examinationShiftService.findByMedicalRecordId(dto.getMedicalRecordId());
+                if(shift != null && shift.getExaminationShiftStatus().getId() != 4L){
+                    shift.setExaminationShiftStatus(examinationShiftStatusService.findById(4L));
+                    examinationShiftService.save(shift);
+                }
+            }
+
+        }
+        return testSummaryDtos;
     }
 
     @Override
@@ -126,6 +148,11 @@ public class MedicalRecordService implements IMedicalRecordService {
     @Override
     public MedicalRecord getMedicalRecordById(Long id) {
         return medicalRecordRepository.getMedicalRecordById(id);
+    }
+
+    @Override
+    public Page<MedicalRecordDto> getAllStatusRecords(Pageable pageable, Long roomId) {
+        return medicalRecordRepository.getAllStatusRecords(pageable, roomId);
     }
 
     @Override

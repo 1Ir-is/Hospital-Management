@@ -9,4 +9,6 @@ import java.util.List;
 public interface IExaminationShiftRepository extends JpaRepository<ExaminationShift, Long> {
     List<ExaminationShift> findAllByRoom_Id(Long id);
     ExaminationShift findByMedicalRecord(MedicalRecord medicalRecord);
+
+    ExaminationShift findByMedicalRecordId(Long medicalRecordId);
 }
