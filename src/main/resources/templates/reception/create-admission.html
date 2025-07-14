@@ -16,7 +16,7 @@
 
     <form th:action="@{/receptionist/admissions/{id}/create(id=${id})}" method="post" th:object="${impatientRecordDto}">
         <div class="mb-3">
-            <label class="form-label">Ngày nhập viện</label>
+            <label class="form-label">Ngày nhập viện<span class="text-danger">*</span></label>
             <input type="date" class="form-control" th:field="*{admissionDate}" placeholder="Ngày nhập viện">
             <div class="text-danger" th:if="${#fields.hasErrors('admissionDate')}" th:errors="*{admissionDate}"></div>
         </div>
@@ -25,21 +25,21 @@
         <div class="text-danger" th:if="${#fields.hasErrors('dischargeDate')}" th:errors="*{dischargeDate}"></div>
 
         <div class="mb-3">
-            <label class="form-label">Ghi chú</label>
+            <label class="form-label">Ghi chú <span class="text-danger">*</span></label>
             <input type="text" class="form-control" placeholder="Ghi chú" th:field="*{note}">
             <div class="text-danger" th:if="${#fields.hasErrors('note')}" th:errors="*{note}"></div>
         </div>
 
         <div class="mb-3">
-            <label class="form-label">Chọn phòng:</label>
-            <select id="roomSelect" name="roomId" class="form-select">
+            <label class="form-label">Chọn phòng:<span class="text-danger">*</span></label>
+            <select id="roomSelect" name="roomId" class="form-select" required>
                 <option value="">-- Chọn phòng --</option>
                 <option th:each="room : ${roomList}" th:value="${room.id}" th:text="${room.name}"></option>
             </select>
         </div>
 
         <div class="mb-3">
-            <label class="form-label">Chọn giường:</label>
+            <label class="form-label">Chọn giường:<span class="text-danger">*</span></label>
             <select id="bedSelect" name="bed.id" class="form-select">
                 <option value="">-- Chọn giường --</option>
             </select>
@@ -48,13 +48,13 @@
         </div>
 
         <div class="mb-3">
-            <label class="form-label">Lý do nhập viện</label>
+            <label class="form-label">Lý do nhập viện<span class="text-danger">*</span></label>
             <input type="hidden" th:field="*{reason}">
             <p class="form-control-plaintext" th:text="*{reason}"></p>
         </div>
 
         <div class="mb-3">
-            <label class="form-label">Mã hồ sơ khám</label>
+            <label class="form-label">Mã hồ sơ khám<span class="text-danger">*</span></label>
             <input type="hidden" th:field="*{medicalRecord.id}">
             <p class="form-control-plaintext" th:text="*{medicalRecord.code}"></p>
         </div>

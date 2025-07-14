@@ -78,6 +78,7 @@ public class AttendingPhysicianController {
         model.addAttribute("impatientRecords", impatientRecords);
         model.addAttribute("patientName", patientName);
         model.addAttribute("code", code);
+        model.addAttribute("activeMenu", "attending-physician");
         model.addAttribute("size", size);
         return "attending_physician/list";
     }

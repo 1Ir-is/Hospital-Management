@@ -46,18 +46,18 @@
                         <input type="hidden" th:field="*{impatientRecord.id}"/>
 
                         <div class="mb-3">
-                            <label class="form-label">Tên bệnh nhân:</label>
+                            <label class="form-label">Tên bệnh nhân:<span class="text-danger">*</span></label>
                             <p th:text="${inpatientTreatmentDto.impatientRecord.medicalRecord.patient.name}" class="form-control-plaintext"></p>
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Ngày bắt đầu</label>
+                            <label class="form-label">Ngày bắt đầu<span class="text-danger">*</span></label>
                             <input type="date" class="form-control" th:field="*{startDate}">
                             <div class="text-danger" th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}"></div>
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Tên thuốc</label>
+                            <label class="form-label">Tên thuốc<span class="text-danger">*</span></label>
                             <select class="form-select" th:field="*{medicine.id}">
                                 <option value="">----Chọn----</option>
                                 <option th:each="medicine : ${medicineList}" th:value="${medicine.id}" th:text="${medicine.name}"></option>
@@ -66,7 +66,7 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Nơi điều trị</label>
+                            <label class="form-label">Nơi điều trị<span class="text-danger">*</span></label>
                             <select class="form-select" th:field="*{treatmentLocation}">
                                 <option value="">----Chọn----</option>
                                 <option th:each="location : ${locationList}" th:value="${location}" th:text="${location}"></option>
@@ -76,17 +76,17 @@
 
                         <div class="row">
                             <div class="col-md-4 mb-3">
-                                <label class="form-label">Số ngày dự kiến</label>
+                                <label class="form-label">Số ngày dự kiến<span class="text-danger">*</span></label>
                                 <input type="number" class="form-control" th:field="*{estimateNumberOfDate}">
                                 <div class="text-danger" th:if="${#fields.hasErrors('estimateNumberOfDate')}" th:errors="*{estimateNumberOfDate}"></div>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label class="form-label">Liều sáng</label>
+                                <label class="form-label">Liều sáng<span class="text-danger">*</span></label>
                                 <input type="number" class="form-control" th:field="*{morningDose}">
                                 <div class="text-danger" th:if="${#fields.hasErrors('morningDose')}" th:errors="*{morningDose}"></div>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label class="form-label">Liều tối</label>
+                                <label class="form-label">Liều tối<span class="text-danger">*</span></label>
                                 <input type="number" class="form-control" th:field="*{eveningDose}">
                                 <div class="text-danger" th:if="${#fields.hasErrors('eveningDose')}" th:errors="*{eveningDose}"></div>
                             </div>
@@ -94,13 +94,13 @@
 
                         <div class="mb-3">
                             <label class="form-label">Ngày kết thúc (tự động tính)</label>
-                            <input type="text" class="form-control" id="endDateDisplay" disabled>
+                            <input type="text" class="form-control" id="endDateDisplay" disabled required>
                             <input type="hidden" th:field="*{endDate}" id="endDateHidden">
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Số lượng thuốc dự kiến</label>
-                            <input type="text" class="form-control" id="quantityDisplay" disabled>
+                            <input type="text" class="form-control" id="quantityDisplay" disabled required>
                             <input type="hidden" th:field="*{quantity}" id="quantityHidden">
                         </div>
                     </div>

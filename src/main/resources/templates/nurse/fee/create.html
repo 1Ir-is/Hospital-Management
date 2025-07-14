@@ -15,26 +15,26 @@
 
   <form th:action="@{/nurse/advance-payments/create}" method="post" th:object="${advancePaymentDto}" class="row g-3 needs-validation">
     <div class="col-md-6">
-      <label class="form-label">Số tiền</label>
+      <label class="form-label">Số tiền<span class="text-danger">*</span></label>
       <input type="number" class="form-control" th:field="*{fee}" placeholder="Nhập số tiền">
       <div class="text-danger" th:if="${#fields.hasErrors('fee')}" th:errors="*{fee}"></div>
     </div>
 
     <div class="col-md-6">
-      <label class="form-label">Ngày mượn tiền</label>
+      <label class="form-label">Ngày mượn tiền<span class="text-danger">*</span></label>
       <input type="date" class="form-control" th:field="*{date}">
       <div class="text-danger" th:if="${#fields.hasErrors('date')}" th:errors="*{date}"></div>
     </div>
 
     <div class="col-md-12">
-      <label class="form-label">Lý do mượn tiền</label>
+      <label class="form-label">Lý do mượn tiền<span class="text-danger">*</span></label>
       <input type="text" class="form-control" th:field="*{reason}" placeholder="Nhập lý do mượn tiền">
       <div class="text-danger" th:if="${#fields.hasErrors('reason')}" th:errors="*{reason}"></div>
     </div>
 
     <div class="col-md-12">
-      <label class="form-label">Chọn bệnh án nội trú</label>
-      <select class="form-select" th:field="*{impatientRecord.id}">
+      <label class="form-label">Chọn bệnh án nội trú <span class="text-danger">*</span></label>
+      <select class="form-select" th:field="*{impatientRecord.id}" required >
         <option value="">-- Chọn bệnh nhân --</option>
         <option th:each="record : ${impatientRecordList}"
                 th:value="${record.id}"

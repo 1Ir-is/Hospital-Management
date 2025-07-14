@@ -107,7 +107,7 @@
                 const isChecked = selectedIds.has(item.id) ? 'checked' : '';
 
                 // Tạo <select> cho nhân viên
-                let selectHtml = `<select class="form-select form-select-sm" name="employeeMap[${item.id}]">`;
+                let selectHtml = `<select class="form-select form-select-sm" name="employeeMap[${item.id}]" required>`;
                 selectHtml += `<option value="">-- Chọn --</option>`;
                 employees.forEach(emp => {
                     selectHtml += `<option value="${emp.id}">${emp.name}</option>`;
