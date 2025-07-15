@@ -64,7 +64,7 @@ public class DeanController {
         session.setAttribute("departmentName", departmentName);
         model.addAttribute("departmentId", departmentId);
 
-        return "dean/dashboard"; // ✅ TRẢ VỀ TRANG DÙNG LAYOUT MỚI
+        return "department-head/index"; // ✅ TRẢ VỀ TRANG DÙNG LAYOUT MỚI
     }
 
 
