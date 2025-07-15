@@ -44,53 +44,42 @@ public class SecurityConfig {
                         .requestMatchers("/", "/home", "/css/**", "/js/**", "/assets/**",
                                 "/images/**", "/favicon.ico").permitAll()
 
-                        // === ROLE-BASED ACCESS ===
+                        // Cho phép bệnh nhân truy cập các chức năng đặt lịch không cần đăng nhập
+                        .requestMatchers("/patient/**").permitAll()
 
-                        // ADMIN (Level 5) - Huy
+                        // Các chức năng phân quyền
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-
-                        // DEPARTMENT_HEAD (Level 4) - Vương
                         .requestMatchers("/department-head/**").hasAnyRole("DEPARTMENT_HEAD", "ADMIN")
-
-                        // DOCTOR (Level 3) - Vĩnh và Chung
                         .requestMatchers("/doctor/**").hasAnyRole("DOCTOR", "DEPARTMENT_HEAD", "ADMIN")
-
-                        // NURSE (Level 2) - Khánh
                         .requestMatchers("/nurse/**").hasAnyRole("NURSE", "DOCTOR", "DEPARTMENT_HEAD", "ADMIN")
-
-                        // RECEPTIONIST (Level 2) - Bình
                         .requestMatchers("/receptionist/**").hasAnyRole("RECEPTIONIST", "NURSE", "DOCTOR", "DEPARTMENT_HEAD", "ADMIN")
-
-                        // LAB_TECHNICIAN - Nhơn
                         .requestMatchers("/lab-technician/**").hasAnyRole("LAB_TECHNICIAN", "DOCTOR", "DEPARTMENT_HEAD", "ADMIN")
-
-                        // CASHIER - Nhơn
                         .requestMatchers("/cashier/**").hasAnyRole("CASHIER", "RECEPTIONIST", "NURSE", "DOCTOR", "DEPARTMENT_HEAD", "ADMIN")
-
-                        // PHARMACY_STAFF - Nhơn
                         .requestMatchers("/pharmacy/**").hasAnyRole("PHARMACY_STAFF", "DOCTOR", "DEPARTMENT_HEAD", "ADMIN")
-
-                        // PATIENT (Level 1) - Duy
-                        .requestMatchers("/patient/**").hasAnyRole("PATIENT", "RECEPTIONIST", "NURSE", "DOCTOR", "DEPARTMENT_HEAD", "ADMIN")
-
-                        // All other requests must be authenticated
+                        // Các API sensitive khác yêu cầu authenticated
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .loginPage("/")  // ✅ Sử dụng homepage làm login page
-                        .loginProcessingUrl("/login")  // ✅ URL xử lý login
+                        .loginPage("/")
+                        .loginProcessingUrl("/login")
                         .usernameParameter("email")
                         .passwordParameter("password")
                         .successHandler(customAuthenticationSuccessHandler())
-                        .failureUrl("/?error=true")  // ✅ Redirect về homepage khi lỗi
+                        .failureUrl("/?error=true")
                         .permitAll()
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/?logout=true")  // ✅ Redirect về homepage sau logout
+                        .logoutSuccessUrl("/?logout=true")
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
                         .permitAll()
+                )
+                .exceptionHandling(exception -> exception
+                        .accessDeniedHandler((request, response, accessDeniedException) -> {
+                            response.setStatus(403);
+                            request.getRequestDispatcher("/error/403").forward(request, response);
+                        })
                 )
                 .sessionManagement(session -> session
                         .maximumSessions(1)

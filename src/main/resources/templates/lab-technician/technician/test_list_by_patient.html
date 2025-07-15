@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{lab-technician/layout/layout.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>Xét nghiệm của bệnh nhân</title>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+
+<body>
+<main layout:fragment="main-content" class="container mt-4">
+
+    <h2 class="mb-4">📌 Danh sách Xét Nghiệm của Bệnh Nhân</h2>
+
+    <table class="table table-bordered table-striped">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Tên bệnh nhân</th>
+            <th>Mã hồ sơ</th> <!-- ✅ Cột mới -->
+            <th>Loại xét nghiệm</th>
+            <th>Ghi chú</th>
+            <th>Trạng thái</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="order : ${testList}">
+            <td th:text="${order.id}"></td>
+            <td th:text="${order.patientName}"></td>
+            <td th:text="${order.medicalRecordCode}"></td> <!-- ✅ Binding đúng -->
+            <td th:text="${order.name}"></td>
+            <td th:text="${order.note} ?: '-'"></td>
+            <td>
+                <span th:if="${order.status == 'Đã hoàn tất'}" class="badge bg-success">✅ Đã hoàn tất</span>
+                <span th:if="${order.status == 'Đang chờ' or order.status == 'Chưa thực hiện'}"
+                      class="badge bg-warning text-dark">⏳ Đang chờ</span>
+                <span th:if="${order.status == 'Đã hủy'}" class="badge bg-danger">❌ Đã hủy</span>
+                <span th:if="${order.status != 'Đã hoàn tất' and order.status != 'Đang chờ'
+                            and order.status != 'Chưa thực hiện' and order.status != 'Đã hủy'}"
+                      class="badge bg-secondary" th:text="${order.status}"></span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <a th:href="@{/lab-technician/room/{id}(id=${roomId},type=${type})}"
+       class="btn btn-secondary mt-3">⬅️ Quay lại</a>
+
+</main>
+</body>
+</html>

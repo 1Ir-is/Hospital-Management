@@ -25,6 +25,8 @@ public class PatientInsuranceDto implements Validator {
     private String email;
     private String idCard;
     private Boolean hasInsurance;
+    private Integer queueNumber;
+
     //Insurance
     private String code;
     @DateTimeFormat(pattern = "yyyy-MM-dd")

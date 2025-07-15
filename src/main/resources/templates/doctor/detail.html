@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="vi"
+      layout:decorate="~{doctor/layout/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+>
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>danh sách</title>
+</head>
+<div>
+    <div layout:fragment="main-content">
+        <div class="container mt-4">
+            <main>
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-center">
+                            <table class="table text-center ">
+                                <thead class="table-info bg-success text-white">
+                                <tr>
+                                    <th colspan="2">Thông tin bệnh nhân</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>Tên bệnh nhân:</td>
+                                    <td>
+                                        <p th:text="${test_orders.impatientRecord?.medicalRecord?.patient?.name}"></p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Mã bệnh nhân:</td>
+                                    <td>
+                                        <p th:text="${test_orders.impatientRecord?.medicalRecord?.patient?.id}"></p>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="card-body">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Tên xét nghiệm</th>
+                                <th scope="col">Bác sĩ xét nghiệm</th>
+                                <th scope="col">Trạng thái</th>
+                                <th scope="col">Kết luận</th>
+                                <th scope="col"></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="item, itemStatus: ${test_order}"
+                                th:attr="data-result=${item.result}">
+                                <th scope="row">
+                                    <p th:text="${itemStatus.count}"></p>
+                                </th>
+                                <td>
+                                    <p th:text="${item.test.name}"></p>
+                                </td>
+                                <td>
+                                    <p th:unless="${item.employee}">Trống</p>
+                                    <p th:if="${item.employee}" th:text="${item.employee?.name}"></p>
+                                </td>
+                                <td>
+                                    <div class="p-0" th:if="${item.status}">
+                                        <span class="text-bg-success p-1">Đã hoàn thành</span>
+                                    </div>
+                                    <div th:unless="${item.status}">
+                                        <span class="text-bg-warning p-1">Đang chờ</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <button type="button"
+                                            th:if="${item.status}"
+                                            class="btn btn-sm btn-primary"
+                                            th:attr="data-id=${item.id}, data-result=${item.result}, data-note=${item.note}"
+                                            onclick="openConclusionModal(this)"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#conclusionModal">
+                                        Kết luận
+                                    </button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <form>
+                            <a th:href="@{/doctor/inpatient-list}" class="btn btn-outline-success">Quay lại</a>
+                        </form>
+                    </div>
+                </div>
+            </main>
+
+
+            <!-- Modal cập nhật kết luận -->
+            <div class="modal fade" id="conclusionModal" tabindex="-1" aria-labelledby="conclusionModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-centered">
+                    <form id="conclusionForm" method="post" class="w-100">
+                        <div class="modal-content shadow-lg">
+                            <div class="modal-header bg-primary text-white">
+                                <h5 class="modal-title" id="conclusionModalLabel"> Cập nhật kết luận xét nghiệm</h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                                        aria-label="Đóng"></button>
+                            </div>
+                            <div class="modal-body">
+                                <input type="hidden" id="orderId" name="id">
+
+                                <div class="mb-4">
+                                    <label for="note" class="form-label fw-semibold">Ghi chú của bác sĩ</label>
+                                    <textarea id="note" name="note" class="form-control" rows="4"
+                                              placeholder="Nhập ghi chú về xét nghiệm..."></textarea>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="result" class="form-label fw-semibold"> Kết quả xét nghiệm</label>
+                                    <textarea type="text" id="result" name="result" class="form-control"
+                                              placeholder="Nhập kết quả xét nghiệm..."></textarea>
+                                </div>
+                            </div>
+                            <div class="modal-footer justify-content-between">
+                                <button type="submit" class="btn btn-success px-4">Lưu lại</button>
+                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"> Hủy
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <script>
+
+                function openConclusionModal(button) {
+                    console.log("Modal được kích hoạt");
+                    const id = button.getAttribute("data-id");
+                    const result = button.getAttribute("data-result");
+                    const note = button.getAttribute("data-note");
+
+                    document.getElementById("orderId").value = id;
+                    document.getElementById("result").value = result || "";
+                    document.getElementById("note").value = note || "";
+
+                    // Thiết lập action cho form gửi đến controller
+                    document.getElementById("conclusionForm").action = `/doctor/${id}/result/update`;
+                }
+
+
+            </script>
+
+        </div>
+    </div>
+</div>
+<!--                        <td>-->
+<!--                            <div th:if="${item.status}">-->
+<!--                                <form th:action="@{/doctor/test-order/{id}/result/update(id=${item.id})}" method="post">-->
+<!--                                    <div class="input-group">-->
+<!--                                        <input type="text" class="form-control" name="result" th:value="${item.result}" placeholder="Nhập kết quả">-->
+<!--                                        <button class="btn btn-sm btn-success" type="submit">Cập nhật</button>-->
+<!--                                    </div>-->
+<!--                                </form>-->
+<!--                            </div>-->
+<!--                            <div th:unless="${item.status}">-->
+<!--                                <span class="text-muted">Chưa hoàn thành</span>-->
+<!--                            </div>-->
+<!--                        </td>-->

@@ -5,16 +5,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Setter
-@Getter
-@NoArgsConstructor
-@AllArgsConstructor
-public class TestRequestDto {
-    private Long id;
-    private String patientName;
-    private Long patientId;
-    private String name;
-    private String note;
-    private String status;
-
+public interface TestRequestDto {
+    Long getId();
+    String getPatientName();
+    Long getPatientId();
+    String getMedicalRecordCode();  // Thêm trường mới
+    String getName();
+    String getNote();
+    String getStatus();
 }

@@ -1,20 +1,20 @@
 package com.example.hospital_management.controller.nurse;
 
 import com.example.hospital_management.dto.AdvancePaymentDto;
-import com.example.hospital_management.entity.AdvancePayment;
-import com.example.hospital_management.entity.ImpatientRecord;
-import com.example.hospital_management.entity.MedicalRecord;
-import com.example.hospital_management.entity.VitalSign;
-import com.example.hospital_management.service.IAdvancePaymentService;
-import com.example.hospital_management.service.IEmployeeService;
-import com.example.hospital_management.service.IMedicalRecordService;
-import com.example.hospital_management.service.IVitalSignService;
+import com.example.hospital_management.dto.InpatientTreatmentDto;
+import com.example.hospital_management.dto.TreatmentTaskFormDto;
+import com.example.hospital_management.entity.*;
+import com.example.hospital_management.repository.ITreatmentTaskRepository;
+import com.example.hospital_management.service.*;
 import com.example.hospital_management.service.impl.ImpatientRecordService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -34,17 +34,23 @@ public class NurseController {
     private final ImpatientRecordService impatientRecordService;
     private final IAdvancePaymentService iAdvancePaymentService;
     private final IEmployeeService iEmployeeService;
+    public final IInpatientTreatmentService iInpatientTreatmentService;
+    public final IEmployeeAssignmentService employeeAssignmentService;
+    public final ITreatmentTaskService treatmentTaskService;
 
     public NurseController(ImpatientRecordService impatientRecordService,
                            IAdvancePaymentService iAdvancePaymentService,
                            IEmployeeService iEmployeeService,
                            IMedicalRecordService medicalRecordService,
-                           IVitalSignService vitalSignService) {
+                           IVitalSignService vitalSignService, IInpatientTreatmentService iInpatientTreatmentService, IEmployeeAssignmentService employeeAssignmentService, ITreatmentTaskService treatmentTaskService) {
         this.impatientRecordService = impatientRecordService;
         this.iAdvancePaymentService = iAdvancePaymentService;
         this.iEmployeeService = iEmployeeService;
         this.medicalRecordService = medicalRecordService;
         this.vitalSignService = vitalSignService;
+        this.iInpatientTreatmentService = iInpatientTreatmentService;
+        this.employeeAssignmentService = employeeAssignmentService;
+        this.treatmentTaskService = treatmentTaskService;
     }
 
     @ModelAttribute("sizeList")
@@ -81,12 +87,21 @@ public class NurseController {
             @RequestParam(required = false, defaultValue = "5") int size,
             @RequestParam(required = false, defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "") String patientName,
-            @RequestParam(required = false, defaultValue = "1") Long employeeId,
+            @RequestParam(required = false) Long employeeId,
+            HttpSession session,
+            @AuthenticationPrincipal UserDetails userDetails,
             Model model) {
+        String email = userDetails.getUsername();
+        Employee employee = iEmployeeService.findByEmail(email);
+        session.setAttribute("employee",employee);
+        if (employeeId == null) {
+            employeeId = employee.getId();
+        }
         Pageable pageable = PageRequest.of(page, size);
         Page<ImpatientRecord> impatientRecords = impatientRecordService.findAll(patientName, employeeId, pageable);
         model.addAttribute("impatientRecords", impatientRecords);
         model.addAttribute("patientName", patientName);
+        model.addAttribute("employeeId", employeeId);
         model.addAttribute("size", size);
         return "nurse/patient/list";
     }
@@ -157,5 +172,61 @@ public class NurseController {
         iAdvancePaymentService.save(advancePayment);
         return "redirect:/nurse/advance-payments";
     }
+
+
+    @GetMapping("/{id}/update")
+    public String setInpatientTreatment( @PathVariable Long id, Model model){
+        if(!model.containsAttribute("inpatientTreatmentDto")){
+            ImpatientRecord impatientRecord = impatientRecordService.getImpatientRecordById(id);
+            InpatientTreatmentDto inpatientTreatmentDto = new InpatientTreatmentDto();
+            inpatientTreatmentDto.setImpatientRecord(impatientRecord);
+            model.addAttribute("inpatientTreatmentDto",inpatientTreatmentDto);}
+        else{
+            InpatientTreatmentDto dto = (InpatientTreatmentDto) model.getAttribute("inpatientTreatmentDto");
+            assert dto != null;
+            dto.setImpatientRecord(impatientRecordService.getImpatientRecordById(id));
+        }
+        List<InpatientTreatment> treatmentHistory = iInpatientTreatmentService.findByImpatientRecordId(id);
+        List<EmployeeAssignment> employeeAssignments = employeeAssignmentService.findAll(id);
+        model.addAttribute("employeeAssignments", employeeAssignments);
+        model.addAttribute("treatmentHistory", treatmentHistory);
+        return "nurse/treatment_task/detail";
+    }
+
+//    @GetMapping("/treatment/{id}/edit")
+//    public String showUpdateTreatmentTask(@PathVariable("id") Long treatmentId, Model model) {
+//        List<TreatmentTask> taskList = treatmentTaskService.getAllTreatmentTaskByTreatmentTaskById(treatmentId);
+//        model.addAttribute("taskList", taskList);
+//        return "nurse/treatment_task/update";
+//    }
+
+    @GetMapping("/treatment/{id}/edit")
+    public String showUpdateForm(@PathVariable Long id, Model model) {
+        List<TreatmentTask> tasks = treatmentTaskService.getAllTreatmentTaskByTreatmentTaskById(id);
+        TreatmentTaskFormDto form = new TreatmentTaskFormDto();
+        form.setTaskList(tasks);
+        model.addAttribute("form", form);
+        model.addAttribute("treatmentId", id);
+        return "nurse/treatment_task/update";
+    }
+
+    @PostMapping("/treatment/{id}/update")
+    public String updateTreatment(@ModelAttribute("form") TreatmentTaskFormDto form,@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        for (TreatmentTask partialUpdate : form.getTaskList()) {
+
+            TreatmentTask existingTask = treatmentTaskService.findById(partialUpdate.getId());
+
+            if (existingTask != null) {
+                existingTask.setMorningStatus(partialUpdate.isMorningStatus());
+                existingTask.setMorningNote(partialUpdate.getMorningNote());
+                existingTask.setEveningStatus(partialUpdate.isEveningStatus());
+                existingTask.setEveningNote(partialUpdate.getEveningNote());
+                treatmentTaskService.save(existingTask);
+            }
+        }
+        redirectAttributes.addFlashAttribute("success", true);
+        return "redirect:/nurse/treatment/" + id + "/edit";
+    }
+
 
 }

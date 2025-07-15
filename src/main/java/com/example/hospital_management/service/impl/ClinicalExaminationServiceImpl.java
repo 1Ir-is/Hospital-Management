@@ -16,4 +16,19 @@ public class ClinicalExaminationServiceImpl implements IClinicalExaminationServi
 
         return clinicalExaminationRepository.findByImpatientRecordIdOrderByDateDesc(recordId);
     }
+
+    @Override
+    public List<ClinicalExamination> findAll() {
+        return clinicalExaminationRepository.findAll();
+    }
+
+    @Override
+    public void save(ClinicalExamination impatientRecord) {
+        clinicalExaminationRepository.save(impatientRecord);
+    }
+
+    @Override
+    public List<ClinicalExamination> findByImpatientRecordId(Long id) {
+        return clinicalExaminationRepository.findAllByImpatientRecordId(id);
+    }
 }

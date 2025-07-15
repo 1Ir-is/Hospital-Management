@@ -1,5 +1,6 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<html lang="vi"
+      layout:decorate="~{receptionist/layout/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
     <meta charset="UTF-8">
     <title>Lập hồ sơ khám</title>
@@ -89,163 +90,165 @@
         }
     </style>
 </head>
-<body>
-<div class="container">
-    <h2>Lập hồ sơ khám</h2>
+<div layout:fragment="main-content">
+    <div class="container">
+        <h2>Lập hồ sơ khám</h2>
 
-    <form th:action="@{/receptionist/patients/register/save}" method="post" th:object="${patientInsuranceDto}">
-        <div class="row">
-            <!-- Thông tin bệnh nhân -->
-            <div class="col-md-6">
-                <h5>Thông tin bệnh nhân</h5>
-                <div class="mb-3">
-                    <label class="form-label">Họ tên</label>
-                    <input type="text" class="form-control" th:field="*{name}" required>
-                    <div class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
-                </div>
+        <form th:action="@{/receptionist/patients/register/save}" method="post" th:object="${patientInsuranceDto}">
+            <input type="hidden" th:field="*{queueNumber}"/>
 
-                <div class="mb-3">
-                    <label class="form-label">CCCD</label>
-                    <input type="text" class="form-control" th:field="*{idCard}" required>
-                    <div class="text-danger" th:if="${#fields.hasErrors('idCard')}" th:errors="*{idCard}"></div>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Ngày sinh</label>
-                    <input type="date" class="form-control" th:field="*{birthday}" required>
-                    <div class="text-danger" th:if="${#fields.hasErrors('birthday')}" th:errors="*{birthday}"></div>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label d-block">Giới tính</label>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" th:field="*{gender}" th:value="true" id="genderMale">
-                        <label class="form-check-label" for="genderMale">Nam</label>
+            <div class="row">
+                <!-- Thông tin bệnh nhân -->
+                <div class="col-md-6">
+                    <h5>Thông tin bệnh nhân</h5>
+                    <div class="mb-3">
+                        <label class="form-label">Họ tên</label>
+                        <input type="text" class="form-control" th:field="*{name}" required>
+                        <div class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
                     </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" th:field="*{gender}" th:value="false" id="genderFemale">
-                        <label class="form-check-label" for="genderFemale">Nữ</label>
+
+                    <div class="mb-3">
+                        <label class="form-label">CCCD</label>
+                        <input type="text" class="form-control" th:field="*{idCard}" required>
+                        <div class="text-danger" th:if="${#fields.hasErrors('idCard')}" th:errors="*{idCard}"></div>
                     </div>
-                    <div class="text-danger" th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}"></div>
-                </div>
 
-                <div class="mb-3">
-                    <label class="form-label">Địa chỉ</label>
-                    <input type="text" class="form-control" th:field="*{address}" required>
-                    <div class="text-danger" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></div>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Số điện thoại</label>
-                    <input type="text" class="form-control" th:field="*{phone}" required>
-                    <div class="text-danger" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></div>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Email</label>
-                    <input type="email" class="form-control" th:field="*{email}" required>
-                    <div class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label d-block">Có bảo hiểm y tế?</label>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" th:field="*{hasInsurance}" th:value="true" id="hasInsuranceYes" onchange="toggleInsuranceSection()">
-                        <label class="form-check-label" for="hasInsuranceYes">Có</label>
+                    <div class="mb-3">
+                        <label class="form-label">Ngày sinh</label>
+                        <input type="date" class="form-control" th:field="*{birthday}" required>
+                        <div class="text-danger" th:if="${#fields.hasErrors('birthday')}" th:errors="*{birthday}"></div>
                     </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" th:field="*{hasInsurance}" th:value="false" id="hasInsuranceNo" onchange="toggleInsuranceSection()">
-                        <label class="form-check-label" for="hasInsuranceNo">Không</label>
+
+                    <div class="mb-3">
+                        <label class="form-label d-block">Giới tính</label>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" th:field="*{gender}" th:value="true" id="genderMale">
+                            <label class="form-check-label" for="genderMale">Nam</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" th:field="*{gender}" th:value="false" id="genderFemale">
+                            <label class="form-check-label" for="genderFemale">Nữ</label>
+                        </div>
+                        <div class="text-danger" th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Địa chỉ</label>
+                        <input type="text" class="form-control" th:field="*{address}" required>
+                        <div class="text-danger" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Số điện thoại</label>
+                        <input type="text" class="form-control" th:field="*{phone}" required>
+                        <div class="text-danger" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" th:field="*{email}" required>
+                        <div class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                    </div>
+                </div>
+
+                <!-- Thông tin bảo hiểm và khoa/phòng -->
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label d-block">Có bảo hiểm y tế?</label>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" th:field="*{hasInsurance}" th:value="true" th:id="hasInsuranceYes" onchange="toggleInsuranceSection()">
+                            <label class="form-check-label" for="hasInsuranceYes">Có</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" th:field="*{hasInsurance}" th:value="false" th:id="hasInsuranceNo" onchange="toggleInsuranceSection()">
+                            <label class="form-check-label" for="hasInsuranceNo">Không</label>
+                        </div>
+                    </div>
+
+                    <div id="insuranceSection" style="display: none;">
+                        <h5>Thông tin bảo hiểm y tế</h5>
+                        <div class="mb-3">
+                            <label class="form-label">Mã BHYT</label>
+                            <input type="text" class="form-control" th:field="*{code}">
+                            <div class="text-danger" th:if="${#fields.hasErrors('code')}" th:errors="*{code}"></div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Ngày hiệu lực</label>
+                            <input type="date" class="form-control" th:field="*{effectiveDate}">
+                            <div class="text-danger" th:if="${#fields.hasErrors('effectiveDate')}" th:errors="*{effectiveDate}"></div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Ngày hết hạn</label>
+                            <input type="date" class="form-control" th:field="*{expiryDate}">
+                            <div class="text-danger" th:if="${#fields.hasErrors('expiryDate')}" th:errors="*{expiryDate}"></div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Nơi đăng ký KCB</label>
+                            <input type="text" class="form-control" th:field="*{registeredClinic}">
+                            <div class="text-danger" th:if="${#fields.hasErrors('registeredClinic')}" th:errors="*{registeredClinic}"></div>
+                        </div>
+                    </div>
+
+                    <div class="department-room-section">
+                        <div class="mb-3">
+                            <label class="form-label">Khoa khám</label>
+                            <select class="form-select" name="departmentId" id="departmentId" onchange="onDepartmentChange(this.value)">
+                                <option value="">-- Chọn khoa --</option>
+                                <th:block th:each="d : ${departments}">
+                                    <option th:value="${d.id}" th:text="${d.name}"></option>
+                                </th:block>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Phòng khám</label>
+                            <select class="form-select" name="roomId" id="roomId">
+                                <option value="">-- Chọn phòng --</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Thông tin bảo hiểm và khoa/phòng -->
-            <div class="col-md-6">
-                <div id="insuranceSection" style="display: none;">
-                    <h5>Thông tin bảo hiểm y tế (nếu có)</h5>
-                    <div class="mb-3">
-                        <label class="form-label">Mã BHYT</label>
-                        <input type="text" class="form-control" th:field="*{code}">
-                        <div class="text-danger" th:if="${#fields.hasErrors('code')}" th:errors="*{code}"></div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Ngày hiệu lực</label>
-                        <input type="date" class="form-control" th:field="*{effectiveDate}">
-                        <div class="text-danger" th:if="${#fields.hasErrors('effectiveDate')}" th:errors="*{effectiveDate}"></div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Ngày hết hạn</label>
-                        <input type="date" class="form-control" th:field="*{expiryDate}">
-                        <div class="text-danger" th:if="${#fields.hasErrors('expiryDate')}" th:errors="*{expiryDate}"></div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Nơi đăng ký KCB</label>
-                        <input type="text" class="form-control" th:field="*{registeredClinic}">
-                        <div class="text-danger" th:if="${#fields.hasErrors('registeredClinic')}" th:errors="*{registeredClinic}"></div>
-                    </div>
-                </div>
-
-                <div class="department-room-section">
-                    <div class="mb-3">
-                        <label class="form-label">Khoa khám</label>
-                        <select class="form-select" name="departmentId" id="departmentId" onchange="onDepartmentChange(this.value)">
-                            <option value="">-- Chọn khoa --</option>
-                            <th:block th:each="d : ${departments}">
-                                <option th:value="${d.id}" th:text="${d.name}"></option>
-                            </th:block>
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Phòng khám</label>
-                        <select class="form-select" name="roomId" id="roomId">
-                            <option value="">-- Chọn phòng --</option>
-                        </select>
-                    </div>
-                </div>
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary">Lưu</button>
+                <a th:href="@{/receptionist/list}" class="btn btn-secondary">Hủy</a>
             </div>
-        </div>
+        </form>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            toggleInsuranceSection();
 
-        <div class="mt-4">
-            <button type="submit" class="btn btn-primary">Lưu</button>
-            <a th:href="@{/receptionist}" class="btn btn-secondary">Hủy</a>
-        </div>
-    </form>
-</div>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        toggleInsuranceSection();
+            document.getElementById("departmentId").addEventListener("change", function () {
+                const departmentId = this.value;
+                const roomSelect = document.getElementById("roomId");
 
-        document.getElementById("departmentId").addEventListener("change", function () {
-            const departmentId = this.value;
-            const roomSelect = document.getElementById("roomId");
+                roomSelect.innerHTML = '<option value="">-- Chọn phòng --</option>';
 
-            roomSelect.innerHTML = '<option value="">-- Chọn phòng --</option>';
-
-            if (departmentId) {
-                fetch(`/api/rooms?departmentId=${departmentId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        data.forEach(room => {
-                            const option = document.createElement("option");
-                            option.value = room.id;
-                            option.text = room.name;
-                            roomSelect.appendChild(option);
+                if (departmentId) {
+                    fetch(`/api/rooms?departmentId=${departmentId}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            data.forEach(room => {
+                                const option = document.createElement("option");
+                                option.value = room.id;
+                                option.text = room.name;
+                                roomSelect.appendChild(option);
+                            });
                         });
-                    });
-            }
+                }
+            });
         });
-    });
 
-    function toggleInsuranceSection() {
-        const insuranceSection = document.getElementById('insuranceSection');
-        const hasInsuranceYes = document.getElementById('hasInsuranceYes');
-        insuranceSection.style.display = hasInsuranceYes && hasInsuranceYes.checked ? 'block' : 'none';
-    }
-</script>
-</body>
+        function toggleInsuranceSection() {
+            const insuranceSection = document.getElementById('insuranceSection');
+            const hasInsuranceYes = document.getElementById('hasInsuranceYes');
+            insuranceSection.style.display = hasInsuranceYes && hasInsuranceYes.checked ? 'block' : 'none';
+        }
+    </script>
+</div>
 </html>

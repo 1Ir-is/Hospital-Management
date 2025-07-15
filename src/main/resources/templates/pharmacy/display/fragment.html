@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="tableFragment(prescriptions)">
+
+    <!-- ✅ Nếu KHÔNG RỖNG thì hiển thị bảng và phân trang -->
+
+    <div th:if="${not #lists.isEmpty(prescriptions.content)}">
+        <table class="table table-bordered">
+            <thead class="table-light">
+            <tr>
+                <th>#</th>
+                <th>Tên bệnh nhân</th>
+                <th>Mã hồ sơ</th>
+                <th>Ngày tạo</th>
+                <th>Trạng thái</th>
+                <th>Thao tác</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="prescription, status : ${prescriptions.content}">
+                <td th:text="${status.count}"></td>
+                <td th:text="${prescription.patientsName}"></td>
+                <td th:text="${prescription.medicalRecordCode}"></td>
+                <td th:text="${#dates.format(prescription.createdDate, 'dd/MM/yyyy')}"></td>
+                <td th:text="${prescription.status}"></td>
+                <td>
+                    <a th:href="@{/pharmacy/prescription/{id}(id=${prescription.id})}" class="btn btn-info btn-sm">
+                        👁️ Chi tiết
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <!-- ✅ PHÂN TRANG -->
+        <nav>
+            <ul class="pagination justify-content-center">
+                <li class="page-item" th:classappend="${prescriptions.first} ? 'disabled'">
+                    <a class="page-link page-link-ajax" th:data-page="${prescriptions.number - 1}">◀️ Trước</a>
+                </li>
+
+                <li th:each="i : ${#numbers.sequence(0, prescriptions.totalPages - 1)}"
+                    class="page-item" th:classappend="${i == prescriptions.number} ? 'active'">
+                    <a class="page-link page-link-ajax" th:data-page="${i}" th:text="${i + 1}">1</a>
+                </li>
+
+                <li class="page-item" th:classappend="${prescriptions.last} ? 'disabled'">
+                    <a class="page-link page-link-ajax" th:data-page="${prescriptions.number + 1}">Tiếp ▶️</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- ✅ Nếu RỖNG thì hiển thị thông báo -->
+    <div class="alert alert-warning text-center" th:if="${#lists.isEmpty(prescriptions.content)}">
+        ⚠️ Không có đơn thuốc nào cần hiển thị.
+    </div>
+
+</div>
+</body>
+</html>

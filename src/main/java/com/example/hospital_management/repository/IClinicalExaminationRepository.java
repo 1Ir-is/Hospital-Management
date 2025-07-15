@@ -9,5 +9,6 @@ import java.util.List;
 public interface IClinicalExaminationRepository extends JpaRepository<ClinicalExamination, Long> {
 
     List<ClinicalExamination> findByImpatientRecordIdOrderByDateDesc(Long recordId);
-}
 
+    List<ClinicalExamination> findAllByImpatientRecordId(Long id);
+}
