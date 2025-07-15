@@ -34,6 +34,8 @@ public class DeanController {
     private ISurgeryService surgeryService;
     @Autowired
     private ISurgeryTypeService surgeryTypeService;
+    @Autowired
+    private IDepartmentService departmentService;
 
 
     @GetMapping("/department-head")
@@ -58,9 +60,11 @@ public class DeanController {
 
         Long departmentId = current.getDepartment().getId();
         session.setAttribute("departmentId", departmentId);
+        String departmentName = current.getDepartment().getName();
+        session.setAttribute("departmentName", departmentName);
         model.addAttribute("departmentId", departmentId);
 
-        return "dean/dashboard"; // ✅ TRẢ VỀ TRANG DÙNG LAYOUT MỚI
+        return "department-head/index"; // ✅ TRẢ VỀ TRANG DÙNG LAYOUT MỚI
     }
 
 
