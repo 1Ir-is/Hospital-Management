@@ -136,7 +136,6 @@ public class CashierController {
         document.add(new Paragraph("💰 Tổng cộng: " + summary.getTotalFee() + " VND", normalFont));
         document.add(new Paragraph("💵 Tạm ứng: " + summary.getAdvancePayment() + " VND", normalFont));
         document.add(new Paragraph("📉 Còn lại: " + summary.getRemainingAmount() + " VND", normalFont));
-
         document.close();
     }
 }
