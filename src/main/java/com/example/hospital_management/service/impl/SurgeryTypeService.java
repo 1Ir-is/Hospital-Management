@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SurgeryTypeService implements ISurgeryTypeService {
@@ -19,5 +20,10 @@ public class SurgeryTypeService implements ISurgeryTypeService {
     @Override
     public List<SurgeryType> findAll() {
         return surgeryTypeRepository.findAll();
+    }
+
+    @Override
+    public Optional<SurgeryType> findById(Long id) {
+        return surgeryTypeRepository.findById(id);
     }
 }

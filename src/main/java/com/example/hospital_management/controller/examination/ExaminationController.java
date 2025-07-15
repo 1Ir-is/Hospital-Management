@@ -104,7 +104,7 @@ public class ExaminationController {
         medicalRecordService.getTestingMedicalRecordList(pageable, roomId);
 
         Employee employee = (Employee) session.getAttribute("employee");
-        if(employee == null){
+        if (employee == null) {
             return "redirect:/examination/room";
         }
 
@@ -125,7 +125,7 @@ public class ExaminationController {
         }
 
         Employee employee = (Employee) session.getAttribute("employee");
-        if(employee == null){
+        if (employee == null) {
             return "redirect:/examination/room";
         }
         Long roomId = (Long) session.getAttribute("roomId");
@@ -168,9 +168,9 @@ public class ExaminationController {
         MedicalRecordDto medicalRecordDto = medicalRecordService.getCurrentPatient(roomId);
         Page<MedicalRecordDto> medicalRecords = medicalRecordService.getWaitingRecords(pageable, roomId);
 
-        if(medicalRecordDto == null){
+        if (medicalRecordDto == null) {
             model.addAttribute("medicalRecord", new MedicalRecordDto());
-        }else{
+        } else {
             model.addAttribute("medicalRecord", medicalRecordDto);
         }
 
@@ -189,7 +189,7 @@ public class ExaminationController {
                                       HttpSession session) {
         //User tạm thời
         Employee employee = (Employee) session.getAttribute("employee");
-        if(employee == null){
+        if (employee == null) {
             return "redirect:/examination/room";
         }
 
@@ -197,9 +197,9 @@ public class ExaminationController {
         if (medicalRecord != null) {
             ExaminationShift shift = examinationShiftService.findByMedicalRecord(medicalRecord);
             shift.setEmployee(employee);
-                shift.setExaminationShiftStatus(examinationShiftStatusService.findById(5L));
+            shift.setExaminationShiftStatus(examinationShiftStatusService.findById(5L));
 
-            if(note != null){
+            if (note != null) {
                 medicalRecord.setNote(note);
             } else if (conclusion != null) {
                 medicalRecord.setConclusion(conclusion);
@@ -218,7 +218,7 @@ public class ExaminationController {
                              @RequestParam(required = false) String conclusion) {
         MedicalRecord medicalRecord = medicalRecordService.findById(id);
 
-        if(note != null){
+        if (note != null) {
             medicalRecord.setNote(note);
         } else if (conclusion != null) {
             medicalRecord.setConclusion(conclusion);
@@ -282,9 +282,9 @@ public class ExaminationController {
         ExaminationShift shift = examinationShiftService.findByMedicalRecord(medicalRecord);
         List<TestReport> testReportList = testReportService.findByMedicalRecordId(medicalRecord.getId());
 
-        if(shift.getExaminationShiftStatus().getId().equals(4L)){
+        if (shift.getExaminationShiftStatus().getId().equals(4L)) {
             model.addAttribute("isReady", true);
-        }else{
+        } else {
             model.addAttribute("isReady", false);
         }
         model.addAttribute("medicalRecord", medicalRecord);
@@ -293,7 +293,7 @@ public class ExaminationController {
     }
 
     @GetMapping("/{id}/createInpatient")
-    public String formInpatientRecord(@PathVariable("id") Long medicalRecordId, Model model){
+    public String formInpatientRecord(@PathVariable("id") Long medicalRecordId, Model model) {
         MedicalRecord medicalRecord = medicalRecordService.findById(medicalRecordId);
         model.addAttribute("medicalRecord", medicalRecord);
         return "/examination/inpatient-form";
@@ -302,9 +302,9 @@ public class ExaminationController {
     @PostMapping("/{id}/saveNote")
     public String saveNote(@PathVariable("id") Long medicalRecordId,
                            @RequestParam(required = false) String note,
-                           @RequestParam(required = false) String conclusion){
+                           @RequestParam(required = false) String conclusion) {
         MedicalRecord medicalRecord = medicalRecordService.findById(medicalRecordId);
-        if(note != null){
+        if (note != null) {
             medicalRecord.setNote(note);
         } else if (conclusion != null) {
             medicalRecord.setConclusion(conclusion);

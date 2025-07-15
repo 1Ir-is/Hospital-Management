@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="vi"
+      layout:decorate="~{doctor/layout/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>danh sách</title>
+</head>
+<div>
+    <div layout:fragment="main-content">
+        <div class="container mt-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <!-- Thông tin bệnh nhân -->
+                    <div class="d-flex justify-content-center mb-4">
+                        <table class="table text-center w-50">
+                            <thead class="bg-success text-white">
+                            <tr>
+                                <th colspan="2">Thông tin bệnh nhân</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>Tên bệnh nhân:</td>
+                                <td><p th:text="${testOrder.impatientRecord?.medicalRecord?.patient?.name}">Nguyễn Văn
+                                    A</p></td>
+                            </tr>
+                            <tr>
+                                <td>Mã bệnh nhân:</td>
+                                <td><p th:text="${testOrder.impatientRecord?.medicalRecord?.patient?.id}">BN001</p></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Danh sách xét nghiệm -->
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Tên xét nghiệm</th>
+                            <th>Trạng thái</th>
+                            <th>Kết luận</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="item, itemStatus : ${testOrders}" th:attr="data-result=${item.result}">
+                            <th scope="row"><p th:text="${itemStatus.count}">1</p></th>
+                            <td><p th:text="${item.test.name}">Xét nghiệm máu</p></td>
+                            <td>
+                                <div class="p-0" th:if="${item.status}">
+                                    <span class="text-bg-success p-1">Đã hoàn thành</span>
+                                </div>
+                                <div th:unless="${item.status}">
+                                    <span class="text-bg-warning p-1">Đang chờ</span>
+                                </div>
+                            </td>
+                            <td><p th:text="${item.result}">Bình thường</p></td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- Hành động -->
+                    <hr class="my-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a th:href="@{/doctor/result/view}" class="btn btn-outline-success">Quay lại</a>
+                        <div>
+                            <div th:if="${allCompleted}">
+                                <form th:action="@{/doctor/result/view/{id}/discharge(id=${testOrder.impatientRecord.id})}"
+                                      method="post">
+                                    <button type="submit" class="btn btn-danger">Cho ra viện</button>
+                                </form>
+                            </div>
+                            <div th:unless="${allCompleted}">
+                                <p class="text-muted">Không thể ra viện khi chưa hoàn thành tất cả xét nghiệm.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bootstrap Bundle -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    </div>
+</div>
+</html>

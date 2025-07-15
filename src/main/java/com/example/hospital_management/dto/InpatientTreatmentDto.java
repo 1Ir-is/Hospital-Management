@@ -38,9 +38,22 @@ public class InpatientTreatmentDto implements Validator {
             errors.rejectValue("startDate","startDate.null","Không được để ngày là rỗng");
         }
 
-        if(inpatientTreatmentDto.getTreatmentLocation()==null){
+        if(inpatientTreatmentDto.getTreatmentLocation().isEmpty()){
             errors.rejectValue("treatmentLocation","treatmentLocation.null","Không được để nơi điều trị là rỗng");
         }
 
+        if (inpatientTreatmentDto.getMedicine() == null || inpatientTreatmentDto.getMedicine().getId() == null) {
+            errors.rejectValue("medicine.id", "medicine.id.null", "Phải chọn loại thuốc");
+        }
+
+        if (inpatientTreatmentDto.getEstimateNumberOfDate() == null || inpatientTreatmentDto.getEstimateNumberOfDate() <= 0) {
+            errors.rejectValue("estimateNumberOfDate", "estimateNumberOfDate.invalid", "Số ngày điều trị phải lớn hơn 0");
+        }
+        if (inpatientTreatmentDto.getMorningDose() == null || inpatientTreatmentDto.getMorningDose() <= 0) {
+            errors.rejectValue("morningDose", "morningDose.invalid", "Liều sáng phải lớn hơn 0");
+        }
+        if (inpatientTreatmentDto.getEveningDose() == null || inpatientTreatmentDto.getEveningDose() <= 0) {
+            errors.rejectValue("eveningDose", "eveningDose.invalid", "Liều tối phải lớn hơn 0");
+        }
     }
 }

@@ -22,7 +22,7 @@ public interface IImpatientRecordService {
 
     Optional<ImpatientRecord> findById(Long id);
 
-    Page<ImpatientRecord> searchByFields(String patientName, String roomNumber, String doctorName, String nurseName, Pageable pageable);
+    Page<ImpatientRecord> searchByFieldsWithDepartment( String patientName, String roomNumber, String doctorName, String nurseName,Long departmentId, Pageable pageable);
 
     void updateNote(Long recordId, String note);
 
@@ -38,6 +38,8 @@ public interface IImpatientRecordService {
     void save(ImpatientRecord impatientRecord);
 
     void remove(Long id);
+    Page<ImpatientRecord> findAllByStatusTrue(String name,Pageable pageable);
+
 
     Page<ImpatientRecord> searchByName(String searchByName, Pageable pageable);
 
@@ -50,4 +52,5 @@ public interface IImpatientRecordService {
     ImpatientRecord getImpatientRecordById(Long id);
 
     Page<ImpatientRecord> findAll(String patientName, Pageable pageable);
+    Page<ImpatientRecord> findAllImpatientRecordsList(String patientName,String code, Pageable pageable);
 }

@@ -18,4 +18,6 @@ public interface ISurgeryService {
 
     void remove(Long id);
     Page<Surgery> searchByName(String searchByName, Long medicalRecordId , Pageable pageable);
+    Optional<Surgery> findByRecordId(Long recordId);
+
 }
