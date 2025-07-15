@@ -233,7 +233,8 @@ public class ExaminationController {
 
 
     @PostMapping("/{id}/test/save")
-    public String sendOrder(@PathVariable Long id, @RequestParam("chosenTestIds") List<Long> chosenIds, Model model) {
+    public String sendOrder(@PathVariable Long id, @RequestParam("chosenTestIds") List<Long> chosenIds, Model model,
+                            RedirectAttributes attributes) {
         if (chosenIds.isEmpty()) {
             return "redirect:/examination";
         }
@@ -253,19 +254,30 @@ public class ExaminationController {
 //        medicalRecord.setStatus(true);
 
 //        medicalRecordService.save(medicalRecord);
+        attributes.addFlashAttribute("info", "Chỉ định xét nghiệm thành công!");
         return "redirect:/examination";
     }
 
     @GetMapping("/test/waiting")
     public String testingQueue(Model model, @PageableDefault Pageable pageable, HttpSession session) {
         Long roomId = (Long) session.getAttribute("roomId");
+        if (roomId == null) {
+            return "redirect:/examination/room";
+        }
+
         Page<TestSummaryDto> testSummaryDtos = medicalRecordService.getTestingMedicalRecordList(pageable, roomId);
         model.addAttribute("testSummaries", testSummaryDtos.getContent());
         return "/examination/test-list";
     }
 
     @GetMapping("/test/detail/{medicalRecordId}")
-    public String testDetail(@PathVariable Long medicalRecordId, Model model) {
+    public String testDetail(@PathVariable Long medicalRecordId, Model model,
+                             HttpSession session, @PageableDefault Pageable pageable) {
+        Long roomId = (Long) session.getAttribute("roomId");
+        if (roomId == null) {
+            return "redirect:/examination/room";
+        }
+        medicalRecordService.getTestingMedicalRecordList(pageable, roomId);
         MedicalRecord medicalRecord = medicalRecordService.findById(medicalRecordId);
         ExaminationShift shift = examinationShiftService.findByMedicalRecord(medicalRecord);
         List<TestReport> testReportList = testReportService.findByMedicalRecordId(medicalRecord.getId());
@@ -304,7 +316,8 @@ public class ExaminationController {
 
     @PostMapping("/{id}/createInpatient")
     public String saveInpatientRecord(@PathVariable("id") Long medicalRecordId,
-                                      @RequestParam("reason") String reason){
+                                      @RequestParam("reason") String reason,
+                                      RedirectAttributes attributes){
         MedicalRecord medicalRecord = medicalRecordService.findById(medicalRecordId);
 
 
@@ -318,6 +331,7 @@ public class ExaminationController {
 
         examinationShiftService.save(shift);
         impatientRecordService.save(impatientRecord);
+        attributes.addFlashAttribute("info", "Đã đưa bệnh nhân vào danh sách nội trú!");
         return "redirect:/examination";
     }
 

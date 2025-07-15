@@ -134,7 +134,7 @@ public class PrescriptionController {
 
     @GetMapping("/confirm")
     public String confirm(@ModelAttribute("prescription") PrescriptionDto prescriptionDto,
-                          SessionStatus sessionStatus){
+                          SessionStatus sessionStatus, RedirectAttributes attributes){
         Prescription prescription = new Prescription();
         BeanUtils.copyProperties(prescriptionDto, prescription);
         prescription.setStatus(false);
@@ -150,6 +150,7 @@ public class PrescriptionController {
         shift.setExaminationShiftStatus(examinationShiftStatusService.findById(5L));
         examinationShiftService.save(shift);
         sessionStatus.setComplete();
+        attributes.addFlashAttribute("success", "Tạo đơn thuốc thành công. \nHoàn tất khám.");
         return "redirect:/examination";
     }
 
