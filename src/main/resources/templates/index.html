@@ -896,78 +896,112 @@
 
 
 <!-- Đặt lịch khám - Modal chọn hình thức -->
-<div class="modal fade" id="appointmentModal" tabindex="-1">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
-            <div class="d-flex flex-row">
-
-                <!-- Cột trái: Form -->
-                <div class="form-container p-4 flex-fill" style="max-width: 60%;">
-                    <!-- Tiêu đề dùng chung -->
-                    <div class="modal-header border-0">
-                        <h5 id="formTitle" class="modal-title text-primary">
-                            Đăng ký khám trực tiếp (<span th:text="${#temporals.format(today, 'dd/MM/yyyy')}"></span>)
-                        </h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-
-                    <!-- Phần chọn loại đăng ký -->
-                    <div id="chooseTypeSection">
-                        <div class="center-buttons text-center mb-4">
-                            <button class="btn btn-appointment btn-lg" id="btnRegisterToday" type="button">
-                                Đăng ký khám trực tiếp hôm nay
-                            </button>
-                            <button class="btn btn-appointment btn-lg" id="btnRegisterAdvance" type="button">
-                                Đặt lịch khám trước
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Form hôm nay -->
-                    <div id="registerTodaySection" style="display: none;">
-                        <form id="registerTodayForm" method="post" th:action="@{/patient/register-today}">
-                            <div class="mb-3"><label class="form-label">Họ và tên:</label><input class="form-control" name="name" required></div>
-                            <div class="mb-3"><label class="form-label">Số CCCD:</label><input class="form-control" name="idCard" required></div>
-                            <div class="mb-3"><label class="form-label">Số điện thoại:</label><input class="form-control" name="phone" required></div>
-                            <div class="mb-3"><label class="form-label">Email (nếu có):</label><input class="form-control" name="email"></div>
-
-                            <div class="modal-footer border-0 p-0 mt-3">
-                                <button class="btn btn-primary me-2" style="background-color: #00c2a8;" type="submit">Xác nhận lấy số</button>
-                                <button class="btn btn-secondary" id="backToChooseToday" type="button">Quay lại</button>
-                            </div>
-                        </form>
-                    </div>
-
-                    <!-- Form đặt trước -->
-                    <div id="registerAdvanceSection" style="display: none;">
-                        <form id="registerAdvanceForm" method="post" th:action="@{/patient/register-advance}">
-                            <div class="mb-3"><label class="form-label">Họ và tên:</label><input class="form-control" name="name" required></div>
-                            <div class="mb-3"><label class="form-label">Số CCCD:</label><input class="form-control" name="idCard" required></div>
-                            <div class="mb-3"><label class="form-label">Số điện thoại:</label><input class="form-control" name="phone" required></div>
-                            <div class="mb-3"><label class="form-label">Email (nếu có):</label><input class="form-control" name="email"></div>
-                            <div class="mb-3">
-                                <label class="form-label">Ngày muốn khám:</label>
-                                <input class="form-control" name="appointmentDate" type="date" required th:attr="min=${minDate}, max=${maxDate}">
-                            </div>
-
-                            <div class="modal-footer border-0 p-0 mt-3">
-                                <button class="btn btn-success me-2" style="background-color: #00c2a8;" type="submit">Xác nhận đặt lịch</button>
-                                <button class="btn btn-secondary" id="backToChooseAdvance" type="button">Quay lại</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
-                <!-- Cột phải: ảnh bác sĩ -->
-                <div class="modal-image d-none d-md-block" style="max-width: 40%;">
-                    <img src="/assets/images/pleased-young-female-doctor-wearing-medical-robe-stethoscope-around-neck-standing-with-closed-posture.jpg"
-                         alt="Bác sĩ" class="img-fluid h-100 w-100 object-fit-cover rounded-end" />
+<div class="modal" id="appointmentModal" tabindex="-1">
+    <div class="modal-content">
+        <div class="form-container">
+            <div class="modal-header">
+                <button class="modal-close" type="button">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <!-- Phần HTML -->
+            <div class="modal-body" id="chooseTypeSection">
+                <div class="center-buttons">
+                    <button class="btn btn-appointment btn-lg" id="btnRegisterToday" type="button">
+                        Đăng ký khám trực tiếp hôm nay
+                    </button>
+                    <button class="btn btn-appointment btn-lg" id="btnRegisterAdvance" type="button">
+                        Đặt lịch khám trước
+                    </button>
                 </div>
             </div>
+            <!-- Form - Đăng ký khám trực tiếp hôm nay -->
+            <div class="modal-body" id="registerTodaySection" style="display:none;">
+                <form id="registerTodayForm" method="post" th:action="@{/patient/register-today}">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            Đăng ký khám trực tiếp (
+                            <span th:text="${#temporals.format(today, 'dd/MM/yyyy')}"></span>
+                            )
+                        </h5>
+                        <button class="btn-close" id="backToChooseFromToday" type="button"></button>
+                    </div>
+                    <div class="modal-body">
+                        <label>
+                            <i class="fas fa-id-card"></i>
+                            Họ và tên<span style="color:red"> *</span></label>
+                        <input class="form-control" name="name" required type="text">
+                        <br>
+                        <label>
+                            <i class="fas fa-address-card"></i>
+                            Số CCCD<span style="color:red"> *</span></label>
+                        <input class="form-control" name="idCard" required type="text"><br>
+                        <label>
+                            <i class="fas fa-phone"></i>
+                            Số điện thoại<span style="color:red"> *</span></label>
+                        <input class="form-control" name="phone" required type="text"><br>
+                        <label>
+                            <i class="fas fa-envelope"></i>
+                            Email<span style="color:red"> *</span></label>
+                        <input class="form-control" name="email" type="email"><br>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" style="background-color: #00c2a8; border-color: #00c2a8;"
+                                type="submit">
+                            Xác nhận lấy số
+                        </button>
+                        <button class="btn btn-secondary" id="cancelTodayForm" type="button">Hủy</button>
+                    </div>
+                </form>
+            </div>
+
+
+            <!-- Form - Đặt lịch khám trước -->
+            <div class="modal-body" id="registerAdvanceSection" style="display:none;">
+                <form id="registerAdvanceForm" method="post" th:action="@{/patient/register-advance}">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Đặt lịch khám trước</h5>
+                        <button class="btn-close" id="backToChooseFromAdvance" type="button"></button>
+                    </div>
+                    <div class="modal-body">
+                        <label>
+                            <i class="fas fa-id-card"></i>
+                            Họ và tên<span style="color:red"> *</span></label>
+                        <input class="form-control" name="name" required type="text"><br>
+                        <label>
+                            <i class="fas fa-address-card"></i>
+                            Số CCCD <span style="color:red"> *</span></label>
+                        <input class="form-control" name="idCard" required type="text"><br>
+                        <label>
+                            <i class="fas fa-phone"></i>
+                            Số điện thoại<span style="color:red"> *</span></label>
+                        <input class="form-control" name="phone" required type="text"><br>
+                        <label>
+                            <i class="fas fa-envelope"></i>
+                            Email <span style="color:red"> *</span></label>
+                        <input class="form-control" name="email" required type="email"><br>
+                        <label>
+                            <i class="fas fa-calendar-alt"></i>
+                            Ngày muốn khám <span style="color:red">*</span></label>
+                        <input class="form-control" name="appointmentDate"
+                               required
+                               th:attr="min=${minDate}, max=${maxDate}" type="date"><br>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-success" style="background-color: #00c2a8; border-color: #00c2a8;"
+                                type="submit">Xác nhận đặt lịch
+                        </button>
+                        <button class="btn btn-secondary" id="cancelAdvanceForm" type="button">Hủy</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="modal-image">
+            <img alt="Bác sĩ"
+                 src="/assets/images/pleased-young-female-doctor-wearing-medical-robe-stethoscope-around-neck-standing-with-closed-posture.jpg"/>
         </div>
     </div>
 </div>
-
 
 
 <!-- Scroll to Top Button -->
