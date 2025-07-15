@@ -904,7 +904,6 @@
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-
             <!-- Phần HTML -->
             <div class="modal-body" id="chooseTypeSection">
                 <div class="center-buttons">
@@ -916,8 +915,6 @@
                     </button>
                 </div>
             </div>
-
-
             <!-- Form - Đăng ký khám trực tiếp hôm nay -->
             <div class="modal-body" id="registerTodaySection" style="display:none;">
                 <form id="registerTodayForm" method="post" th:action="@{/patient/register-today}">
@@ -930,13 +927,22 @@
                         <button class="btn-close" id="backToChooseFromToday" type="button"></button>
                     </div>
                     <div class="modal-body">
-                        <label>Họ và tên:</label>
-                        <input class="form-control" name="name" required type="text"><br>
-                        <label>Số CCCD:</label>
+                        <label>
+                            <i class="fas fa-id-card"></i>
+                            Họ và tên<span style="color:red"> *</span></label>
+                        <input class="form-control" name="name" required type="text">
+                        <br>
+                        <label>
+                            <i class="fas fa-address-card"></i>
+                            Số CCCD<span style="color:red"> *</span></label>
                         <input class="form-control" name="idCard" required type="text"><br>
-                        <label>Số điện thoại:</label>
+                        <label>
+                            <i class="fas fa-phone"></i>
+                            Số điện thoại<span style="color:red"> *</span></label>
                         <input class="form-control" name="phone" required type="text"><br>
-                        <label>Email (nếu có):</label>
+                        <label>
+                            <i class="fas fa-envelope"></i>
+                            Email<span style="color:red"> *</span></label>
                         <input class="form-control" name="email" type="email"><br>
                     </div>
                     <div class="modal-footer">
@@ -958,15 +964,25 @@
                         <button class="btn-close" id="backToChooseFromAdvance" type="button"></button>
                     </div>
                     <div class="modal-body">
-                        <label>Họ và tên:</label>
+                        <label>
+                            <i class="fas fa-id-card"></i>
+                            Họ và tên<span style="color:red"> *</span></label>
                         <input class="form-control" name="name" required type="text"><br>
-                        <label>Số CCCD:</label>
+                        <label>
+                            <i class="fas fa-address-card"></i>
+                            Số CCCD <span style="color:red"> *</span></label>
                         <input class="form-control" name="idCard" required type="text"><br>
-                        <label>Số điện thoại:</label>
+                        <label>
+                            <i class="fas fa-phone"></i>
+                            Số điện thoại<span style="color:red"> *</span></label>
                         <input class="form-control" name="phone" required type="text"><br>
-                        <label>Email (nếu có):</label>
+                        <label>
+                            <i class="fas fa-envelope"></i>
+                            Email <span style="color:red"> *</span></label>
                         <input class="form-control" name="email" required type="email"><br>
-                        <label>Ngày muốn khám:</label>
+                        <label>
+                            <i class="fas fa-calendar-alt"></i>
+                            Ngày muốn khám <span style="color:red">*</span></label>
                         <input class="form-control" name="appointmentDate"
                                required
                                th:attr="min=${minDate}, max=${maxDate}" type="date"><br>
@@ -986,6 +1002,7 @@
         </div>
     </div>
 </div>
+
 
 <!-- Scroll to Top Button -->
 <button

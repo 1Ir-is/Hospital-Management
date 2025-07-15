@@ -21,6 +21,9 @@ public class HomeController {
                        Model model,
                        @RequestParam(value = "logout", required = false) String logout,
                        HttpServletResponse response) throws IOException {
+        model.addAttribute("today", LocalDate.now());
+        model.addAttribute("minDate", LocalDate.now().plusDays(1));
+        model.addAttribute("maxDate", LocalDate.now().plusDays(7));
 
         if (authentication != null && authentication.isAuthenticated()
                 && !authentication.getPrincipal().equals("anonymousUser")) {
@@ -58,9 +61,7 @@ public class HomeController {
                         return null;
                 }
             }
-            model.addAttribute("today", LocalDate.now());
-            model.addAttribute("minDate", LocalDate.now().plusDays(1));
-            model.addAttribute("maxDate", LocalDate.now().plusDays(7));
+
         }
 
         if (error != null) {

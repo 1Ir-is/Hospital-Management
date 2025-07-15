@@ -11,7 +11,27 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Custom CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
     <style>
+        .header {
+            background: #00c2a8;
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .header h1 {
+            font-size: 1.5rem;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
             background: linear-gradient(135deg, #e6f0fa 0%, #f5f7fa 100%);
@@ -188,6 +208,12 @@
     </style>
 </head>
 <body>
+<header class="header">
+    <h1><i class="fas fa-user-injured"></i> Bệnh nhân Dashboard</h1>
+    <div class="user-info">
+        <span class="user-role">🤒Xin Chào,Bệnh nhân</span>
+    </div>
+</header>
 <div class="container">
     <h2 class="text-header">Danh sách phòng xét nghiệm</h2>
     <div class="table-container">
